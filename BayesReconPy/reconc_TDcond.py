@@ -1,4 +1,9 @@
 import numpy as np
+from BayesReconPy.utils import DEFAULT_PARS, check_input_TD
+from BayesReconPy.hierarchy import lowest_lev, get_Au
+from BayesReconPy.reconc_gaussian import reconc_gaussian
+from BayesReconPy.PMF import pmf_from_samples, pmf_from_params, pmf_check_support, pmf_bottom_up
+from BayesReconPy.utils import MVN_sample
 
 
 def cond_biv_sampling(u, pmf1, pmf2):
@@ -32,12 +37,12 @@ def cond_biv_sampling(u, pmf1, pmf2):
     return [b1.tolist(), (u - b1).tolist()]
 
 
-def TD_sampling(u, bott_pmf, toll=.TOLL, Rtoll=.RTOLL, smoothing=True,
-                al_smooth=.ALPHA_SMOOTHING, lap_smooth=.LAP_SMOOTHING):
+def TD_sampling(u, bott_pmf, toll=DEFAULT_PARS['TOLL'], Rtoll=DEFAULT_PARS['RTOLL'], smoothing=True,
+                al_smooth=DEFAULT_PARS['ALPHA_SMOOTHING'], lap_smooth=DEFAULT_PARS['LAP_SMOOTHING']):
     if len(bott_pmf) == 1:
         return np.tile(u, (1, 1))
 
-    l_l_pmf = PMF_bottom_up(bott_pmf, toll=toll, Rtoll=Rtoll, return_all=True,
+    l_l_pmf = pmf_bottom_up(bott_pmf, toll=toll, Rtoll=Rtoll, return_all=True,
                             smoothing=smoothing, al_smooth=al_smooth, lap_smooth=lap_smooth)
 
     b_old = np.reshape(u, (1, -1))
@@ -98,15 +103,15 @@ def reconc_TDcond(A, fc_bottom, fc_upper, bottom_in_type="pmf", distr=None,
     if bottom_in_type == "pmf":
         L_pmf = fc_bottom
     elif bottom_in_type == "samples":
-        L_pmf = [PMF_from_samples(fc) for fc in fc_bottom]
+        L_pmf = [pmf_from_samples(fc) for fc in fc_bottom]
     elif bottom_in_type == "params":
-        L_pmf = [PMF_from_params(fc, distr) for fc in fc_bottom]
+        L_pmf = [pmf_from_params(fc, distr) for fc in fc_bottom]
 
     # Prepare list of lists of bottom pmf relative to each lowest upper
     L_pmf_js = [L_pmf[Aj.astype(bool)] for Aj in A[lowest_rows, :]]
 
     # Check that each multiv. sample of U is contained in the supp of the bottom-up distr
-    samp_ok = np.array([PMF_check_support(u_j, L_pmf_j) for u_j, L_pmf_j in zip(U_js, L_pmf_js)])
+    samp_ok = np.array([pmf_check_support(u_j, L_pmf_j) for u_j, L_pmf_j in zip(U_js, L_pmf_js)])
     samp_ok = np.sum(samp_ok, axis=0) == n_u_low
 
     U_js = [U_j[samp_ok] for U_j in U_js]
@@ -128,8 +133,8 @@ def reconc_TDcond(A, fc_bottom, fc_upper, bottom_in_type="pmf", distr=None,
     result = {'bottom_reconciled': {}, 'upper_reconciled': {}}
 
     if return_type in ['pmf', 'all']:
-        upper_pmf = [PMF_from_samples(U[i, :]) for i in range(n_u)]
-        bottom_pmf = [PMF_from_samples(B[i, :]) for i in range(n_b)]
+        upper_pmf = [pmf_from_samples(U[i, :]) for i in range(n_u)]
+        bottom_pmf = [pmf_from_samples(B[i, :]) for i in range(n_b)]
         result['bottom_reconciled']['pmf'] = bottom_pmf
         result['upper_reconciled']['pmf'] = upper_pmf
 

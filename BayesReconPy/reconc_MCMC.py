@@ -1,5 +1,6 @@
 import numpy as np
 from scipy import stats
+from BayesReconPy.utils import check_input_BUIS, distr_sample, distr_pmf
 
 
 def reconc_MCMC(A, base_forecasts, distr, num_samples=10000, tuning_int=100, init_scale=1, burn_in=1000, seed=None):

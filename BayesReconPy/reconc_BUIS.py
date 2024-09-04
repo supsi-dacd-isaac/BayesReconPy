@@ -1,7 +1,8 @@
 import numpy as np
 from scipy import stats
 from scipy.stats import norm
-
+from BayesReconPy.utils import DEFAULT_PARS, check_input_BUIS, check_weights, resample, distr_sample, distr_pmf
+from BayesReconPy.hierarchy import check_hierarchical, get_HG
 
 
 def check_hierfamily_rel(sh_res, distr, debug=False):
@@ -17,14 +18,14 @@ def check_hierfamily_rel(sh_res, distr, debug=False):
         err_message = "A continuous bottom distribution cannot be child of a discrete one."
 
         if distr_bottom == "continuous":
-            if "discrete" in rel_distr_upper or any(d in DISCR_DISTR for d in rel_distr_upper):
+            if "discrete" in rel_distr_upper or any(d in DEFAULT_PARS['DISCR_DISTR'] for d in rel_distr_upper):
                 if debug:
                     return -1
                 else:
                     raise ValueError(err_message)
 
-        if distr_bottom in CONT_DISTR:
-            if "discrete" in rel_distr_upper or any(d in DISCR_DISTR for d in rel_distr_upper):
+        if distr_bottom in DEFAULT_PARS['CONT_DISTR']:
+            if "discrete" in rel_distr_upper or any(d in DEFAULT_PARS['DISCR_DISTR'] for d in rel_distr_upper):
                 if debug:
                     return -1
                 else:
@@ -151,7 +152,7 @@ def reconc_BUIS(A, base_forecasts, in_type, distr, num_samples=20000, suppress_w
             upper_fromA_i = [i for i, row in enumerate(A) if np.allclose(row, c)]
             for wmsg in warning_msg:
                 wmsg = f"{wmsg} Check the upper forecast at index: {upper_fromA_i}."
-                print(f"Warning: {wmsg}", file=sys.stderr)
+                print(f"Warning: {wmsg}")
         if check_weights_res['warning'] and 1 in check_weights_res['warning_code']:
             continue
         B[:, b_mask] = resample(B[:, b_mask], weights)
@@ -173,7 +174,7 @@ def reconc_BUIS(A, base_forecasts, in_type, distr, num_samples=20000, suppress_w
             upper_fromA_i = [i for i in range(n_upper) for gi in range(G.shape[0]) if np.allclose(A[i, :], G[gi, :])]
             for wmsg in warning_msg:
                 wmsg = f"{wmsg} Check the upper forecasts at index: {{{', '.join(map(str, upper_fromA_i))}}}."
-                print(f"Warning: {wmsg}", file=sys.stderr)
+                print(f"Warning: {wmsg}")
         if not (check_weights_res['warning'] and 1 in check_weights_res['warning_code']):
             B = resample(B, weights)
 

@@ -17,6 +17,15 @@ RTOLL = 1e-9
 ALPHA_SMOOTHING = 1e-9
 LAP_SMOOTHING = False
 
+DEFAULT_PARS = {
+    "TOLL": TOLL,
+    "RTOLL": RTOLL,
+    "ALPHA_SMOOTHING": ALPHA_SMOOTHING,
+    "LAP_SMOOTHING": LAP_SMOOTHING,
+    "DISTR_TYPES": DISTR_TYPES,
+    "DISCR_DISTR": DISCR_DISTR,
+}
+
 ################################################################################
 # CHECK INPUT
 

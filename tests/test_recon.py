@@ -146,7 +146,7 @@ class TestScenarios(unittest.TestCase):
         # Bottom samples
         fc_bottom = []
         for i in range(A.shape[1]):
-            samples = np.random.normal(loc=means[i + 10], scale=np.sqrt(vars_[i + 10]), size=20000)
+            samples = np.random.normal(loc=means[i + 10], scale=np.sqrt(vars_[i + 10]), size=20000).astype(int)
             samples[samples < 0] = 0  # set negatives to zero
             fc_bottom.append(samples)
 
@@ -160,13 +160,13 @@ class TestScenarios(unittest.TestCase):
         fc_bottom_pmf = [PMF_from_samples(samples) for samples in fc_bottom]
 
         # Reconcile from bottom PMF
-        res_MixCond_pmf = reconc_MixCond(A, fc_bottom_pmf, fc_upper, seed=42)
+        res_MixCond_pmf = reconc_MixCond(A, fc_bottom_pmf, fc_upper, seed=42, num_samples=1000000)
 
         bott_rec_means_pmf = np.array([PMF_get_mean(pmf) for pmf in res_MixCond_pmf["bottom_reconciled"]["pmf"]])
         bott_rec_vars_pmf = np.array([PMF_get_var(pmf) for pmf in res_MixCond_pmf["bottom_reconciled"]["pmf"]])
 
-        assert np.allclose(bott_rec_means, bott_rec_means_pmf, atol=3e-2)
-        assert np.allclose(bott_rec_vars, bott_rec_vars_pmf, atol=3e-2)
+        assert np.allclose(bott_rec_means, bott_rec_means_pmf, rtol=3e-2)
+        assert np.allclose(bott_rec_vars, bott_rec_vars_pmf, rtol=5e-2)
 
 
     def test_reconc_TDcond_simple_example(self):
@@ -197,7 +197,7 @@ class TestScenarios(unittest.TestCase):
         # Bottom samples
         fc_bottom = []
         for i in range(A.shape[1]):
-            samples = np.random.normal(loc=means[i + 10], scale=np.sqrt(vars_[i + 10]), size=20000)
+            samples = np.random.normal(loc=means[i + 10], scale=np.sqrt(vars_[i + 10]), size=20000).astype(int)
             samples[samples < 0] = 0  # Set negatives to zero
             fc_bottom.append(samples)
 

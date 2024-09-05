@@ -327,25 +327,36 @@ def lowest_lev(A):
     if not check_hierarchical(A):
         raise ValueError("Matrix A is not hierarchical")
 
-    A_uni = np.unique(A, axis=0)
+    indexes = np.unique(A, return_index=True, axis=0)[1];
+    A_uni = np.vstack([A[index] for index in sorted(indexes)])
     k, m = A_uni.shape
 
     low_rows_A_uni = []
     for i in range(k):
         low_rows_A_uni.append(i)
+        print(i)
         for j in range(k):
             if i != j:
                 if np.all(A_uni[j, :] <= A_uni[i, :]):
                     low_rows_A_uni.pop()
                     break
 
-    low_rows_A = np.array([row for idx, row in enumerate(A) if idx in low_rows_A_uni])
 
-    if np.any(np.sum(A[low_rows_A, :], axis=0) != 1):
+    # Keep all rows except those that have no descendants among the uppers
+    low_rows_A_uni = list(dict.fromkeys(low_rows_A_uni))  # Remove duplicates and keep order
+
+    # Now, change the indices of the lowest rows to match with A (instead of A_uni)
+    #low_rows_A = np.arange(A.shape[0])[np.unique(A, axis=0, return_index=True)[1]][low_rows_A_uni]
+
+    _, unique_idxs = np.unique(A, axis=0, return_index=True)
+    low_rows_A = np.sort(unique_idxs)[low_rows_A_uni]
+
+    # The sum of the rows corresponding to the lowest level should be a vector of 1
+    if not np.all(np.sum(A[low_rows_A, :], axis=0) == 1):
         unbal_bott = np.where(np.sum(A[low_rows_A, :], axis=0) != 1)[0]
-        raise ValueError(
-            f"It is impossible to find the lowest upper level. Probably the hierarchy is unbalanced, the following bottom should be duplicated: {', '.join(map(str, unbal_bott))}")
-
+        err_mess = "It is impossible to find the lowest upper level. Probably the hierarchy is unbalanced, the following bottom should be duplicated (see example): "
+        err_mess += " ".join(map(str, unbal_bott))
+        raise ValueError(err_mess)
     return low_rows_A
 
 

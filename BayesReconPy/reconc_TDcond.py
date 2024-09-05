@@ -87,11 +87,11 @@ def reconc_TDcond(A, fc_bottom, fc_upper, bottom_in_type="pmf", distr=None,
     else:
         # Reconcile the upper
         A_u = get_Au(A, lowest_rows)
-        mu_u_ord = np.concatenate([mu_u[np.arange(n_u_upp)], mu_u[lowest_rows]])
+        mu_u_ord = np.concatenate([np.delete(mu_u,lowest_rows), mu_u[lowest_rows]])
         Sigma_u_ord = np.zeros((n_u, n_u))
-        Sigma_u_ord[:n_u_upp, :n_u_upp] = Sigma_u[np.ix_(np.arange(n_u_upp), np.arange(n_u_upp))]
-        Sigma_u_ord[:n_u_upp, n_u_upp:] = Sigma_u[np.ix_(np.arange(n_u_upp), lowest_rows)]
-        Sigma_u_ord[n_u_upp:, :n_u_upp] = Sigma_u[np.ix_(lowest_rows, np.arange(n_u_upp))]
+        Sigma_u_ord[:n_u_upp, :n_u_upp] = np.delete(np.delete(Sigma_u, lowest_rows, axis=0), lowest_rows, axis=1)
+        Sigma_u_ord[:n_u_upp, n_u_upp:] = np.delete(Sigma_u, lowest_rows, axis=0)[:, lowest_rows]
+        Sigma_u_ord[n_u_upp:, :n_u_upp] = np.delete(Sigma_u, lowest_rows, axis=1)[lowest_rows, :]
         Sigma_u_ord[n_u_upp:, n_u_upp:] = Sigma_u[np.ix_(lowest_rows, lowest_rows)]
 
         rec_gauss_u = reconc_gaussian(A_u, mu_u_ord, Sigma_u_ord)
@@ -108,7 +108,10 @@ def reconc_TDcond(A, fc_bottom, fc_upper, bottom_in_type="pmf", distr=None,
         L_pmf = [pmf_from_params(fc, distr) for fc in fc_bottom]
 
     # Prepare list of lists of bottom pmf relative to each lowest upper
-    L_pmf_js = [L_pmf[Aj.astype(bool)] for Aj in A[lowest_rows, :]]
+    L_pmf_js = []
+    for j in lowest_rows:
+        Aj = A[j, :]
+        L_pmf_js.append([L_pmf[i] for i in range(len(Aj)) if Aj[i]])
 
     # Check that each multiv. sample of U is contained in the supp of the bottom-up distr
     samp_ok = np.array([pmf_check_support(u_j, L_pmf_j) for u_j, L_pmf_j in zip(U_js, L_pmf_js)])

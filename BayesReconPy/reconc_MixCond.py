@@ -16,13 +16,16 @@ def reconc_MixCond(A, fc_bottom, fc_upper, bottom_in_type="pmf", distr=None,
 
     # Prepare samples from the base bottom distribution
     if bottom_in_type == "pmf":
-        B = np.hstack([pmf_sample(fc, num_samples) for fc in fc_bottom])
+        B = np.vstack([pmf_sample(fc, num_samples) for fc in fc_bottom])
+        B = B.T
     elif bottom_in_type == "samples":
-        B = np.hstack(fc_bottom)
+        B = np.vstack(fc_bottom)
+        B = B.T
         num_samples = B.shape[0]
     elif bottom_in_type == "params":
         L_pmf = [pmf_from_params(fc, distr) for fc in fc_bottom]
-        B = np.hstack([pmf_sample(pmf, num_samples) for pmf in L_pmf])
+        B = np.vstack([pmf_sample(pmf, num_samples) for pmf in L_pmf])
+        B = B.T
 
     # Get mean and covariance matrix of the MVN upper base forecasts
     mu_u = fc_upper['mu']

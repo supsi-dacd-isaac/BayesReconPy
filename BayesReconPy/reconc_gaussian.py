@@ -42,7 +42,7 @@ def reconc_gaussian(A, base_forecasts_mu, base_forecasts_Sigma):
     mu_b = base_forecasts_mu[k:]
 
     # Calculate Q
-    Q = Sigma_u - Sigma_ub @ np.linalg.inv(A) - A.T @ Sigma_ub.T + A @ Sigma_b @ A.T
+    Q = Sigma_u - Sigma_ub @ A.T - A @ Sigma_ub.T + A @ Sigma_b @ A.T
 
     # Check if Q is positive definite
     check_cov(Q, "Q", pd_check=True, symm_check=False)
@@ -52,7 +52,8 @@ def reconc_gaussian(A, base_forecasts_mu, base_forecasts_Sigma):
 
     # Calculate mu_b_tilde and Sigma_b_tilde
     mu_b_tilde = mu_b + (Sigma_ub.T - Sigma_b @ A.T) @ invQ @ (A @ mu_b - mu_u)
-    Sigma_b_tilde = Sigma_b - (Sigma_ub.T - Sigma_b @ A.T) @ invQ @ (Sigma_ub - Sigma_b @ A.T)
+    term = Sigma_ub.T - Sigma_b @ A.T
+    Sigma_b_tilde = Sigma_b - term @ invQ @ term.T
 
     return {
         'bottom_reconciled_mean': mu_b_tilde,

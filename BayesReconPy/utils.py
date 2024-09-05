@@ -388,20 +388,20 @@ def MVN_density(x, mu, Sigma, max_size_x=5000, suppress_warnings=True):
 
         for j in range(num_backsolves):
             idx_to_select = slice(j * max_size_x, (j + 1) * max_size_x)
-            tmp = np.linalg.solve(chol_S, (x[idx_to_select, :].T - mu[:, None]).T)
-            rss = np.sum(tmp ** 2, axis=1)
+            tmp = np.linalg.solve(chol_S.T, (x[idx_to_select, :].T - mu[:, None]))
+            rss = np.sum(tmp ** 2, axis=0)
             logval[idx_to_select] = const - 0.5 * rss
 
         remainder = rows_x % max_size_x
         if remainder != 0:
             idx_to_select = slice(num_backsolves * max_size_x, num_backsolves * max_size_x + remainder)
-            tmp = np.linalg.solve(chol_S, (x[idx_to_select, :].T - mu[:, None]).T)
-            rss = np.sum(tmp ** 2, axis=1)
+            tmp = np.linalg.solve(chol_S, (x[idx_to_select, :].T - mu[:, None]))
+            rss = np.sum(tmp ** 2, axis=0)
             logval[idx_to_select] = const - 0.5 * rss
 
     else:
-        tmp = np.linalg.solve(chol_S, (x.T - mu[:, None]).T)
-        rss = np.sum(tmp ** 2, axis=1)
+        tmp = np.linalg.solve(chol_S, (x.T - mu[:, None]))
+        rss = np.sum(tmp ** 2, axis=0)
         logval = const - 0.5 * rss
 
     return np.exp(logval)
@@ -410,12 +410,14 @@ def MVN_density(x, mu, Sigma, max_size_x=5000, suppress_warnings=True):
 ################################################################################
 # Resample from weighted sample
 def resample(S_, weights, num_samples=None):
+
     if num_samples is None:
         num_samples = len(weights)
 
     if S_.shape[0] != len(weights):
         raise ValueError("Error in resample: nrow(S_) != length(weights)")
-
+    #weights are log-likelihood, but we need a normalized vector for using np.random.choice
+    weights = weights / weights.sum()
     tmp_idx = np.random.choice(np.arange(S_.shape[0]), size=num_samples, replace=True, p=weights)
     return S_[tmp_idx, :]
 

@@ -24,6 +24,7 @@ DEFAULT_PARS = {
     "LAP_SMOOTHING": LAP_SMOOTHING,
     "DISTR_TYPES": DISTR_TYPES,
     "DISCR_DISTR": DISCR_DISTR,
+    "CONT_DISTR": CONT_DISTR
 }
 
 ################################################################################

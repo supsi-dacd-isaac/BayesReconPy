@@ -115,7 +115,7 @@ def get_hier_rows(A, scale=196):
     M3[:, k:(k + k ** 2)] = np.eye(k ** 2)
 
     M4 = np.zeros((m, k + k ** 2 + 1))  # sum_i x_i A_{ij} <= y
-    M4[:, :k] = A
+    M4[:, :k] = A.T
     M4[:, k + k ** 2] = -1
 
     f_con = np.vstack([coeff, M1, M2, M3, M4])
@@ -129,7 +129,22 @@ def get_hier_rows(A, scale=196):
 
     prob += lpSum([f_obj[i] * vars[i] for i in range(k + k ** 2 + 1)])
 
-    for i in range(len(f_con)):
+    #for i in range(len(f_con)):
+    #    prob += lpSum([f_con[i][j] * vars[j] for j in range(k + k ** 2 + 1)]) <= f_rhs[i]
+
+    # first constraint
+    prob += lpSum([f_con[0][j] * vars[j] for j in range(k + k ** 2 + 1)]) == f_rhs[0]
+    # second set of constraints
+    for i in np.arange(1, k ** 2 + 1):
+        prob += lpSum([f_con[i][j] * vars[j] for j in range(k + k ** 2 + 1)]) <= f_rhs[i]
+    # third set of constraints
+    for i in np.arange(k ** 2 + 1, 2 * k ** 2 + 1):
+        prob += lpSum([f_con[i][j] * vars[j] for j in range(k + k ** 2 + 1)]) <= f_rhs[i]
+    # fourth set of constraints
+    for i in np.arange(2 * k ** 2 + 1, 3 * k ** 2 + 1):
+        prob += lpSum([f_con[i][j] * vars[j] for j in range(k + k ** 2 + 1)]) >= f_rhs[i]
+    # fifth set of constraints
+    for i in np.arange(3 * k ** 2 + 1, 3 * k ** 2 + 1 + m):
         prob += lpSum([f_con[i][j] * vars[j] for j in range(k + k ** 2 + 1)]) <= f_rhs[i]
 
     prob.solve(PULP_CBC_CMD(msg=False, timeLimit=scale))

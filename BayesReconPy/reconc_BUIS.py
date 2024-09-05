@@ -13,7 +13,7 @@ def check_hierfamily_rel(sh_res, distr, debug=False):
     for bi in range(len(bottom_idxs)):
         distr_bottom = distr[bottom_idxs[bi]]
         rel_upper_i = A[:, bi]
-        rel_distr_upper = [distr[i] for i in range(len(distr)) if rel_upper_i[i] == 1]
+        rel_distr_upper = [distr[i] for i in range(A.shape[0]) if rel_upper_i[i] == 1]
 
         err_message = "A continuous bottom distribution cannot be child of a discrete one."
 

@@ -43,7 +43,7 @@ def TD_sampling(u, bott_pmf, toll=DEFAULT_PARS['TOLL'], Rtoll=DEFAULT_PARS['RTOL
         return np.tile(u, (1, 1))
 
     l_l_pmf = pmf_bottom_up(bott_pmf, toll=toll, Rtoll=Rtoll, return_all=True,
-                            smoothing=smoothing, al_smooth=al_smooth, lap_smooth=lap_smooth)
+                            smoothing=smoothing, alpha_smooth=al_smooth, laplace_smooth=lap_smooth)
 
     b_old = np.reshape(u, (1, -1))
     for l_pmf in l_l_pmf[1:]:
@@ -131,6 +131,8 @@ def reconc_TDcond(A, fc_bottom, fc_upper, bottom_in_type="pmf", distr=None,
         B[mask_j, :] = TD_sampling(U_js[j], L_pmf_js[j])
 
     U = A @ B  # dim: n_upper x num_samples
+    B = B.astype(int)
+    U = U.astype(int)
 
     # Prepare output: include the marginal pmfs and/or the samples (depending on "return" inputs)
     result = {'bottom_reconciled': {}, 'upper_reconciled': {}}

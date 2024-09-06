@@ -27,7 +27,7 @@ rec_fc = {
 }
 
 # Parameters of the upper base forecast distributions
-mu_u = np.array([fc['mu'] for fc in base_fc_upper])  # upper means
+mu_u = {k:fc['mu'] for k, fc in base_fc_upper.items()}  # upper means
 
 # Compute the (shrinked) covariance matrix of the residuals
 residuals_upper = np.array([fc['residuals'] for fc in base_fc_upper]).T

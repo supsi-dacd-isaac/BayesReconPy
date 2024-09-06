@@ -7,34 +7,35 @@ from BayesReconPy.utils import MVN_sample
 
 
 def cond_biv_sampling(u, pmf1, pmf2):
-    # Swap pmf1 and pmf2 if necessary
+    # Initialize switch flag
+    sw = False
     if len(pmf1) > len(pmf2):
         pmf1, pmf2 = pmf2, pmf1
-        swapped = True
-    else:
-        swapped = False
+        sw = True
 
-    b1 = np.full(len(u), np.nan)  # initialize empty vector
+    b1 = np.full(len(u), np.nan)  # Initialize empty array
 
-    for u_uniq in np.unique(u):  # loop over different values of u
+    for u_uniq in np.unique(u):  # Loop over unique values of u
         len_supp1 = len(pmf1)
-        supp1 = np.arange(len_supp1)
-        p1 = np.array(pmf1)
+        supp1 = np.arange(len_supp1)  # Support for pmf1
+        p1 = pmf1
 
-        supp2 = u_uniq - supp1
-        supp2[supp2 < 0] = np.inf  # trick to get NA when accessing pmf2 outside the support
-        p2 = np.array([pmf2[int(s)] if s >= 0 else 0 for s in supp2])
-
+        supp2 = int(u_uniq) - supp1
+        #supp2[supp2 < 0] = np.zero  # Trick to get NaN when accessing pmf2 outside the support
+        # Handle out-of-bounds access
+        p2 = np.array([pmf2[i] if i < len(pmf2) and i > 0 else 0 for i in supp2])
+        # Normalize probabilities
         p = p1 * p2
-        p /= np.sum(p)
+        p /= p.sum()
 
+        # Sample from supp1 based on the probability vector p
         u_posit = (u == u_uniq)
-        b1[u_posit] = np.random.choice(supp1, size=np.sum(u_posit), replace=True, p=p)
+        b1[u_posit] = np.random.choice(supp1, size=u_posit.sum(), replace=True, p=p)
 
-    if swapped:
-        b1 = u - b1  # if we have swapped, switch back
+    if sw:
+        b1 = u - b1  # If we switched pmf1 and pmf2, switch back
 
-    return [b1.tolist(), (u - b1).tolist()]
+    return b1, u - b1
 
 
 def TD_sampling(u, bott_pmf, toll=DEFAULT_PARS['TOLL'], Rtoll=DEFAULT_PARS['RTOLL'], smoothing=True,
@@ -44,6 +45,7 @@ def TD_sampling(u, bott_pmf, toll=DEFAULT_PARS['TOLL'], Rtoll=DEFAULT_PARS['RTOL
 
     l_l_pmf = pmf_bottom_up(bott_pmf, toll=toll, Rtoll=Rtoll, return_all=True,
                             smoothing=smoothing, alpha_smooth=al_smooth, laplace_smooth=lap_smooth)
+    l_l_pmf = l_l_pmf[::-1] # flipping the list sa that we skip the upper pmf
 
     b_old = np.reshape(u, (1, -1))
     for l_pmf in l_l_pmf[1:]:
@@ -127,8 +129,9 @@ def reconc_TDcond(A, fc_bottom, fc_upper, bottom_in_type="pmf", distr=None,
     # Get bottom samples via the prob top-down
     B = np.empty((n_b, num_samples_ok))
     for j in range(n_u_low):
+
         mask_j = A[lowest_rows[j], :]  # mask for the position of the bottom referring to lowest upper j
-        B[mask_j, :] = TD_sampling(U_js[j], L_pmf_js[j])
+        B[np.where(mask_j)[0], :] = TD_sampling(U_js[j], L_pmf_js[j])
 
     U = A @ B  # dim: n_upper x num_samples
     B = B.astype(int)

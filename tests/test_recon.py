@@ -210,9 +210,12 @@ class TestScenarios(unittest.TestCase):
                                     return_type="all", seed=42)
 
         # Check if all return_type return identical results
-        assert res_TDcond["bottom_reconciled"]["pmf"] == res_TDcond3["bottom_reconciled"]["pmf"]
-        assert np.array_equal(res_TDcond2["bottom_reconciled"]["samples"],
-                              res_TDcond3["bottom_reconciled"]["samples"])
+        pmf_1 = res_TDcond["bottom_reconciled"]["pmf"]
+        pmf_samples = res_TDcond2["bottom_reconciled"]["samples"]
+        pmf_3 = res_TDcond3["bottom_reconciled"]["pmf"]
+        pmf_3_samples = res_TDcond3["bottom_reconciled"]["samples"]
+        assert np.all([np.all(pm1==pm2) for pm1, pm2 in zip(pmf_1, pmf_3)])
+        assert np.array_equal(pmf_samples, pmf_3_samples)
 
         # Analytical reconciliation (Gaussian assumptions)
         fc_bott_gauss = {

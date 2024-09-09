@@ -71,6 +71,7 @@ def pmf_sample(pmf, N_samples):
 
 
 def pmf_get_mean(pmf):
+    pmf = np.atleast_1d(pmf)
     # Ensure that pmf is a normalized probability distribution
     if not np.isclose(np.sum(pmf), 1.0):
         raise ValueError("PMF must be normalized; the sum of probabilities should be 1.")
@@ -85,6 +86,7 @@ def pmf_get_mean(pmf):
 
 
 def pmf_get_var(pmf):
+    pmf = np.atleast_1d(pmf)
     # Ensure that pmf is a normalized probability distribution
     if not np.isclose(np.sum(pmf), 1.0):
         raise ValueError("PMF must be normalized; the sum of probabilities should be 1.")

@@ -215,6 +215,13 @@ def check_input_TD(A, fc_bottom, fc_upper, bottom_in_type, distr, return_type):
     n_b = A.shape[1]  # number of bottom TS
     n_u = A.shape[0]  # number of upper TS
 
+    if bottom_in_type in ["pmf", "params"]:
+        if not isinstance(fc_bottom, dict):
+            raise ValueError("Input error: fc_bottom must be a dictionary with the names of the bottom TS as keys")
+        if not n_b == len(fc_bottom):
+            raise ValueError("Input error: ncol(A) != length(fc_bottom)")
+
+
     if bottom_in_type not in ["pmf", "samples", "params"]:
         raise ValueError("Input error: bottom_in_type must be either 'pmf', 'samples', or 'params'")
     if return_type not in ["pmf", "samples", "all"]:
@@ -388,19 +395,19 @@ def MVN_density(x, mu, Sigma, max_size_x=5000, suppress_warnings=True):
 
         for j in range(num_backsolves):
             idx_to_select = slice(j * max_size_x, (j + 1) * max_size_x)
-            tmp = np.linalg.solve(chol_S.T, (x[idx_to_select, :].T - mu[:, None]))
+            tmp = np.linalg.solve(chol_S.T, (x[idx_to_select, :].T - np.expand_dims(mu, 1)))
             rss = np.sum(tmp ** 2, axis=0)
             logval[idx_to_select] = const - 0.5 * rss
 
         remainder = rows_x % max_size_x
         if remainder != 0:
             idx_to_select = slice(num_backsolves * max_size_x, num_backsolves * max_size_x + remainder)
-            tmp = np.linalg.solve(chol_S, (x[idx_to_select, :].T - mu[:, None]))
+            tmp = np.linalg.solve(chol_S, (x[idx_to_select, :].T - np.expand_dims(mu, 1)))
             rss = np.sum(tmp ** 2, axis=0)
             logval[idx_to_select] = const - 0.5 * rss
 
     else:
-        tmp = np.linalg.solve(chol_S, (x.T - mu[:, None]))
+        tmp = np.linalg.solve(chol_S, (x.T - np.expand_dims(mu, 1)))
         rss = np.sum(tmp ** 2, axis=0)
         logval = const - 0.5 * rss
 

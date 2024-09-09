@@ -11,7 +11,8 @@ def pmf_from_samples(v):
     # Check that samples are discrete
     if not np.array_equal(v, v.astype(int)):
         raise ValueError("Input error: samples are not all discrete")
-
+    else:
+        v = v.astype(int)
     # Compute the PMF by tabulating the occurrences
     pmf = np.bincount(v) / len(v)  # Support starts from 0
 
@@ -57,6 +58,7 @@ def pmf_from_params(params, distr, Rtoll=RTOLL):
 
 
 def pmf_sample(pmf, N_samples):
+    pmf = np.atleast_1d(pmf)
     # Ensure that pmf is a normalized probability distribution
     if not np.isclose(np.sum(pmf), 1.0):
         raise ValueError("PMF must be normalized; the sum of probabilities should be 1.")

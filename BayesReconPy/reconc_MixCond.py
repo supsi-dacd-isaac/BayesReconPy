@@ -2,8 +2,9 @@ import numpy as np
 from scipy import stats
 from BayesReconPy.utils import check_input_TD, check_weights, resample, MVN_density
 from BayesReconPy.PMF import pmf_from_samples, pmf_from_params, pmf_sample
+from typing import Union
 
-def reconc_MixCond(A, fc_bottom, fc_upper, bottom_in_type="pmf", distr=None,
+def reconc_MixCond(A, fc_bottom:Union[np.array, dict], fc_upper, bottom_in_type="pmf", distr=None,
                    num_samples=20000, return_type="pmf", suppress_warnings=False, seed=None):
     if seed is not None:
         np.random.seed(seed)
@@ -11,24 +12,26 @@ def reconc_MixCond(A, fc_bottom, fc_upper, bottom_in_type="pmf", distr=None,
     # Check inputs
     check_input_TD(A, fc_bottom, fc_upper, bottom_in_type, distr, return_type)
 
+
     n_u = A.shape[0]
     n_b = A.shape[1]
 
     # Prepare samples from the base bottom distribution
     if bottom_in_type == "pmf":
-        B = np.vstack([pmf_sample(fc, num_samples) for fc in fc_bottom])
+        B = np.vstack([pmf_sample(fc, num_samples) for key, fc in fc_bottom.items()])
         B = B.T
     elif bottom_in_type == "samples":
         B = np.vstack(fc_bottom)
         B = B.T
         num_samples = B.shape[0]
     elif bottom_in_type == "params":
-        L_pmf = [pmf_from_params(fc, distr) for fc in fc_bottom]
+        L_pmf = [pmf_from_params(fc, distr) for key, fc in fc_bottom.items()]
         B = np.vstack([pmf_sample(pmf, num_samples) for pmf in L_pmf])
         B = B.T
 
     # Get mean and covariance matrix of the MVN upper base forecasts
     mu_u = fc_upper['mu']
+    mu_u = [mu_u[key] for key in mu_u] if isinstance(mu_u, dict) else mu_u
     Sigma_u = np.array(fc_upper['Sigma'])
 
     # IS using MVN

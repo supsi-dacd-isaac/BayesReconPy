@@ -8,6 +8,7 @@ from BayesReconPy.PMF import pmf_get_var as PMF_get_var
 from BayesReconPy.shrink_cov import schafer_strimmer_cov
 from BayesReconPy.reconc_gaussian import reconc_gaussian
 from BayesReconPy.reconc_MixCond import reconc_MixCond
+from BayesReconPy.reconc_TDcond import reconc_TDcond
 
 M5_CA1_basefc = pd.read_pickle('data/M5_CA1_basefc.pkl')
 
@@ -85,11 +86,11 @@ base_forecasts_Sigma = {
     'names': combined_names,       # Combined list of names
     'Sigma': base_forecasts_Sigma  # Full covariance matrix
 }
-
+"""
 #-----------------------------------------------------------------------------------------------------
 #-------------------------GAUSSIAN RECONCILIATION-----------------------------------------------------
 #-----------------------------------------------------------------------------------------------------
-"""
+
 start = time.time()
 gauss = reconc_gaussian(A, list(base_forecasts_mu.values()),
                         base_forecasts_Sigma['Sigma'])
@@ -119,12 +120,11 @@ N_samples_IS = int(5e4)  # 50,000 samples
 # Base forecasts
 Sigma_u_np = np.array(Sigma_u['Sigma_u'])
 fc_upper_4rec = {'mu': mu_u, 'Sigma': Sigma_u_np}  # Dictionary for upper forecasts
-fc_bottom_4rec = {k: fc['pmf'] for k, fc in base_fc_bottom.items()}  # List of PMFs from base forecasts
 fc_bottom_4rec = {k: np.array(fc['pmf']) for k, fc in base_fc_bottom.items()}
 
 # Set random seed for reproducibility
 np.random.seed(seed)
-
+"""
 # Start timing
 start = time.time()
 
@@ -147,3 +147,35 @@ MixCond_time = round(stop - start, 2)
 
 # Output the time taken for MixCond reconciliation
 print(f"Computational time for Mix-cond reconciliation: {MixCond_time} seconds")
+
+"""
+#-----------------------------------------------------------------------------------------------------
+#-------------------------TOP-DOWN RECONCILIATION-----------------------------------------------------
+#-----------------------------------------------------------------------------------------------------
+
+N_samples_TD = int(1e4)
+
+# Start timing
+start = time.time()
+
+# Perform TD-cond reconciliation (assuming reconc_TDcond is implemented)
+# This will raise a warning if upper samples are discarded
+td = reconc_TDcond(A, fc_bottom_4rec, fc_upper_4rec,
+                   bottom_in_type="pmf", num_samples=N_samples_TD,
+                   return_type="pmf", seed=seed)
+
+# Stop timing
+stop = time.time()
+
+# Store the results in the rec_fc dictionary
+rec_fc['TD_cond'] = {
+    'bottom': td['bottom_reconciled']['pmf'],
+    'upper': td['upper_reconciled']['pmf']
+}
+
+# Calculate the time taken for TD-cond reconciliation
+TDCond_time = round(stop - start, 2)
+print(f"Computational time for TD-cond reconciliation: {TDCond_time} seconds")
+
+
+

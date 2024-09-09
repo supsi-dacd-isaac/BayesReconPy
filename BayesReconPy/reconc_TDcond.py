@@ -4,7 +4,7 @@ from BayesReconPy.hierarchy import lowest_lev, get_Au
 from BayesReconPy.reconc_gaussian import reconc_gaussian
 from BayesReconPy.PMF import pmf_from_samples, pmf_from_params, pmf_check_support, pmf_bottom_up
 from BayesReconPy.utils import MVN_sample
-
+from typing import Union
 
 def cond_biv_sampling(u, pmf1, pmf2):
     # Initialize switch flag
@@ -62,7 +62,7 @@ def TD_sampling(u, bott_pmf, toll=DEFAULT_PARS['TOLL'], Rtoll=DEFAULT_PARS['RTOL
     return b_new
 
 
-def reconc_TDcond(A, fc_bottom, fc_upper, bottom_in_type="pmf", distr=None,
+def reconc_TDcond(A, fc_bottom:Union[np.array, dict], fc_upper:dict, bottom_in_type="pmf", distr=None,
                   num_samples=20000, return_type="pmf", suppress_warnings=False, seed=None):
     if seed is not None:
         np.random.seed(seed)
@@ -79,6 +79,8 @@ def reconc_TDcond(A, fc_bottom, fc_upper, bottom_in_type="pmf", distr=None,
 
     # Get mean and covariance matrix of the MVN upper base forecasts
     mu_u = fc_upper['mu']
+    mu_u = np.array([mu_u[key] for key in mu_u]) if isinstance(mu_u, dict) else mu_u
+
     Sigma_u = np.array(fc_upper['Sigma'])
 
     # Get upper samples
@@ -103,11 +105,14 @@ def reconc_TDcond(A, fc_bottom, fc_upper, bottom_in_type="pmf", distr=None,
 
     # Prepare list of bottom pmf
     if bottom_in_type == "pmf":
-        L_pmf = fc_bottom
+        L_pmf = [v for v in fc_bottom.values()]
     elif bottom_in_type == "samples":
-        L_pmf = [pmf_from_samples(fc) for fc in fc_bottom]
+        if isinstance(fc_bottom, dict):
+            L_pmf = [pmf_from_samples(fc) for fc in fc_bottom.values()]
+        else:
+            L_pmf = [pmf_from_samples(fc) for fc in fc_bottom]
     elif bottom_in_type == "params":
-        L_pmf = [pmf_from_params(fc, distr) for fc in fc_bottom]
+        L_pmf = [pmf_from_params(fc, distr) for key, fc in fc_bottom.items()]
 
     # Prepare list of lists of bottom pmf relative to each lowest upper
     L_pmf_js = []

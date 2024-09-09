@@ -4,7 +4,7 @@ from BayesReconPy.utils import check_input_TD, check_weights, resample, MVN_dens
 from BayesReconPy.PMF import pmf_from_samples, pmf_from_params, pmf_sample
 from typing import Union
 
-def reconc_MixCond(A, fc_bottom:Union[np.array, dict], fc_upper, bottom_in_type="pmf", distr=None,
+def reconc_MixCond(A, fc_bottom:Union[np.array, dict], fc_upper:dict, bottom_in_type="pmf", distr=None,
                    num_samples=20000, return_type="pmf", suppress_warnings=False, seed=None):
     if seed is not None:
         np.random.seed(seed)

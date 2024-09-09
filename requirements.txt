@@ -2,3 +2,4 @@ numpy>=2.1.1
 pandas>=2.2.2
 PuLP>=2.9.0
 scipy>=1.14.1
+matplotlib>=3.0.0

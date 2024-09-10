@@ -151,7 +151,7 @@ def pmf_smoothing(pmf, alpha=1e-9, laplace=False):
 
 def pmf_conv(pmf1, pmf2, toll=1e-9, Rtoll=1e-9):
     # Convolution
-    pmf = np.convolve(pmf1, np.flip(pmf2), mode='full')
+    pmf = np.convolve(pmf1, pmf2, mode='full')
 
     # Trim values below Rtoll
     last_pos = np.max(np.where(pmf > Rtoll)) + 1
@@ -162,7 +162,10 @@ def pmf_conv(pmf1, pmf2, toll=1e-9, Rtoll=1e-9):
 
     # Set to zero values to the left of the minimal support
     m1 = np.min(np.where(pmf1 > 0))
-    m2 = np.min(np.where(pmf2 > 0))
+    try:
+        m2 = np.min(np.where(np.atleast_1d(pmf2) > 0))
+    except:
+        print('mmmmmm')
     m = m1 + m2 - 1
     if m > 1:
         pmf[:m - 1] = 0

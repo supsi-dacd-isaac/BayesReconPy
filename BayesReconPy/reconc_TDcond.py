@@ -8,6 +8,8 @@ from typing import Union
 
 def cond_biv_sampling(u, pmf1, pmf2):
     # Initialize switch flag
+    pmf1 = np.atleast_1d(pmf1)
+    pmf2 = np.atleast_1d(pmf2)
     sw = False
     if len(pmf1) > len(pmf2):
         pmf1, pmf2 = pmf2, pmf1
@@ -23,7 +25,8 @@ def cond_biv_sampling(u, pmf1, pmf2):
         supp2 = int(u_uniq) - supp1
         #supp2[supp2 < 0] = np.zero  # Trick to get NaN when accessing pmf2 outside the support
         # Handle out-of-bounds access
-        p2 = np.array([pmf2[i] if i < len(pmf2) and i > 0 else 0 for i in supp2])
+        p2 = np.array([pmf2[i] if i < len(pmf2) and i >= 0 else 0 for i in supp2])
+
         # Normalize probabilities
         p = p1 * p2
         p /= p.sum()

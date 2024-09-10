@@ -1,7 +1,6 @@
 # Demonstration and test on the M5 dataset as presented in the vignette of the original BayesRecon package in R
 import pandas as pd
 import numpy as np
-from numpy.distutils.command.sdist import sdist
 import time
 from BayesReconPy.PMF import pmf_get_mean as PMF_get_mean
 from BayesReconPy.PMF import pmf_get_var as PMF_get_var
@@ -86,7 +85,7 @@ base_forecasts_Sigma = {
     'names': combined_names,       # Combined list of names
     'Sigma': base_forecasts_Sigma  # Full covariance matrix
 }
-"""
+
 #-----------------------------------------------------------------------------------------------------
 #-------------------------GAUSSIAN RECONCILIATION-----------------------------------------------------
 #-----------------------------------------------------------------------------------------------------
@@ -109,7 +108,7 @@ Gauss_time = round(stop - start, 2)
 
 # Output the time taken for reconciliation
 print(f"Time taken by Gaussian reconciliation: {Gauss_time} seconds")
-"""
+
 #-----------------------------------------------------------------------------------------------------
 #----------------------------MIXED RECONCILIATION-----------------------------------------------------
 #-----------------------------------------------------------------------------------------------------
@@ -124,7 +123,7 @@ fc_bottom_4rec = {k: np.array(fc['pmf']) for k, fc in base_fc_bottom.items()}
 
 # Set random seed for reproducibility
 np.random.seed(seed)
-"""
+
 # Start timing
 start = time.time()
 
@@ -148,7 +147,7 @@ MixCond_time = round(stop - start, 2)
 # Output the time taken for MixCond reconciliation
 print(f"Computational time for Mix-cond reconciliation: {MixCond_time} seconds")
 
-"""
+
 #-----------------------------------------------------------------------------------------------------
 #-------------------------TOP-DOWN RECONCILIATION-----------------------------------------------------
 #-----------------------------------------------------------------------------------------------------

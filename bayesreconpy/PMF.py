@@ -1,9 +1,6 @@
 import numpy as np
 from scipy.stats import poisson, nbinom
-
-
-# Tolerance for cumulative distribution tail probability
-RTOLL = 1e-6
+from bayesreconpy.utils import DEFAULT_PARS
 
 
 # Compute the empirical PMF from a vector of samples
@@ -24,7 +21,7 @@ def pmf_from_samples(v):
 
 
 # Compute the PMF from a parametric distribution
-def pmf_from_params(params, distr, Rtoll=RTOLL):
+def pmf_from_params(params, distr, rtol=DEFAULT_PARS['RTOL']):
     # Validate the distribution type
     if distr not in ['poisson', 'nbinom']:
         raise ValueError(f"Input error: distr must be one of ['poisson', 'nbinom']")
@@ -35,7 +32,7 @@ def pmf_from_params(params, distr, Rtoll=RTOLL):
     # Compute the PMF based on the distribution type
     if distr == 'poisson':
         lambda_ = params['lambda']
-        M = poisson.ppf(1 - Rtoll, lambda_).astype(int)
+        M = poisson.ppf(1 - rtol, lambda_).astype(int)
         pmf = poisson.pmf(np.arange(M + 1), lambda_)
 
     elif distr == 'nbinom':
@@ -44,11 +41,11 @@ def pmf_from_params(params, distr, Rtoll=RTOLL):
         mu = params.get('mu')
 
         if prob is not None:
-            M = nbinom.ppf(1 - Rtoll, n=size, p=prob).astype(int)
+            M = nbinom.ppf(1 - rtol, n=size, p=prob).astype(int)
             pmf = nbinom.pmf(np.arange(M + 1), n=size, p=prob)
 
         elif mu is not None:
-            M = nbinom.ppf(1 - Rtoll, n=size, p=size / (size + mu)).astype(int)
+            M = nbinom.ppf(1 - rtol, n=size, p=size / (size + mu)).astype(int)
             pmf = nbinom.pmf(np.arange(M + 1), n=size, p=size / (size + mu))
 
     # Normalize the PMF to ensure it sums to 1
@@ -122,9 +119,9 @@ def pmf_get_quantile(pmf, p):
     return x
 
 
-def pmf_summary(pmf, Ltoll=1e-9, Rtoll=1e-9):
+def pmf_summary(pmf, Ltoll=DEFAULT_PARS['TOL'], rtol=DEFAULT_PARS['RTOL']):
     min_pmf = np.min(np.where(pmf > Ltoll)) - 1
-    max_pmf = np.max(np.where(pmf > Rtoll)) - 1
+    max_pmf = np.max(np.where(pmf > rtol)) - 1
     summary = {
         "Min.": min_pmf,
         "1st Qu.": pmf_get_quantile(pmf, 0.25),
@@ -136,7 +133,7 @@ def pmf_summary(pmf, Ltoll=1e-9, Rtoll=1e-9):
     return summary
 
 
-def pmf_smoothing(pmf, alpha=1e-9, laplace=False):
+def pmf_smoothing(pmf, alpha=DEFAULT_PARS['ALPHA'], laplace=False):
     if alpha is None:
         alpha = np.min(pmf[pmf != 0])
 
@@ -149,12 +146,12 @@ def pmf_smoothing(pmf, alpha=1e-9, laplace=False):
     return pmf / np.sum(pmf)
 
 
-def pmf_conv(pmf1, pmf2, toll=1e-9, Rtoll=1e-9):
+def pmf_conv(pmf1, pmf2, toll=DEFAULT_PARS['TOL'], rtol=DEFAULT_PARS['RTOL']):
     # Convolution
     pmf = np.convolve(pmf1, pmf2, mode='full')
 
-    # Trim values below Rtoll
-    last_pos = np.max(np.where(pmf > Rtoll)) + 1
+    # Trim values below rtol
+    last_pos = np.max(np.where(pmf > rtol)) + 1
     pmf = pmf[:last_pos]
 
     # Set values below toll to zero
@@ -162,10 +159,9 @@ def pmf_conv(pmf1, pmf2, toll=1e-9, Rtoll=1e-9):
 
     # Set to zero values to the left of the minimal support
     m1 = np.min(np.where(pmf1 > 0))
-    try:
-        m2 = np.min(np.where(np.atleast_1d(pmf2) > 0))
-    except:
-        print('mmmmmm')
+
+    m2 = np.min(np.where(np.atleast_1d(pmf2) > 0))
+
     m = m1 + m2 - 1
     if m > 1:
         pmf[:m - 1] = 0
@@ -173,7 +169,7 @@ def pmf_conv(pmf1, pmf2, toll=1e-9, Rtoll=1e-9):
     return pmf / np.sum(pmf)
 
 
-def pmf_bottom_up(l_pmf, toll=1e-9, Rtoll=1e-9, return_all=False, smoothing=True, alpha_smooth=1e-9,
+def pmf_bottom_up(l_pmf, toll=DEFAULT_PARS['TOL'], rtol=DEFAULT_PARS['RTOL'], return_all=False, smoothing=True, alpha_smooth=DEFAULT_PARS['ALPHA_SMOOTHING'],
                   laplace_smooth=False):
     if smoothing:
         l_pmf = [pmf_smoothing(pmf, alpha=alpha_smooth, laplace=laplace_smooth) for pmf in l_pmf]
@@ -185,7 +181,7 @@ def pmf_bottom_up(l_pmf, toll=1e-9, Rtoll=1e-9, return_all=False, smoothing=True
     while len(l_pmf) > 1:
         new_v = []
         for j in range(len(l_pmf) // 2):
-            new_v.append(pmf_conv(l_pmf[2 * j], l_pmf[2 * j + 1], toll=toll, Rtoll=Rtoll))
+            new_v.append(pmf_conv(l_pmf[2 * j], l_pmf[2 * j + 1], toll=toll, rtol=rtol))
         if len(l_pmf) % 2 == 1:
             new_v.append(l_pmf[-1])
 
@@ -195,17 +191,15 @@ def pmf_bottom_up(l_pmf, toll=1e-9, Rtoll=1e-9, return_all=False, smoothing=True
     return l_l_v if return_all else l_pmf[0]
 
 
-def pmf_check_support(v_u, l_pmf, toll=1e-9, Rtoll=1e-9, smoothing=True, alpha_smooth=1e-9, laplace_smooth=False):
+def pmf_check_support(v_u, l_pmf, toll=DEFAULT_PARS['TOL'], rtol=DEFAULT_PARS['RTOL'], smoothing=True, alpha_smooth=DEFAULT_PARS['ALPHA_SMOOTHING'], laplace_smooth=False):
     # Compute the bottom-up PMF
-    pmf_u = pmf_bottom_up(l_pmf, toll=toll, Rtoll=Rtoll, return_all=False, smoothing=smoothing,
+    pmf_u = pmf_bottom_up(l_pmf, toll=toll, rtol=rtol, return_all=False, smoothing=smoothing,
                           alpha_smooth=alpha_smooth, laplace_smooth=laplace_smooth)
 
     # Support of the PMF
     supp_u = np.where(pmf_u > 0)[0]
-
     # Check if elements of v_u are in the support of pmf_u
     mask = np.isin(v_u, supp_u)
-
     return mask
 
 
@@ -217,5 +211,3 @@ def pmf_tempering(pmf, temp):
 
     temp_pmf = np.power(pmf, 1 / temp)
     return temp_pmf / np.sum(temp_pmf)
-
-

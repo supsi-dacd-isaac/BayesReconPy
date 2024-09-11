@@ -2,7 +2,7 @@ from xml.etree.ElementTree import fromstring
 
 import numpy as np
 import pandas as pd
-from scipy.stats import norm, poisson, nbinom
+from scipy.stats import norm, poisson, nbinom, multivariate_normal
 
 ################################################################################
 # IMPLEMENTED DISTRIBUTIONS
@@ -14,15 +14,17 @@ CONT_DISTR = ["gaussian"]
 ################################################################################
 # PARAMETERS FOR PMF CONVOLUTION AND SMOOTHING
 
-TOLL = 1e-15
-RTOLL = 1e-9
+TOL = 1e-15
+RTOL = 1e-9
 ALPHA_SMOOTHING = 1e-9
+ALPHA = 1e-9
 LAP_SMOOTHING = False
 
 DEFAULT_PARS = {
-    "TOLL": TOLL,
-    "RTOLL": RTOLL,
+    "TOL": TOL,
+    "RTOL": RTOL,
     "ALPHA_SMOOTHING": ALPHA_SMOOTHING,
+    "ALPHA": ALPHA,
     "LAP_SMOOTHING": LAP_SMOOTHING,
     "DISTR_TYPES": DISTR_TYPES,
     "DISCR_DISTR": DISCR_DISTR,
@@ -341,67 +343,10 @@ def MVN_sample(n_samples, mu, Sigma):
     return np.random.multivariate_normal(mu, Sigma, n_samples)
 
 
-
-
-################################################################################
-# Compute the MVN density
 def MVN_density(x, mu, Sigma, max_size_x=5000, suppress_warnings=True):
-    n = len(mu)
-
-    # Check Sigma
-    if Sigma.shape != (n, n):
-        raise ValueError("Dimension of mu and Sigma are not compatible!")
-    check_cov(Sigma, "Sigma", pd_check=False, symm_check=False)
-
-    if isinstance(x, np.ndarray) and x.ndim == 1:
-        if len(x) != n:
-            raise ValueError("Length of x must be the same as mu")
-        x = x.reshape(1, -1)
-
-    elif isinstance(x, np.ndarray) and x.ndim == 2:
-        if x.shape[1] != n:
-            raise ValueError("The number of columns of x must be equal to the length of mu")
-
-    else:
-        raise ValueError("x must be either a vector or a matrix")
-
-    try:
-        chol_S = np.linalg.cholesky(Sigma)
-    except np.linalg.LinAlgError as e:
-        raise ValueError(f"{e} Check the covariance in MVN_density, the Cholesky decomposition failed.")
-
-    const = -np.sum(np.log(np.diag(chol_S))) - 0.5 * n * np.log(2 * np.pi)
-
-    rows_x = x.shape[0]
-
-    if rows_x > max_size_x:
-        logval = np.zeros(rows_x)
-
-        num_backsolves = rows_x // max_size_x
-
-        if not suppress_warnings:
-            warning_msg = f"x has {rows_x} rows, the density evaluation is broken down into {num_backsolves} pieces for memory preservation."
-            print(f"Warning: {warning_msg}")
-
-        for j in range(num_backsolves):
-            idx_to_select = slice(j * max_size_x, (j + 1) * max_size_x)
-            tmp = np.linalg.solve(chol_S.T, (x[idx_to_select, :].T - np.expand_dims(mu, 1)))
-            rss = np.sum(tmp ** 2, axis=0)
-            logval[idx_to_select] = const - 0.5 * rss
-
-        remainder = rows_x % max_size_x
-        if remainder != 0:
-            idx_to_select = slice(num_backsolves * max_size_x, num_backsolves * max_size_x + remainder)
-            tmp = np.linalg.solve(chol_S, (x[idx_to_select, :].T - np.expand_dims(mu, 1)))
-            rss = np.sum(tmp ** 2, axis=0)
-            logval[idx_to_select] = const - 0.5 * rss
-
-    else:
-        tmp = np.linalg.solve(chol_S, (x.T - np.expand_dims(mu, 1)))
-        rss = np.sum(tmp ** 2, axis=0)
-        logval = const - 0.5 * rss
-
-    return np.exp(logval)
+    mvr = multivariate_normal(mean=mu,cov=Sigma)
+    pdf = mvr.pdf(x)
+    return pdf
 
 
 ################################################################################

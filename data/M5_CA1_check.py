@@ -2,12 +2,12 @@
 import pandas as pd
 import numpy as np
 import time
-from BayesReconPy.PMF import pmf_get_mean as PMF_get_mean
-from BayesReconPy.PMF import pmf_get_var as PMF_get_var
-from BayesReconPy.shrink_cov import schafer_strimmer_cov
-from BayesReconPy.reconc_gaussian import reconc_gaussian
-from BayesReconPy.reconc_MixCond import reconc_MixCond
-from BayesReconPy.reconc_TDcond import reconc_TDcond
+from bayesreconpy.PMF import pmf_get_mean as PMF_get_mean
+from bayesreconpy.PMF import pmf_get_var as PMF_get_var
+from bayesreconpy.shrink_cov import schafer_strimmer_cov
+from bayesreconpy.reconc_gaussian import reconc_gaussian
+from bayesreconpy.reconc_MixCond import reconc_MixCond
+from bayesreconpy.reconc_TDcond import reconc_TDcond
 
 M5_CA1_basefc = pd.read_pickle('data/M5_CA1_basefc.pkl')
 
@@ -89,7 +89,7 @@ base_forecasts_Sigma = {
 #-----------------------------------------------------------------------------------------------------
 #-------------------------GAUSSIAN RECONCILIATION-----------------------------------------------------
 #-----------------------------------------------------------------------------------------------------
-"""""
+"""
 start = time.time()
 gauss = reconc_gaussian(A, list(base_forecasts_mu.values()),
                         base_forecasts_Sigma['Sigma'])
@@ -108,11 +108,11 @@ Gauss_time = round(stop - start, 2)
 
 # Output the time taken for reconciliation
 print(f"Time taken by Gaussian reconciliation: {Gauss_time} seconds")
-
+"""
 #-----------------------------------------------------------------------------------------------------
 #----------------------------MIXED RECONCILIATION-----------------------------------------------------
 #-----------------------------------------------------------------------------------------------------
-"""""
+
 seed = 1
 N_samples_IS = int(5e4)  # 50,000 samples
 
@@ -123,7 +123,7 @@ fc_bottom_4rec = {k: np.array(fc['pmf']) for k, fc in base_fc_bottom.items()}
 
 # Set random seed for reproducibility
 np.random.seed(seed)
-"""""
+
 # Start timing
 start = time.time()
 
@@ -147,7 +147,6 @@ MixCond_time = round(stop - start, 2)
 # Output the time taken for MixCond reconciliation
 print(f"Computational time for Mix-cond reconciliation: {MixCond_time} seconds")
 
-"""""
 #-----------------------------------------------------------------------------------------------------
 #-------------------------TOP-DOWN RECONCILIATION-----------------------------------------------------
 #-----------------------------------------------------------------------------------------------------

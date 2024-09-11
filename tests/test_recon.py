@@ -1,17 +1,17 @@
 import unittest
 import numpy as np
 import pandas as pd
-from BayesReconPy.reconc_BUIS import reconc_BUIS
-from BayesReconPy.reconc_gaussian import reconc_gaussian
-from BayesReconPy.utils import gen_gaussian as gen_gaussian_samples
-from BayesReconPy.utils import gen_poisson as gen_poisson_samples
-from BayesReconPy.hierarchy import check_hierarchical, lowest_lev
-from BayesReconPy.reconc_MCMC import reconc_MCMC
-from BayesReconPy.PMF import pmf_get_var as PMF_get_var
-from BayesReconPy.PMF import pmf_get_mean as PMF_get_mean
-from BayesReconPy.PMF import pmf_from_samples as PMF_from_samples
-from BayesReconPy.reconc_MixCond import reconc_MixCond
-from BayesReconPy.reconc_TDcond import reconc_TDcond
+from bayesreconpy.reconc_BUIS import reconc_BUIS
+from bayesreconpy.reconc_gaussian import reconc_gaussian
+from bayesreconpy.utils import gen_gaussian as gen_gaussian_samples
+from bayesreconpy.utils import gen_poisson as gen_poisson_samples
+from bayesreconpy.hierarchy import check_hierarchical, lowest_lev
+from bayesreconpy.reconc_MCMC import reconc_MCMC
+from bayesreconpy.PMF import pmf_get_var as PMF_get_var
+from bayesreconpy.PMF import pmf_get_mean as PMF_get_mean
+from bayesreconpy.PMF import pmf_from_samples as PMF_from_samples
+from bayesreconpy.reconc_MixCond import reconc_MixCond
+from bayesreconpy.reconc_TDcond import reconc_TDcond
 
 class TestScenarios(unittest.TestCase):
     def test_hierarchy(self, size=2):

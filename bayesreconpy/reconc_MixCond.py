@@ -1,8 +1,9 @@
 import numpy as np
 from scipy import stats
-from BayesReconPy.utils import check_input_TD, check_weights, resample, MVN_density
-from BayesReconPy.PMF import pmf_from_samples, pmf_from_params, pmf_sample
+from bayesreconpy.utils import check_input_TD, check_weights, resample, MVN_density
+from bayesreconpy.PMF import pmf_from_samples, pmf_from_params, pmf_sample
 from typing import Union
+
 
 def reconc_MixCond(A, fc_bottom:Union[np.array, dict], fc_upper:dict, bottom_in_type="pmf", distr=None,
                    num_samples=20000, return_type="pmf", suppress_warnings=False, seed=None):
@@ -37,6 +38,7 @@ def reconc_MixCond(A, fc_bottom:Union[np.array, dict], fc_upper:dict, bottom_in_
     # IS using MVN
     U = B @ A.T
     weights = MVN_density(U, mu_u, Sigma_u)
+
 
     check_weights_res = check_weights(weights)
     if check_weights_res['warning'] and not suppress_warnings:

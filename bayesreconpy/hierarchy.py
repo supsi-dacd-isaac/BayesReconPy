@@ -334,7 +334,6 @@ def lowest_lev(A):
     low_rows_A_uni = []
     for i in range(k):
         low_rows_A_uni.append(i)
-        print(i)
         for j in range(k):
             if i != j:
                 if np.all(A_uni[j, :] <= A_uni[i, :]):

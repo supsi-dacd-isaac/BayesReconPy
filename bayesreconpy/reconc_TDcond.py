@@ -1,9 +1,9 @@
 import numpy as np
-from BayesReconPy.utils import DEFAULT_PARS, check_input_TD
-from BayesReconPy.hierarchy import lowest_lev, get_Au
-from BayesReconPy.reconc_gaussian import reconc_gaussian
-from BayesReconPy.PMF import pmf_from_samples, pmf_from_params, pmf_check_support, pmf_bottom_up
-from BayesReconPy.utils import MVN_sample
+from bayesreconpy.utils import DEFAULT_PARS, check_input_TD
+from bayesreconpy.hierarchy import lowest_lev, get_Au
+from bayesreconpy.reconc_gaussian import reconc_gaussian
+from bayesreconpy.PMF import pmf_from_samples, pmf_from_params, pmf_check_support, pmf_bottom_up
+from bayesreconpy.utils import MVN_sample
 from typing import Union
 
 def cond_biv_sampling(u, pmf1, pmf2):
@@ -41,12 +41,12 @@ def cond_biv_sampling(u, pmf1, pmf2):
     return b1, u - b1
 
 
-def TD_sampling(u, bott_pmf, toll=DEFAULT_PARS['TOLL'], Rtoll=DEFAULT_PARS['RTOLL'], smoothing=True,
+def TD_sampling(u, bott_pmf, toll=DEFAULT_PARS['TOL'], rtol=DEFAULT_PARS['RTOL'], smoothing=True,
                 al_smooth=DEFAULT_PARS['ALPHA_SMOOTHING'], lap_smooth=DEFAULT_PARS['LAP_SMOOTHING']):
     if len(bott_pmf) == 1:
         return np.tile(u, (1, 1))
 
-    l_l_pmf = pmf_bottom_up(bott_pmf, toll=toll, Rtoll=Rtoll, return_all=True,
+    l_l_pmf = pmf_bottom_up(bott_pmf, toll=toll, rtol=rtol, return_all=True,
                             smoothing=smoothing, alpha_smooth=al_smooth, laplace_smooth=lap_smooth)
     l_l_pmf = l_l_pmf[::-1] # flipping the list sa that we skip the upper pmf
 

@@ -1,8 +1,8 @@
 import numpy as np
 from scipy import stats
 from scipy.stats import norm
-from BayesReconPy.utils import DEFAULT_PARS, check_input_BUIS, check_weights, resample, distr_sample, distr_pmf
-from BayesReconPy.hierarchy import check_hierarchical, get_HG
+from bayesreconpy.utils import DEFAULT_PARS, check_input_BUIS, check_weights, resample, distr_sample, distr_pmf
+from bayesreconpy.hierarchy import check_hierarchical, get_HG
 
 
 def check_hierfamily_rel(sh_res, distr, debug=False):

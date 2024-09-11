@@ -1,6 +1,8 @@
+from xml.etree.ElementTree import fromstring
+
 import numpy as np
 import pandas as pd
-from scipy.stats import norm, poisson, nbinom, multivariate_normal
+from scipy.stats import norm, poisson, nbinom
 
 ################################################################################
 # IMPLEMENTED DISTRIBUTIONS
@@ -336,21 +338,9 @@ def distr_sample(params, distr, n):
 ################################################################################
 # Sample from a multivariate Gaussian distribution with specified mean and cov. matrix
 def MVN_sample(n_samples, mu, Sigma):
-    n = len(mu)
-    if Sigma.shape != (n, n):
-        raise ValueError("Dimension of mu and Sigma are not compatible!")
+    return np.random.multivariate_normal(mu, Sigma, n_samples)
 
-    check_cov(Sigma, "Sigma", pd_check=False, symm_check=False)
 
-    Z = np.random.normal(size=(n_samples, n))
-
-    try:
-        Ch = np.linalg.cholesky(Sigma)
-    except np.linalg.LinAlgError as e:
-        raise ValueError(f"{e} Check the covariance in MVN_sample, the Cholesky decomposition failed.")
-
-    samples = Z @ Ch + mu
-    return samples
 
 
 ################################################################################

@@ -89,7 +89,7 @@ base_forecasts_Sigma = {
 #-----------------------------------------------------------------------------------------------------
 #-------------------------GAUSSIAN RECONCILIATION-----------------------------------------------------
 #-----------------------------------------------------------------------------------------------------
-
+"""""
 start = time.time()
 gauss = reconc_gaussian(A, list(base_forecasts_mu.values()),
                         base_forecasts_Sigma['Sigma'])
@@ -112,7 +112,7 @@ print(f"Time taken by Gaussian reconciliation: {Gauss_time} seconds")
 #-----------------------------------------------------------------------------------------------------
 #----------------------------MIXED RECONCILIATION-----------------------------------------------------
 #-----------------------------------------------------------------------------------------------------
-
+"""""
 seed = 1
 N_samples_IS = int(5e4)  # 50,000 samples
 
@@ -123,7 +123,7 @@ fc_bottom_4rec = {k: np.array(fc['pmf']) for k, fc in base_fc_bottom.items()}
 
 # Set random seed for reproducibility
 np.random.seed(seed)
-
+"""""
 # Start timing
 start = time.time()
 
@@ -147,12 +147,12 @@ MixCond_time = round(stop - start, 2)
 # Output the time taken for MixCond reconciliation
 print(f"Computational time for Mix-cond reconciliation: {MixCond_time} seconds")
 
-
+"""""
 #-----------------------------------------------------------------------------------------------------
 #-------------------------TOP-DOWN RECONCILIATION-----------------------------------------------------
 #-----------------------------------------------------------------------------------------------------
 
-N_samples_TD = int(1e4)
+N_samples_TD = int(1e5)
 
 # Start timing
 start = time.time()
@@ -176,5 +176,12 @@ rec_fc['TD_cond'] = {
 TDCond_time = round(stop - start, 2)
 print(f"Computational time for TD-cond reconciliation: {TDCond_time} seconds")
 
+mean_upp = np.zeros(11)
+sd_upp = np.zeros(11)
+for i in range(11):
+    mean_upp[i] = PMF_get_mean(rec_fc['TD_cond']['upper'][i])
+    sd_upp[i] = PMF_get_var(rec_fc['TD_cond']['upper'][i])
 
-
+R = pd.DataFrame([mean_upp, sd_upp])
+R = R.T
+print(R)

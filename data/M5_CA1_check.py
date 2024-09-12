@@ -8,6 +8,7 @@ from bayesreconpy.shrink_cov import schafer_strimmer_cov
 from bayesreconpy.reconc_gaussian import reconc_gaussian
 from bayesreconpy.reconc_MixCond import reconc_MixCond
 from bayesreconpy.reconc_TDcond import reconc_TDcond
+from bayesreconpy.utils import MVN_sample
 
 M5_CA1_basefc = pd.read_pickle('data/M5_CA1_basefc.pkl')
 
@@ -89,7 +90,7 @@ base_forecasts_Sigma = {
 #-----------------------------------------------------------------------------------------------------
 #-------------------------GAUSSIAN RECONCILIATION-----------------------------------------------------
 #-----------------------------------------------------------------------------------------------------
-"""
+
 start = time.time()
 gauss = reconc_gaussian(A, list(base_forecasts_mu.values()),
                         base_forecasts_Sigma['Sigma'])
@@ -108,13 +109,13 @@ Gauss_time = round(stop - start, 2)
 
 # Output the time taken for reconciliation
 print(f"Time taken by Gaussian reconciliation: {Gauss_time} seconds")
-"""
+
 #-----------------------------------------------------------------------------------------------------
 #----------------------------MIXED RECONCILIATION-----------------------------------------------------
 #-----------------------------------------------------------------------------------------------------
 
 seed = 1
-N_samples_IS = int(5e4)  # 50,000 samples
+N_samples_IS = int(1e5)  # 50,000 samples
 
 # Base forecasts
 Sigma_u_np = np.array(Sigma_u['Sigma_u'])
@@ -151,7 +152,7 @@ print(f"Computational time for Mix-cond reconciliation: {MixCond_time} seconds")
 #-------------------------TOP-DOWN RECONCILIATION-----------------------------------------------------
 #-----------------------------------------------------------------------------------------------------
 
-N_samples_TD = int(1e5)
+N_samples_TD = int(1e4)
 
 # Start timing
 start = time.time()
@@ -175,12 +176,55 @@ rec_fc['TD_cond'] = {
 TDCond_time = round(stop - start, 2)
 print(f"Computational time for TD-cond reconciliation: {TDCond_time} seconds")
 
+
+#-----------------------------------------------------------------------------------------------------
+#-------------------------BUIS RECONCILIATION-----------------------------------------------------
+#-----------------------------------------------------------------------------------------------------
+
+n_buis = 1e4
+seed = 1
+upp_fore_samp = MVN_sample(n_buis, np.atleast_1d(fc_upper_4rec['mu']), fc_upper_4rec['Sigma'])
+
+
+
+
+"""""
 mean_upp = np.zeros(11)
 sd_upp = np.zeros(11)
 for i in range(11):
-    mean_upp[i] = PMF_get_mean(rec_fc['TD_cond']['upper'][i])
-    sd_upp[i] = PMF_get_var(rec_fc['TD_cond']['upper'][i])
+    mean_upp[i] = (rec_fc['Gauss']['mu_u'][i])
+    sd_upp[i] = (rec_fc['Gauss']['Sigma_u'][i,i])
+
+mu = pd.DataFrame([mean_upp])
+mu.to_csv('mean_upp_Gau.csv',index=False)
+su = pd.DataFrame([sd_upp])
+su.to_csv('sd_upp_Gau.csv',index=False)
+
+
+mean_upp = np.zeros(11)
+sd_upp = np.zeros(11)
+for i in range(11):
+    mean_upp[i] = PMF_get_mean(rec_fc['Mixed_cond']['upper'][i])
+    sd_upp[i] = PMF_get_var(rec_fc['Mixed_cond']['upper'][i])
 
 R = pd.DataFrame([mean_upp, sd_upp])
 R = R.T
 print(R)
+
+mu = pd.DataFrame([mean_upp])
+mu.to_csv('mean_upp_Mixed.csv',index=False)
+su = pd.DataFrame([sd_upp])
+su.to_csv('sd_upp_Mixed.csv',index=False)
+
+mean_bot = np.zeros(3049)
+sd_bot = np.zeros(3049)
+for i in range(3049):
+    mean_bot[i] = PMF_get_mean(rec_fc['Mixed_cond']['bottom'][i])
+    sd_bot[i] = PMF_get_var(rec_fc['Mixed_cond']['bottom'][i])
+
+mb = pd.DataFrame([mean_bot])
+mb.to_csv('mean_bot_Mixed.csv',index=False)
+sb = pd.DataFrame([sd_bot])
+sb.to_csv('sd_bot_Mixed.csv',index=False)
+
+"""""

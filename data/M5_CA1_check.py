@@ -9,6 +9,7 @@ from bayesreconpy.reconc_gaussian import reconc_gaussian
 from bayesreconpy.reconc_MixCond import reconc_MixCond
 from bayesreconpy.reconc_TDcond import reconc_TDcond
 from bayesreconpy.utils import MVN_sample, samples_from_pmf
+from bayesreconpy.reconc_BUIS import reconc_BUIS
 
 M5_CA1_basefc = pd.read_pickle('data/M5_CA1_basefc.pkl')
 
@@ -181,52 +182,34 @@ print(f"Computational time for TD-cond reconciliation: {TDCond_time} seconds")
 #-------------------------BUIS RECONCILIATION-----------------------------------------------------
 #-----------------------------------------------------------------------------------------------------
 
-n_buis = int(1e4)
-seed = 1
+n_buis = int(1e5)
 mus = np.array(list(fc_upper_4rec['mu'].values()))
 upp_fore_samp = MVN_sample(n_buis, mus, fc_upper_4rec['Sigma'])
+upp_fore_samp = np.maximum(0,upp_fore_samp)
 
-samp = samples_from_pmf(fc_bottom_4rec['HOBBIES_1_001'], n_buis)
+idx = list(fc_bottom_4rec.keys())
 
+bot_fore_samp = np.zeros((n_buis,n_b))
+for i in range(n_b):
+    bot_fore_samp[:,i] = samples_from_pmf(fc_bottom_4rec[idx[i]], n_buis)
 
+fc_samples = np.column_stack((upp_fore_samp, bot_fore_samp))
+fc_4buis = []
 
-"""""
-mean_upp = np.zeros(11)
-sd_upp = np.zeros(11)
-for i in range(11):
-    mean_upp[i] = (rec_fc['Gauss']['mu_u'][i])
-    sd_upp[i] = (rec_fc['Gauss']['Sigma_u'][i,i])
+for i in range(fc_samples.shape[1]):
+    fc_4buis.append(np.round(fc_samples[:, i]))
 
-mu = pd.DataFrame([mean_upp])
-mu.to_csv('mean_upp_Gau.csv',index=False)
-su = pd.DataFrame([sd_upp])
-su.to_csv('sd_upp_Gau.csv',index=False)
+start = time.time()
+BUIS_rec = reconc_BUIS(
+  A,
+  base_forecasts = fc_4buis,
+  in_type = "samples",
+  distr = "discrete",
+  seed = 1
+)
 
+stop = time.time()
 
-mean_upp = np.zeros(11)
-sd_upp = np.zeros(11)
-for i in range(11):
-    mean_upp[i] = PMF_get_mean(rec_fc['Mixed_cond']['upper'][i])
-    sd_upp[i] = PMF_get_var(rec_fc['Mixed_cond']['upper'][i])
-
-R = pd.DataFrame([mean_upp, sd_upp])
-R = R.T
-print(R)
-
-mu = pd.DataFrame([mean_upp])
-mu.to_csv('mean_upp_Mixed.csv',index=False)
-su = pd.DataFrame([sd_upp])
-su.to_csv('sd_upp_Mixed.csv',index=False)
-
-mean_bot = np.zeros(3049)
-sd_bot = np.zeros(3049)
-for i in range(3049):
-    mean_bot[i] = PMF_get_mean(rec_fc['Mixed_cond']['bottom'][i])
-    sd_bot[i] = PMF_get_var(rec_fc['Mixed_cond']['bottom'][i])
-
-mb = pd.DataFrame([mean_bot])
-mb.to_csv('mean_bot_Mixed.csv',index=False)
-sb = pd.DataFrame([sd_bot])
-sb.to_csv('sd_bot_Mixed.csv',index=False)
-
-"""""
+# Calculate the time taken for BUIS reconciliation
+BUIS_time = round(stop - start, 2)
+print(f"Computational time for BUIS reconciliation: {BUIS_time} seconds")

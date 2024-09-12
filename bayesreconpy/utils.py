@@ -436,4 +436,11 @@ def gen_poisson(params_file, seed=None):
 
     return out
 
-
+################################################################################
+def samples_from_pmf(pmf, n_samples):
+    # compute the cdf of the bottom forecast
+    cdf = np.cumsum(pmf)
+    # use inverse sample trick to sample from the cdf
+    samp = np.random.uniform(0, 1, n_samples)
+    samp = np.array(np.searchsorted(cdf, samp))
+    return samp

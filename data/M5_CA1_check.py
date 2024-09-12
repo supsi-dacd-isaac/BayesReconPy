@@ -8,7 +8,7 @@ from bayesreconpy.shrink_cov import schafer_strimmer_cov
 from bayesreconpy.reconc_gaussian import reconc_gaussian
 from bayesreconpy.reconc_MixCond import reconc_MixCond
 from bayesreconpy.reconc_TDcond import reconc_TDcond
-from bayesreconpy.utils import MVN_sample
+from bayesreconpy.utils import MVN_sample, samples_from_pmf
 
 M5_CA1_basefc = pd.read_pickle('data/M5_CA1_basefc.pkl')
 
@@ -181,10 +181,12 @@ print(f"Computational time for TD-cond reconciliation: {TDCond_time} seconds")
 #-------------------------BUIS RECONCILIATION-----------------------------------------------------
 #-----------------------------------------------------------------------------------------------------
 
-n_buis = 1e4
+n_buis = int(1e4)
 seed = 1
-upp_fore_samp = MVN_sample(n_buis, np.atleast_1d(fc_upper_4rec['mu']), fc_upper_4rec['Sigma'])
+mus = np.array(list(fc_upper_4rec['mu'].values()))
+upp_fore_samp = MVN_sample(n_buis, mus, fc_upper_4rec['Sigma'])
 
+samp = samples_from_pmf(fc_bottom_4rec['HOBBIES_1_001'], n_buis)
 
 
 

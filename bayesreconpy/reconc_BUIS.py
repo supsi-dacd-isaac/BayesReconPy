@@ -147,18 +147,15 @@ def reconc_BUIS(A, base_forecasts, in_type, distr, num_samples=20000, suppress_w
     B = np.column_stack(B)  # B is a matrix (num_samples x n_bottom)
 
     # Bottom-Up IS on the hierarchical part
-    t_0 = time()
     for hi in range(H.shape[0]):
         c = H[hi, :]
         b_mask = (c != 0)
-        t_s1 = time()
         weights = compute_weights(
             b=np.dot(B, c),
             u=upper_base_forecasts_H[hi],
             in_type_=in_typeH[hi],
             distr_=distr_H[hi]
         )
-        print('compute_weights_time:', time()-t_s1)
         check_weights_res = check_weights(weights)
         if check_weights_res['warning'] and not suppress_warnings:
             warning_msg = check_weights_res['warning_msg']
@@ -168,11 +165,9 @@ def reconc_BUIS(A, base_forecasts, in_type, distr, num_samples=20000, suppress_w
                 print(f"Warning: {wmsg}")
         if check_weights_res['warning'] and 1 in check_weights_res['warning_code']:
             continue
-        t_s2 = time()
+
         B[:, b_mask] = resample(B[:, b_mask], weights)
-        print('resample_time:', time()-t_s2)
-    print('bottom IS_time:', time()-t_0)
-    t_0 = time()
+
     if G is not None:
         # Plain IS on the additional constraints
         weights = np.ones(B.shape[0])
@@ -193,7 +188,7 @@ def reconc_BUIS(A, base_forecasts, in_type, distr, num_samples=20000, suppress_w
                 print(f"Warning: {wmsg}")
         if not (check_weights_res['warning'] and 1 in check_weights_res['warning_code']):
             B = resample(B, weights)
-    print('G IS_time:', time()-t_0)
+
     B = B.T
     U = np.dot(A, B)
     Y_reconc = np.vstack([U, B])

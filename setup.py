@@ -22,6 +22,7 @@ setuptools.setup(
                       "pandas>=2.2.2",
                       "PuLP>=2.9.0",
                       "scipy>=1.14.1,",
+                      "KDEpy>=1.1.10",
                       ],
     python_requires='>=3.8',
 )

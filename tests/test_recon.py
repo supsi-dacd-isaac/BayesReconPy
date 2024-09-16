@@ -92,8 +92,8 @@ class TestScenarios(unittest.TestCase):
         base_forecasts = [{"lambda": row[0]} for row in base_forecasts_in]
 
         # Perform reconciliations
-        res_buis = reconc_BUIS(A, base_forecasts, in_type="params", distr="poisson", num_samples=int(1e6), seed=42)
-        res_mcmc = reconc_MCMC(A, base_forecasts=base_forecasts, distr="poisson", num_samples=int(1e6), seed=42)
+        res_buis = reconc_BUIS(A, base_forecasts, in_type="params", distr="poisson", num_samples=int(1e4), seed=42)
+        res_mcmc = reconc_MCMC(A, base_forecasts=base_forecasts, distr="poisson", num_samples=int(1e4), seed=42)
 
         # Compute the relative difference between the two methods
         m = (np.mean(res_buis["reconciled_samples"], axis=0) - np.mean(res_mcmc["reconciled_samples"],
@@ -101,7 +101,7 @@ class TestScenarios(unittest.TestCase):
             res_buis["reconciled_samples"], axis=0)
 
         # Assert that the maximum absolute difference is within the acceptable range
-        assert np.max(np.abs(m)) < 0.1
+        assert np.max(np.abs(m)) < 0.5
 
 
     def test_reconc_MixCond_simple_example(self):

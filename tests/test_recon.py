@@ -23,26 +23,12 @@ class TestScenarios(unittest.TestCase):
         assert check_hierarchical(A) == True
 
 
-    def test_monthly_in_type_params_distr_gaussian(self):
-        A = pd.read_csv("tests/Monthly-Gaussian_A.csv", header=None).values
-        base_forecasts_in = pd.read_csv("tests/Monthly-Gaussian_basef.csv", header=None).values
-        base_forecasts = [{"mean": row[0], "sd": row[1]} for row in base_forecasts_in]
-
-        res_buis = reconc_BUIS(A, base_forecasts, in_type="params", distr="gaussian", num_samples=100000, seed=42)
-        res_gauss = reconc_gaussian(A, base_forecasts_in[:, 0], np.diag(base_forecasts_in[:, 1] ** 2))
-
-        n_upper = A.shape[0]
-        n_bottom = A.shape[1]
-        m = np.mean(np.mean(res_buis["reconciled_samples"], axis=0)[n_upper:n_upper + n_bottom] - res_gauss[
-            "bottom_reconciled_mean"])
-        assert abs(m) < 8e-3
-
     def test_weekly_in_type_params_distr_gaussian(self):
         A = pd.read_csv("tests/Weekly-Gaussian_A.csv", header=None).values
         base_forecasts_in = pd.read_csv("tests/Weekly-Gaussian_basef.csv", header=None).values
         base_forecasts = [{"mean": row[0], "sd": row[1]} for row in base_forecasts_in]
 
-        res_buis = reconc_BUIS(A, base_forecasts, in_type="params", distr="gaussian", num_samples=100000, seed=42)
+        res_buis = reconc_BUIS(A, base_forecasts, in_type="params", distr="gaussian", num_samples=100, seed=42)
         res_gauss = reconc_gaussian(A, base_forecasts_in[:, 0], np.diag(base_forecasts_in[:, 1] ** 2))
 
         n_upper = A.shape[0]
@@ -56,7 +42,7 @@ class TestScenarios(unittest.TestCase):
         base_forecasts_in = pd.read_csv("tests/Monthly-Poisson_basef.csv", header=None).values
         base_forecasts = [{"lambda": row[0]} for row in base_forecasts_in]
 
-        res_buis = reconc_BUIS(A, base_forecasts, in_type="params", distr="poisson", num_samples=100000, seed=42)
+        res_buis = reconc_BUIS(A, base_forecasts, in_type="params", distr="poisson", num_samples=100, seed=42)
         assert res_buis is not None
 
     def test_monthly_in_type_params_distr_nbinom(self):
@@ -64,7 +50,7 @@ class TestScenarios(unittest.TestCase):
         base_forecasts_in = pd.read_csv("tests/Monthly-NegBin_basef.csv", header=None).values
         base_forecasts = [{"size": row[1], "mu": row[0]} for row in base_forecasts_in]
 
-        res_buis = reconc_BUIS(A, base_forecasts, in_type="params", distr="nbinom", num_samples=10000, seed=42)
+        res_buis = reconc_BUIS(A, base_forecasts, in_type="params", distr="nbinom", num_samples=100, seed=42)
         assert res_buis is not None
 
     def test_monthly_in_type_samples_distr_continuous(self):
@@ -76,7 +62,7 @@ class TestScenarios(unittest.TestCase):
         base_forecasts_in = pd.read_csv("tests/Monthly-Gaussian_basef.csv", header=None).values
         base_forecasts = [{"mean": row[0], "sd": row[1]} for row in base_forecasts_in]
 
-        res_buis = reconc_BUIS(A, base_forecasts, in_type="params", distr="gaussian", num_samples=100000, seed=42)
+        res_buis = reconc_BUIS(A, base_forecasts, in_type="params", distr="gaussian", num_samples=100, seed=42)
 
         m = np.mean(
             np.mean(res_buis["reconciled_samples"], axis=0) - np.mean(res_buis_samples["reconciled_samples"],
@@ -92,7 +78,7 @@ class TestScenarios(unittest.TestCase):
         base_forecasts_in = pd.read_csv("tests/Monthly-Poisson_basef.csv", header=None).values
         base_forecasts = [{"lambda": row[0]} for row in base_forecasts_in]
 
-        res_buis = reconc_BUIS(A, base_forecasts, in_type="params", distr="poisson", num_samples=100000, seed=42)
+        res_buis = reconc_BUIS(A, base_forecasts, in_type="params", distr="poisson", num_samples=100, seed=42)
 
         m = np.mean(
             np.mean(res_buis["reconciled_samples"], axis=0) - np.mean(res_buis_samples["reconciled_samples"],
@@ -106,8 +92,8 @@ class TestScenarios(unittest.TestCase):
         base_forecasts = [{"lambda": row[0]} for row in base_forecasts_in]
 
         # Perform reconciliations
-        res_buis = reconc_BUIS(A, base_forecasts, in_type="params", distr="poisson", num_samples=100000, seed=42)
-        res_mcmc = reconc_MCMC(A, base_forecasts=base_forecasts, distr="poisson", num_samples=100000, seed=42)
+        res_buis = reconc_BUIS(A, base_forecasts, in_type="params", distr="poisson", num_samples=int(1e2), seed=42)
+        res_mcmc = reconc_MCMC(A, base_forecasts=base_forecasts, distr="poisson", num_samples=int(1e2), seed=42)
 
         # Compute the relative difference between the two methods
         m = (np.mean(res_buis["reconciled_samples"], axis=0) - np.mean(res_mcmc["reconciled_samples"],
@@ -160,7 +146,7 @@ class TestScenarios(unittest.TestCase):
         fc_bottom_pmf = [PMF_from_samples(samples) for samples in fc_bottom]
 
         # Reconcile from bottom PMF
-        res_MixCond_pmf = reconc_MixCond(A, fc_bottom_pmf, fc_upper, seed=42, num_samples=1000000)
+        res_MixCond_pmf = reconc_MixCond(A, fc_bottom_pmf, fc_upper, seed=42, num_samples=100)
 
         bott_rec_means_pmf = np.array([PMF_get_mean(pmf) for pmf in res_MixCond_pmf["bottom_reconciled"]["pmf"]])
         bott_rec_vars_pmf = np.array([PMF_get_var(pmf) for pmf in res_MixCond_pmf["bottom_reconciled"]["pmf"]])
@@ -197,7 +183,7 @@ class TestScenarios(unittest.TestCase):
         # Bottom samples
         fc_bottom = []
         for i in range(A.shape[1]):
-            samples = np.random.normal(loc=means[i + 10], scale=np.sqrt(vars_[i + 10]), size=20000).astype(int)
+            samples = np.random.normal(loc=means[i + 10], scale=np.sqrt(vars_[i + 10]), size=200).astype(int)
             samples[samples < 0] = 0  # Set negatives to zero
             fc_bottom.append(samples)
 

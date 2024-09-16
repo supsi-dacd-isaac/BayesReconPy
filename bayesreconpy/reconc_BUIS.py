@@ -3,6 +3,7 @@ from scipy import stats
 from scipy.stats import norm
 from bayesreconpy.utils import DEFAULT_PARS, check_input_BUIS, check_weights, resample, distr_sample, distr_pmf
 from bayesreconpy.hierarchy import check_hierarchical, get_HG
+from KDEpy import FFTKDE
 
 
 def check_hierfamily_rel(sh_res, distr, debug=False):
@@ -53,8 +54,13 @@ def compute_weights(b, u, in_type_, distr_):
             w = emp_pmf(b, u)
         elif distr_ == "continuous":
             # KDE (Kernel Density Estimation)
-            kde = stats.gaussian_kde(u, bw_method='scott')
-            w = kde.evaluate(b)
+            fftkde = FFTKDE(kernel='gaussian', bw='ISJ').fit(u)
+            grid_lims = [np.minimum(np.min(u), np.min(b)), np.maximum(np.max(u), np.max(b))]
+            grid = np.linspace(grid_lims[0] - 1e-3, grid_lims[1] + 1e-3, 1000)
+            res = fftkde.evaluate(grid)
+            w = np.interp(b, grid, res, )
+
+
         # Ensure no NA values are returned, replace with 0
         w[np.isnan(w)] = 0
     elif in_type_ == "params":
@@ -78,10 +84,10 @@ def reconc_BUIS(A, base_forecasts, in_type, distr, num_samples=20000, suppress_w
     n_tot = len(base_forecasts)
 
     # Transform distr and in_type into lists
-    if not isinstance(distr, list):
-        distr = [distr] * n_tot
-    if not isinstance(in_type, list):
-        in_type = [in_type] * n_tot
+    if isinstance(distr, str):
+        distr = np.tile(distr, n_tot).tolist()
+    if isinstance(in_type, str):
+        in_type = np.tile(in_type, n_tot).tolist()
 
     # Ensure that data inputs are valid
     check_input_BUIS(A, base_forecasts, in_type, distr)
@@ -128,24 +134,31 @@ def reconc_BUIS(A, base_forecasts, in_type, distr, num_samples=20000, suppress_w
     # 1. Bottom samples
     B = []
     in_type_bottom = [in_type[i] for i in split_hierarchy_res['bottom_idxs']]
+    from time import time
+    t_0 = time()
     for bi in range(n_bottom):
         if in_type_bottom[bi] == "samples":
             B.append(np.array(bottom_base_forecasts[bi]))
         elif in_type_bottom[bi] == "params":
             B.append(
-                distr_sample(bottom_base_forecasts[bi], distr[split_hierarchy_res['bottom_idxs']][bi], num_samples))
+                distr_sample(bottom_base_forecasts[bi], np.array(distr)[split_hierarchy_res['bottom_idxs']][bi], num_samples))
+    print('bottom sampling_time:', time()-t_0)
+
     B = np.column_stack(B)  # B is a matrix (num_samples x n_bottom)
 
     # Bottom-Up IS on the hierarchical part
+    t_0 = time()
     for hi in range(H.shape[0]):
         c = H[hi, :]
         b_mask = (c != 0)
+        t_s1 = time()
         weights = compute_weights(
             b=np.dot(B, c),
             u=upper_base_forecasts_H[hi],
             in_type_=in_typeH[hi],
             distr_=distr_H[hi]
         )
+        print('compute_weights_time:', time()-t_s1)
         check_weights_res = check_weights(weights)
         if check_weights_res['warning'] and not suppress_warnings:
             warning_msg = check_weights_res['warning_msg']
@@ -155,8 +168,11 @@ def reconc_BUIS(A, base_forecasts, in_type, distr, num_samples=20000, suppress_w
                 print(f"Warning: {wmsg}")
         if check_weights_res['warning'] and 1 in check_weights_res['warning_code']:
             continue
+        t_s2 = time()
         B[:, b_mask] = resample(B[:, b_mask], weights)
-
+        print('resample_time:', time()-t_s2)
+    print('bottom IS_time:', time()-t_0)
+    t_0 = time()
     if G is not None:
         # Plain IS on the additional constraints
         weights = np.ones(B.shape[0])
@@ -177,7 +193,7 @@ def reconc_BUIS(A, base_forecasts, in_type, distr, num_samples=20000, suppress_w
                 print(f"Warning: {wmsg}")
         if not (check_weights_res['warning'] and 1 in check_weights_res['warning_code']):
             B = resample(B, weights)
-
+    print('G IS_time:', time()-t_0)
     B = B.T
     U = np.dot(A, B)
     Y_reconc = np.vstack([U, B])

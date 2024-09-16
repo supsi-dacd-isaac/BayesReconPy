@@ -47,7 +47,7 @@ def reconc_MCMC(A, base_forecasts, distr, num_samples=10000, tuning_int=100, ini
     bottom_distr = [distr[i] for i in split_hierarchy_res['bottom_idxs']]
 
     # Initialize first sample (draw from base distribution)
-    b[0, :] = initialize_b(bottom_base_forecasts, bottom_distr)
+    b[0, :] = initialize_b(bottom_base_forecasts, bottom_distr).ravel()
 
     # Initialize prop list
     old_prop = {

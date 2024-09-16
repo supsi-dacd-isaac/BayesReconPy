@@ -1,84 +1,10 @@
 import numpy as np
-import pulp
+from pulp import LpProblem, LpVariable, LpMinimize, lpSum, PULP_CBC_CMD
 
-
-def get_hier_rows(A, scale=196):
-    A = np.array(A)
-    k, m = A.shape
-
-    # Matrix C of the coefficients of the non-linear problem
-    C = np.dot(A, A.T)
-
-    for i in range(k):
-        for j in range(k):
-            diff_ij = A[i, :] - A[j, :]
-            C[i, j] = C[i, j] * np.sum(diff_ij * (diff_ij - 1)) * np.sum((A[j, :] - A[i, :]) * (A[j, :] - A[i, :] - 1))
-
-    # Linearized Problem
-    # Number of variables: k + k^2 + 1
-    # Number of constraints: 1 + k^2 + k^2 + k^2 + m
-
-    # Set coefficients of the objective function
-    f_obj = [-1] * k + [0] * (k ** 2) + [1 - 1 / (2 * k)]
-
-    # Set matrix corresponding to coefficients of constraints by rows
-    coeff = [0] * k + list(C.flatten()) + [0]  # first constraint
-
-    M1 = np.zeros((k ** 2, k + k ** 2 + 1))  # z_{ij} <= x_i
-    for i in range(k):
-        temp = np.zeros((k, k))
-        temp[i, :] = -1
-        M1[:, i] = temp.flatten()
-    M1[:, k:(k + k ** 2)] = np.eye(k ** 2)
-
-    M2 = np.zeros((k ** 2, k + k ** 2 + 1))  # z_{ij} <= x_j
-    for i in range(k):
-        temp = np.zeros((k, k))
-        temp[:, i] = -1
-        M2[:, i] = temp.flatten()
-    M2[:, k:(k + k ** 2)] = np.eye(k ** 2)
-
-    M3 = np.zeros((k ** 2, k + k ** 2 + 1))  # z_{ij} >= x_i + x_j - 1
-    M3[:, :k] = M1[:, :k] + M2[:, :k]
-    M3[:, k:(k + k ** 2)] = np.eye(k ** 2)
-
-    M4 = np.zeros((m, k + k ** 2 + 1))  # sum_i x_i A_{ij} <= y
-    M4[:, :k] = A
-    M4[:, k + k ** 2] = -1
-
-    f_con = np.vstack([coeff, M1, M2, M3, M4])
-
-    # Set inequality/equality signs
-    f_dir = ['='] + ['<='] * (k ** 2) + ['<='] * (k ** 2) + ['>='] * (k ** 2) + ['<='] * m
-
-    # Set right hand side coefficients
-    f_rhs = [0] + [0] * (k ** 2) + [0] * (k ** 2) + [-1] * (k ** 2) + [0] * m
-
-    # Define the problem
-    prob = pulp.LpProblem("Minimize_Steps", pulp.LpMinimize)
-
-    # Define variables
-    vars = pulp.LpVariable.dicts("x", range(k + k ** 2 + 1), 0, 1, pulp.LpBinary)
-
-    # Objective function
-    prob += pulp.lpSum([f_obj[i] * vars[i] for i in range(k + k ** 2 + 1)])
-
-    # Constraints
-    for i in range(len(f_con)):
-        prob += pulp.lpSum([f_con[i][j] * vars[j] for j in range(k + k ** 2 + 1)]) <= f_rhs[i]
-
-    # Solve the problem
-    prob.solve(pulp.PULP_CBC_CMD(msg=False, timeLimit=scale))
-
-    # Return the solution
-    indices_sol = np.array([pulp.value(vars[i]) for i in range(k)])
-
-    return indices_sol
 
 
 def get_hier_rows(A, scale=196):
     # This function is equivalent to .get_hier_rows in python
-    from pulp import LpProblem, LpVariable, LpMinimize, lpSum, PULP_CBC_CMD
 
     A = np.array(A)
     k, m = A.shape

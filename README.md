@@ -1,19 +1,16 @@
 # BayesReconPy
-Bayesian Reconciliation for Hierarchical Forecasting
+Bayesian Reconciliation for Hierarchical Forecasting. This code is an implementation of the original R package
+[Original package](https://cran.r-project.org/web/packages/bayesRecon/index.html). 
 
-# Reconciliation of M5 hierarchy with mixed-type forecasts (Python version)
 
-**2024-09-13**
-
-[Original package](https://cran.r-project.org/web/packages/bayesRecon/index.html) is in R and implementation on the same dataset can be found [here](https://cran.r-project.org/web/packages/bayesRecon/vignettes/mixed_reconciliation.html). 
-
-# Introduction
+## Introduction
 
 This page reproduces the results as presented in *Probabilistic reconciliation of mixed-type hierarchical time series* (Zambon et al. 2024), published at UAI 2024 (the 40th Conference on Uncertainty in Artificial Intelligence).
 
 In particular, we replicate the reconciliation of the one-step ahead (h=1) forecasts of one store of the M5 competition (Makridakis, Spiliotis, and Assimakopoulos 2022). Sect. 5 of the paper presents the results for 10 stores, each reconciled 14 times using rolling one-step ahead forecasts.
+The original vignette containing the R counterpart of this page can be found [here](https://cran.r-project.org/web/packages/bayesRecon/vignettes/mixed_reconciliation.html).
 
-# Data and base forecasts
+## Data and base forecasts
 
 The M5 competition (Makridakis, Spiliotis, and Assimakopoulos 2022) is about daily time series of sales data referring to 10 different stores. Each store has the same hierarchy: 3049 bottom time series (single items) and 11 upper time series, obtained by aggregating the items by department, product category, and store; see the figure below.
 
@@ -48,7 +45,7 @@ rec_fc = {
 }
 ```
 
-# Gaussian Reconciliation
+## Gaussian Reconciliation
 
 We first perform Gaussian reconciliation (`Gauss`, Corani et al. (2021)). It assumes all forecasts to be Gaussian, even though the bottom base forecasts are not Gaussian.
 
@@ -142,7 +139,7 @@ print(f"Time taken by Gaussian reconciliation: {Gauss_time} seconds")
 #Time taken by Gaussian reconciliation: 0.33 seconds
 ```
 
-# Reconciliation with mixed-conditioning
+## Reconciliation with mixed-conditioning
 
 We now reconcile the forecasts using the mixed-conditioning approach of Zambon et al. (2024), Sect. 3. The algorithm is implemented in the function `reconc_MixCond()`. The function takes as input:
 
@@ -188,7 +185,7 @@ print(f"Computational time for Mix-cond reconciliation: {MixCond_time} seconds")
 
 As discussed in Zambon et al. (2024), Sect. 3, conditioning with mixed variables performs poorly in high dimensions. This is because the bottom-up distribution, built by assuming the bottom forecasts to be independent, is untenable in high dimensions. Moreover, forecasts for count time series are usually biased and their sum tends to be strongly biased; see Zambon et al. (2024), Fig. 3, for a graphical example.
 
-# Top down conditioning
+## Top down conditioning
 
 Top down conditioning (TD-cond; see Zambon et al. (2024), Sect. 4) is a more reliable approach for reconciling mixed variables in high dimensions. The algorithm is implemented in the function `reconc_TDcond()`; it takes the same arguments as `reconc_MixCond()` and returns reconciled forecasts in the same format.
 
@@ -222,7 +219,7 @@ print(f"Computational time for TD-cond reconciliation: {TDCond_time} seconds")
 
 The computational time required for the Gaussian reconciliation is 0.33 seconds, Mix-cond requires 8.51 seconds and TD-cond requires 10.03 seconds.
 
-## Comparison with results from the R version
+# Comparison with results from the R version
 
 Let us see the results as obtained from the R and python versions and how much they differ depending on the number of samples that we select for the methods. For all the tested methods we report the relative absolute difference between the two implementations.
 
@@ -546,7 +543,7 @@ From the above table with a reconciled sample size `1e4` it seems that there cou
 | **bottom mean** | 0.01033775 |  1.794681e-06  | 0.6009102 |
 | **bottom sd** | 0.0184495 |  2.177446e-05  | 1.254872 |
 
-# BUIS algorithm for the M5 dataset
+## BUIS algorithm for the M5 dataset
 
 Below we demonstrate the BUIS algorithm on the same portion of the M5 dataset as before. The code to generate the reconciled forecasts are shown below in both R and python, since the original vignette demonstrating the reconciliation on the M5 dataset in R does not include the BUIS algorithm.
 

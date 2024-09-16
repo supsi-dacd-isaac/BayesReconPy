@@ -134,15 +134,13 @@ def reconc_BUIS(A, base_forecasts, in_type, distr, num_samples=20000, suppress_w
     # 1. Bottom samples
     B = []
     in_type_bottom = [in_type[i] for i in split_hierarchy_res['bottom_idxs']]
-    from time import time
-    t_0 = time()
+
     for bi in range(n_bottom):
         if in_type_bottom[bi] == "samples":
             B.append(np.array(bottom_base_forecasts[bi]))
         elif in_type_bottom[bi] == "params":
             B.append(
                 distr_sample(bottom_base_forecasts[bi], np.array(distr)[split_hierarchy_res['bottom_idxs']][bi], num_samples))
-    print('bottom sampling_time:', time()-t_0)
 
     B = np.column_stack(B)  # B is a matrix (num_samples x n_bottom)
 

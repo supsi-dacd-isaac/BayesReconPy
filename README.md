@@ -227,7 +227,7 @@ Let us see the results as obtained from the R and python versions and how much t
 
 ### Upper reconciled forecasts
 
-In the following we report the results for python and R (left and center columns) and their relative absolute differences (right column) for the top level and the first two levels of aggregations (1 + 3 + 7).   
+In the following we report the results for python and R (first and second blocks respectively) and their relative absolute differences (third block) for the top level and the first two levels of aggregations (1 + 3 + 7).   
 
 ```python
 **# Python results block**
@@ -673,6 +673,7 @@ mean_upp      sd_upp
 0.0014953715 0.003828831
 0.0017786181 0.004194767
 ```
+From the above tables, it seems evident that the results in both the implementations are similar with some narrow deviations. The third table shows that the relative difference is also quite small.
 
 ## Bottom reconciled Forecasts
 
@@ -680,3 +681,5 @@ mean_upp      sd_upp
 | --- | --- | --- | --- |
 | **bottom mean** | 0.07381948    |  0  | 8.583333 |
 | **bottom sd** | 0.4295341  | 1.661562e-05  | 1.999992 |
+
+For the bottom reconciled forecasts we get results similar to the ones we have obtained so far. There are a few outliers, but apart from them, the results are similar. Here we see larger deviations than the other methods, but those might be due to the different randomization in the two implementations.  

@@ -18,7 +18,7 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    install_requires=["numpy>=2.1.1",
+    install_requires=["numpy>=2.0.2",
                       "pandas>=2.2.2",
                       "PuLP>=2.9.0",
                       "scipy>=1.14.1,",

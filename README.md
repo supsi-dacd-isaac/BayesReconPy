@@ -2,7 +2,11 @@
 Bayesian Reconciliation for Hierarchical Forecasting. This code is an implementation of the original R package
 [Original package](https://cran.r-project.org/web/packages/bayesRecon/index.html). 
 
+The python package is available in pip, use the following line of command for installation.
 
+```python
+pip install bayesreconpy
+```
 ## Introduction
 
 This page reproduces the results as presented in *Probabilistic reconciliation of mixed-type hierarchical time series* (Zambon et al. 2024), published at UAI 2024 (the 40th Conference on Uncertainty in Artificial Intelligence).

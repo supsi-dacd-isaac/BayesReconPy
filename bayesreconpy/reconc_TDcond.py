@@ -66,7 +66,7 @@ def TD_sampling(u, bott_pmf, toll=DEFAULT_PARS['TOL'], rtol=DEFAULT_PARS['RTOL']
 
 
 def reconc_TDcond(A, fc_bottom:Union[np.array, dict], fc_upper:dict, bottom_in_type="pmf", distr=None,
-                  num_samples=20000, return_type="pmf", suppress_warnings=False, seed=None):
+                  num_samples=20000, return_type="pmf", suppress_warnings=False, seed=None, return_num_samples_ok=False):
     if seed is not None:
         np.random.seed(seed)
 
@@ -158,4 +158,7 @@ def reconc_TDcond(A, fc_bottom:Union[np.array, dict], fc_upper:dict, bottom_in_t
         result['bottom_reconciled']['samples'] = B
         result['upper_reconciled']['samples'] = U
 
-    return result
+    if return_num_samples_ok:
+        return result, num_samples_ok
+    else:
+        return result

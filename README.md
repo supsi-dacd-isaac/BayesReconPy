@@ -1,6 +1,6 @@
 # BayesReconPy
 [![codecov](https://codecov.io/github/supsi-dacd-isaac/BayesReconPy/graph/badge.svg?token=KND9ZJ4GOQ)](https://codecov.io/github/supsi-dacd-isaac/BayesReconPy)
-[![License: GNUv3](https://img.shields.io/badge/license-%20%20GNU%20GPLv3%20-green)](https://opensource.org/license/lgpl-3-0)
+[![License: LGPL (\>= 3)](https://img.shields.io/badge/license-LGPL%20(%3E=%203)-yellow.svg)](https://www.gnu.org/licences/lgpl-3.0)
 
 Bayesian Reconciliation for Hierarchical Forecasting. 
 

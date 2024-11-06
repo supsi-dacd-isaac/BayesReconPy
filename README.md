@@ -1,4 +1,6 @@
 # BayesReconPy
+[![codecov](https://codecov.io/github/supsi-dacd-isaac/BayesReconPy/graph/badge.svg?token=KND9ZJ4GOQ)](https://codecov.io/github/supsi-dacd-isaac/BayesReconPy)
+
 Bayesian Reconciliation for Hierarchical Forecasting. 
 
 This code is an implementation of the 

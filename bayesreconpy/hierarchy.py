@@ -153,72 +153,6 @@ def gen_weekly():
     return np.vstack([H, G])
 
 
-def temporal_aggregation(y, agg_levels=None):
-    f = len(y) // (np.arange(1, len(y) + 1) % len(y)).max()
-    L = len(y)
-    s = np.arange(len(y)) / f + 1
-    if agg_levels is None:
-        agg_levels = [i for i in range(1, f + 1) if f % i == 0 and L >= i]
-    else:
-        agg_levels = sorted([level for level in agg_levels if level <= L])
-        if 1 not in agg_levels:
-            agg_levels = [1] + agg_levels
-
-    out = []
-    for k in agg_levels:
-        num_aggs = L // k
-        y_trunc = y[-num_aggs * k:]
-        y_matrix = y_trunc.reshape((k, num_aggs))
-        y_start = s[-num_aggs * k] + (L - num_aggs * k) / f
-        y_f = f // k
-        y_agg = np.sum(y_matrix, axis=0)
-        out.append((y_agg, y_f, y_start))
-
-    return out[::-1]
-
-
-def get_reconc_matrices(agg_levels, h):
-    A = []
-    for k in agg_levels:
-        if k == 1:
-            continue
-        k_r = h // k
-        k_A = np.zeros((k_r, h), dtype=int)
-        for r in range(k_r):
-            k_A[r, r * k:(r + 1) * k] = 1
-        A.append(k_A)
-
-    A = np.vstack(A[::-1])
-    S = np.vstack([A, np.eye(h, dtype=int)])
-    return {'A': A, 'S': S}
-
-
-def get_A_from_S(S):
-    S = np.array(S)
-    bottom_idxs = np.where(np.sum(S, axis=1) == 1)[0]
-    if len(bottom_idxs) < S.shape[1]:
-        raise ValueError("Check S: some bottom rows are missing")
-    upper_idxs = np.setdiff1d(np.arange(S.shape[0]), bottom_idxs)
-    A = S[upper_idxs, :]
-    return {'A': A, 'upper_idxs': upper_idxs, 'bottom_idxs': bottom_idxs}
-
-
-def split_hierarchy(S, Y):
-    if len(S) != len(Y):
-        raise ValueError(f"Error: summing matrix rows ({len(S)}) != length base forecasts ({len(Y)})")
-
-    result = get_A_from_S(S)
-    upper = np.array(Y)[result['upper_idxs']]
-    bottom = np.array(Y)[result['bottom_idxs']]
-    return {
-        'A': result['A'],
-        'upper': upper,
-        'bottom': bottom,
-        'upper_idxs': result['upper_idxs'],
-        'bottom_idxs': result['bottom_idxs']
-    }
-
-
 def check_hierarchical(A):
     A = np.array(A)
     k, m = A.shape
@@ -233,19 +167,6 @@ def check_hierarchical(A):
                     return False
     return True
 
-
-def check_BU_matr(A):
-    A = np.array(A)
-    k, m = A.shape
-
-    for i in range(k):
-        for j in range(k):
-            if i < j:
-                cond1 = np.dot(A[i, :], A[j, :]) != 0
-                cond2 = np.any(A[i, :] > A[j, :])
-                if cond1 and cond2:
-                    return False
-    return True
 
 
 def lowest_lev(A):
@@ -306,16 +227,5 @@ def get_Au(A, lowest_rows=None):
             A_u[i, j] = np.all(A[l, :] <= A_[i, :])  # check if "lower upper" j is a descendant of "upper upper" i
 
     return A_u
-
-
-def check_ordered_A(A):
-    A = np.array(A)
-    aggregates_sum = np.sum(A, axis=1)
-    ordered_aggreg = np.argsort(aggregates_sum)[::-1]  # Sort indices in decreasing order
-
-    if np.all(aggregates_sum == aggregates_sum[ordered_aggreg]):
-        return {'value': True}
-    else:
-        return {'value': False, 'order': ordered_aggreg}
 
 

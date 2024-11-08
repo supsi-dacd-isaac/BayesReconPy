@@ -162,15 +162,15 @@ start = time.time()
 # This will raise a warning if upper samples are discarded
 td = reconc_TDcond(A, fc_bottom_4rec, fc_upper_4rec,
                    bottom_in_type="pmf", num_samples=N_samples_TD,
-                   return_type="pmf", seed=seed)
+                   return_type="samples", seed=seed)
 
 # Stop timing
 stop = time.time()
 
 # Store the results in the rec_fc dictionary
 rec_fc['TD_cond'] = {
-    'bottom': td['bottom_reconciled']['pmf'],
-    'upper': td['upper_reconciled']['pmf']
+    'bottom': td['bottom_reconciled']['samples'],
+    'upper': td['upper_reconciled']['samples']
 }
 
 # Calculate the time taken for TD-cond reconciliation

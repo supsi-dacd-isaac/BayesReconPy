@@ -116,7 +116,7 @@ print(f"Time taken by Gaussian reconciliation: {Gauss_time} seconds")
 #-----------------------------------------------------------------------------------------------------
 
 seed = 1
-N_samples_IS = int(1e5)  # 50,000 samples
+N_samples_IS = int(5e4)  # 50,000 samples
 
 # Base forecasts
 Sigma_u_np = np.array(Sigma_u['Sigma_u'])
@@ -158,7 +158,7 @@ N_samples_TD = int(1e4)
 # Start timing
 start = time.time()
 
-# Perform TD-cond reconciliation (assuming reconc_TDcond is implemented)
+# Perform TD-cond reconciliation 
 # This will raise a warning if upper samples are discarded
 td = reconc_TDcond(A, fc_bottom_4rec, fc_upper_4rec,
                    bottom_in_type="pmf", num_samples=N_samples_TD,

@@ -5,9 +5,9 @@ from properscoring import crps_ensemble
 from bayesreconpy.hierarchy import get_reconc_matrices, temporal_aggregation
 from bayesreconpy.reconc_BUIS import reconc_BUIS
 from bayesreconpy.reconc_gaussian import reconc_gaussian
-from data.M5_CA1_check import residuals
+from scipy.stats import norm
 
-"""
+
 # Sample data (replace with your actual data)
 carparts_example = pd.read_pickle('carparts_example.pkl')
 
@@ -129,7 +129,7 @@ metrics = pd.DataFrame({
 }, index=["MAE", "CRPS"])
 
 print(metrics)
-"""
+
 ## Temporal hierarchy over a smooth time series
 
 M3_example = pd.read_pickle('M3_example.pkl')
@@ -140,11 +140,6 @@ train_agg = temporal_aggregation(M3_example['train'], agg_levels)
 # Rename the aggregated levels for easier reference
 levels = ["Annual", "Biannual", "4-Monthly", "Quarterly", "2-Monthly", "Monthly"]
 train_agg = dict(zip(levels, train_agg.values()))
-
-import numpy as np
-import pandas as pd
-from statsmodels.tsa.holtwinters import ExponentialSmoothing  # Holt-Winters ETS model
-from scipy.stats import norm
 
 # Define seasonal periods based on aggregation level names
 seasonal_periods_map = {
@@ -218,10 +213,6 @@ comparison_results = np.round(np.vstack([
 print(comparison_results)
 
 
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-from scipy.stats import norm
 
 
 # Extract the last 18 forecasts for mean and standard deviation

@@ -4,6 +4,9 @@ import pandas as pd
 from properscoring import crps_ensemble
 from bayesreconpy.hierarchy import get_reconc_matrices, temporal_aggregation
 from bayesreconpy.reconc_BUIS import reconc_BUIS
+from bayesreconpy.reconc_gaussian import reconc_gaussian
+from data.M5_CA1_check import residuals
+
 """
 # Sample data (replace with your actual data)
 carparts_example = pd.read_pickle('carparts_example.pkl')
@@ -138,10 +141,9 @@ train_agg = temporal_aggregation(M3_example['train'], agg_levels)
 levels = ["Annual", "Biannual", "4-Monthly", "Quarterly", "2-Monthly", "Monthly"]
 train_agg = dict(zip(levels, train_agg.values()))
 
-
 import numpy as np
 import pandas as pd
-from statsmodels.tsa.holtwinters import ExponentialSmoothing
+from statsmodels.tsa.holtwinters import ExponentialSmoothing  # Holt-Winters ETS model
 from scipy.stats import norm
 
 # Define seasonal periods based on aggregation level names
@@ -154,44 +156,185 @@ seasonal_periods_map = {
     "Monthly": 12
 }
 
-H = len(M3_example['test'].to_numpy().flatten())  # Forecast horizon (18 in this case)
+test_cleaned = M3_example['test'].to_numpy().flatten()
+test_cleaned = test_cleaned[~np.isnan(test_cleaned)]  # Keep only non-NaN values
 
-fc = []  # List to store forecasts
-fc_idx = 0
+H = len(test_cleaned)  # Forecast horizon (18 in this case)
 
-for level_name, level_data in train_agg.items():
-    # Get seasonal periods based on aggregation level
-    seasonal_periods = seasonal_periods_map[level_name]
-    data_length = len(level_data)
+fc = pd.read_pickle('fc.pkl')
 
-    # Decide model type based on data length and seasonal periods
-    if seasonal_periods is None or data_length < 2 * seasonal_periods:
-        # If data is insufficient for seasonality, use a simpler model without seasonality
-        print(f"Insufficient data for seasonal model at {level_name}. Using trend-only model.")
-        model = ExponentialSmoothing(level_data, trend="add", seasonal=None).fit()
-    else:
-        # Use additive seasonality when data has sufficient cycles
-        model = ExponentialSmoothing(level_data, trend="add", seasonal="add", seasonal_periods=seasonal_periods).fit()
+agg_levels = [2, 3, 4, 6, 12]
+h = 18
+levels = ["Annual", "Biannual", "4-Monthly", "Quarterly", "2-Monthly", "Monthly"]
 
-    # Generate forecast horizon for each level within 18 months
-    h = int(np.floor(H / (12 / (seasonal_periods if seasonal_periods else 1))))
-    print(f"Forecasting at {level_name}, h={h}...")
+# Generate the reconciliation matrices
+rmat = get_reconc_matrices(agg_levels=agg_levels, h=h)
 
-    # Forecasting and calculating 95% confidence intervals manually
-    level_fc = model.forecast(h)
-    forecast_se = np.sqrt(model.sse / len(level_data))  # Standard error of the forecast
+# Prepare the matrix A for plotting
+matrix_A = rmat['A']
+# Reverse rows for display to align with R's `apply(t(rmat$A),1,rev)`
+matrix_A_transformed = np.flip(matrix_A, axis=0)
 
-    # Save mean and standard deviation of Gaussian predictive distribution
-    for i in range(h):
-        mean_forecast = level_fc.iloc[i]
+# Plot the matrix
+plt.figure(figsize=(6, 6))
+plt.imshow(matrix_A_transformed, aspect='auto', cmap="Greys", origin="lower")
+plt.xlabel(levels[5])
+plt.xticks(ticks=np.arange(matrix_A.shape[1]), labels=np.arange(1, matrix_A.shape[1] + 1), rotation=90)
+plt.yticks(ticks=[23, 22, 19, 15, 9], labels=levels[:5])
+plt.colorbar(label="Matrix Values")
 
-        # Calculate the 95% confidence interval manually
-        upper_95 = mean_forecast + norm.ppf(0.975) * forecast_se
-        sd_forecast = (upper_95 - mean_forecast) / norm.ppf(0.975)
-
-        fc.append({"mean": mean_forecast, "sd": sd_forecast})
-        fc_idx += 1
+plt.show()
 
 
+base_forecasts_mu = np.array([f["mean"] for f in fc])
+base_forecasts_sigma = np.diag([f["sd"] ** 2 for f in fc])  # Variance matrix
+
+# Reconcile Gaussian method
+recon_gauss = reconc_gaussian(
+    A=rmat['A'],
+    base_forecasts_mu=base_forecasts_mu,
+    base_forecasts_Sigma=base_forecasts_sigma
+)
+
+# Reconcile BUIS method
+reconc_buis = reconc_BUIS(
+    A=rmat['A'],
+    base_forecasts=fc,
+    in_type="params",
+    distr="gaussian",
+    num_samples=20000,
+    seed=42
+)
+
+# Check consistency of results
+bottom_reconciled_mean_gauss = np.dot(rmat['S'], recon_gauss['bottom_reconciled_mean'])
+bottom_reconciled_mean_buis = np.mean(reconc_buis['reconciled_samples'], axis=1)
+
+# Round and display results
+comparison_results = np.round(np.vstack([
+    bottom_reconciled_mean_gauss,
+    bottom_reconciled_mean_buis
+]))
+print(comparison_results)
 
 
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from scipy.stats import norm
+
+
+# Extract the last 18 forecasts for mean and standard deviation
+yhat_mu = np.array([f["mean"] for f in fc[-18:]])
+yhat_sigma = np.array([f["sd"] for f in fc[-18:]])
+
+# Compute 95% confidence intervals
+yhat_hi95 = norm.ppf(0.975, loc=yhat_mu, scale=yhat_sigma)
+yhat_lo95 = norm.ppf(0.025, loc=yhat_mu, scale=yhat_sigma)
+
+# Reconciled mean and 95% confidence intervals using quantiles
+yreconc_mu = np.mean(reconc_buis['bottom_reconciled_samples'], axis=1)
+yreconc_hi95 = np.quantile(reconc_buis['bottom_reconciled_samples'], 0.975, axis=1)
+yreconc_lo95 = np.quantile(reconc_buis['bottom_reconciled_samples'], 0.025, axis=1)
+
+# Define the monthly index for the training data (5 years * 12 months)
+train_years = pd.date_range(start="1990-01-01", periods=60, freq="ME")
+
+# Define the monthly index for the test data (filter out NaN values)
+test_data_flattened = M3_example['test'].values.flatten()
+test_data_non_nan = test_data_flattened[~np.isnan(test_data_flattened)]
+test_years = pd.date_range(start="1994-04-01", periods=len(test_data_non_nan), freq="ME")
+
+# Determine plot limits
+ylim_min = min(M3_example['train'].min().min(), test_data_non_nan.min(), yhat_lo95.min(), yreconc_lo95.min()) - 1
+ylim_max = max(M3_example['train'].max().max(), test_data_non_nan.max(), yhat_hi95.max(), yreconc_hi95.max()) + 1
+
+# Plotting
+plt.figure(figsize=(10, 6))
+
+# Plot the training data
+plt.plot(train_years, M3_example['train'].values.flatten(), color="black", label="Training Data")
+
+# Plot the test data
+plt.plot(test_years, test_data_non_nan, linestyle="--", color="gray", label="Test Data")
+
+# Plot yhat forecasts and confidence interval
+plt.plot(test_years, yhat_mu, color="coral", linewidth=2, label="Forecast (yhat)")
+plt.fill_between(test_years, yhat_lo95, yhat_hi95, color="#FF7F5066", edgecolor="#FF7F5066", label="Forecast 95% CI")
+
+# Plot reconciled forecasts and confidence interval
+plt.plot(test_years, yreconc_mu, color="blue", linewidth=2, label="Reconciled Forecast")
+plt.fill_between(test_years, yreconc_lo95, yreconc_hi95, color="#0000EE4D", edgecolor="#0000EE4D", label="Reconciled 95% CI")
+
+# Configure plot
+plt.ylim(ylim_min, ylim_max)
+plt.xlim(pd.Timestamp("1990-01-01"), pd.Timestamp("1995-08-01"))
+plt.ylabel("y")
+plt.title("N1485 Forecasts")
+plt.legend()
+plt.show()
+
+infantMortality = pd.read_pickle('infantMortality.pkl')
+
+fc = pd.read_pickle('fc_infantMortality.pkl')
+residuals = pd.read_pickle('residuals_infantMortality.pkl')
+
+# Define the matrix A
+A = np.array([
+    [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    [1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0],
+    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1],
+    [1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0],
+    [0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1]
+])
+
+# Plotting the matrix A
+plt.figure(figsize=(8, 6))
+plt.imshow(A, cmap="Greys", aspect="auto")  # Removed np.flipud to avoid inversion
+
+# Setting axis labels
+bottom_labels = list(infantMortality.keys())[11:27]  # Adjust as necessary for actual labels
+upper_labels = list(infantMortality.keys())[:11]     # Adjust as necessary for actual labels
+
+# Customize ticks
+plt.xticks(ticks=np.arange(A.shape[1]), labels=bottom_labels, rotation=90)
+plt.yticks(ticks=np.arange(A.shape[0]), labels=upper_labels)  # No reversal for y-axis
+
+# Display the plot
+plt.xlabel("Bottom Time Series")
+plt.ylabel("Upper Time Series")
+plt.title("Hierarchical Structure Matrix A")
+plt.tight_layout()
+plt.show()
+
+
+from bayesreconpy.shrink_cov import schafer_strimmer_cov  # Replace with the actual import path if different
+
+# Means
+mu = np.array([fcast[0] for fcast in fc.values()])  # Extracting the means from each forecast entry
+
+# Shrinkage covariance
+shrink_res = schafer_strimmer_cov(residuals)  # Apply shrinkage covariance estimation
+lambda_star = shrink_res['lambda_star']
+Sigma = shrink_res['shrink_cov']
+
+print(f"The estimated shrinkage intensity is {round(lambda_star, 3)}")
+
+# Perform Gaussian reconciliation
+recon_gauss = reconc_gaussian(A=A, base_forecasts_mu=mu, base_forecasts_Sigma=Sigma)
+
+# Extract reconciled means and covariances
+bottom_mu_reconc = recon_gauss['bottom_reconciled_mean']
+bottom_Sigma_reconc = recon_gauss['bottom_reconciled_covariance']
+
+# Calculate the reconciled mu and Sigma for the upper variable
+upper_mu_reconc = A @ bottom_mu_reconc  # Matrix multiplication
+upper_Sigma_reconc = A @ bottom_Sigma_reconc @ A.T
+
+print("Upper reconciled mean:", upper_mu_reconc)

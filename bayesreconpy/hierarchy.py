@@ -1,6 +1,6 @@
 import numpy as np
 from pulp import LpProblem, LpVariable, LpMinimize, lpSum, PULP_CBC_CMD
-
+import pandas as pd
 
 
 def get_hier_rows(A, scale=196):
@@ -229,3 +229,88 @@ def get_Au(A, lowest_rows=None):
     return A_u
 
 
+def temporal_aggregation(y, agg_levels=None):
+    """
+    Temporally aggregates a time series at specified levels.
+
+    Parameters:
+    - y: DataFrame, the time series data with columns as months and index as years.
+    - agg_levels: list of int, aggregation levels in terms of months per period.
+
+    Returns:
+    - dict with aggregated series at each level.
+    """
+    print("Checking if pandas is recognized:", pd)
+    # Determine the frequency (e.g., 12 for monthly data)
+    f = 12  # Assuming monthly frequency for the input data (12 months per year)
+    L = y.shape[0] * f  # Total length in terms of months
+
+    # Default aggregation levels if none are specified
+    if agg_levels is None:
+        agg_levels = [i for i in range(1, f + 1) if f % i == 0 and L >= i]
+
+    # Sort and ensure aggregation includes 1 (monthly level) if not already present
+    agg_levels = sorted([k for k in agg_levels if k <= L])
+    if 1 not in agg_levels:
+        agg_levels = [1] + agg_levels
+
+    # Store aggregated results
+    aggregated_data = {}
+
+    # Convert the DataFrame to a 1D array to handle monthly data as a single series
+    y_flat = y.to_numpy().flatten()
+
+    for k in agg_levels:
+        num_aggs = L // k
+        y_trunc = y_flat[-num_aggs * k:]  # Truncate the series for even aggregation
+        y_matrix = y_trunc.reshape(-1, k)  # Reshape based on the aggregation level
+        y_agg = y_matrix.sum(axis=1)  # Sum across rows to aggregate
+
+        # Define frequency and start time
+        y_f = f // k
+        start_year = y.index[0] + (L - num_aggs * k) // f
+        agg_index = pd.date_range(start=f'{start_year}-01-01', periods=num_aggs, freq=f'{12 // y_f}M')
+
+        # Store the result in DataFrame form
+        aggregated_data[f"{f // k}-Monthly"] = pd.Series(y_agg, index=agg_index)
+
+    # Reverse the dictionary to match the order of output in R
+    return dict(reversed(list(aggregated_data.items())))
+
+
+def get_reconc_matrices(agg_levels, h):
+    """
+    Generates aggregation and reconciliation matrices for hierarchical forecasting.
+
+    Parameters:
+    - agg_levels: list of int, specifying the aggregation levels.
+    - h: int, forecasting horizon (number of future time steps).
+
+    Returns:
+    - A dictionary with:
+        - 'A': Aggregation matrix.
+        - 'S': Reconciliation matrix (combining 'A' and identity matrix).
+    """
+    A_matrices = []
+
+    for k in agg_levels:
+        if k == 1:
+            continue  # Skip if the aggregation level is 1 (no aggregation)
+
+        k_r = int(h / k)  # Number of rows for this aggregation level
+        k_A = np.zeros((k_r, h))  # Initialize the aggregation matrix for level k
+
+        col_idx = 0
+        for r in range(k_r):
+            k_A[r, col_idx:col_idx + k] = 1  # Fill in the row with ones for aggregation
+            col_idx += k  # Move to the next block
+
+        A_matrices.append(k_A)
+
+    # Combine all individual A matrices into a single matrix by stacking them vertically
+    A = np.vstack(A_matrices[::-1])  # Reverse the order of matrices before stacking
+
+    # Create the reconciliation matrix S by combining A with an identity matrix of size h
+    S = np.vstack([A, np.eye(h)])
+
+    return {'A': A, 'S': S}

@@ -133,6 +133,20 @@ print(metrics)
 ## Temporal hierarchy over a smooth time series
 
 M3_example = pd.read_pickle('M3_example.pkl')
+train_data = M3_example['train'].stack()
+
+date_index = pd.date_range(start="1990-01", periods=len(train_data), freq="M")
+
+# Convert the flattened data to a Series with a datetime index
+train_series = pd.Series(train_data.values, index=date_index)
+
+# Plotting the continuous time series
+plt.figure(figsize=(10, 6))
+plt.plot(train_series.index, train_series.values, color="black")
+plt.xlabel("Time")
+plt.ylabel("y")
+plt.title("N1485")
+plt.show()
 
 agg_levels = [12, 6, 4, 3, 2, 1]  # Corresponding to Annual, Biannual, etc.
 train_agg = temporal_aggregation(M3_example['train'], agg_levels)
@@ -141,26 +155,10 @@ train_agg = temporal_aggregation(M3_example['train'], agg_levels)
 levels = ["Annual", "Biannual", "4-Monthly", "Quarterly", "2-Monthly", "Monthly"]
 train_agg = dict(zip(levels, train_agg.values()))
 
-# Define seasonal periods based on aggregation level names
-seasonal_periods_map = {
-    "Annual": None,  # No seasonality for annual aggregation
-    "Biannual": 2,
-    "4-Monthly": 3,
-    "Quarterly": 4,
-    "2-Monthly": 6,
-    "Monthly": 12
-}
-
-test_cleaned = M3_example['test'].to_numpy().flatten()
-test_cleaned = test_cleaned[~np.isnan(test_cleaned)]  # Keep only non-NaN values
-
-H = len(test_cleaned)  # Forecast horizon (18 in this case)
-
 fc = pd.read_pickle('fc.pkl')
 
 agg_levels = [2, 3, 4, 6, 12]
 h = 18
-levels = ["Annual", "Biannual", "4-Monthly", "Quarterly", "2-Monthly", "Monthly"]
 
 # Generate the reconciliation matrices
 rmat = get_reconc_matrices(agg_levels=agg_levels, h=h)

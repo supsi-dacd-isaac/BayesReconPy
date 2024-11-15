@@ -269,10 +269,10 @@ def temporal_aggregation(y, agg_levels=None):
         # Define frequency and start time
         y_f = f // k
         start_year = y.index[0] + (L - num_aggs * k) // f
-        agg_index = pd.date_range(start=f'{start_year}-01-01', periods=num_aggs, freq=f'{12 // y_f}M')
+        agg_index = pd.date_range(start=f'{start_year}-01-01', periods=num_aggs, freq=f'{12 // y_f}ME')
 
         # Store the result in DataFrame form
-        aggregated_data[f"{f // k}-Monthly"] = pd.Series(y_agg, index=agg_index)
+        aggregated_data[f"{k}-Monthly"] = pd.Series(y_agg, index=agg_index)
 
     # Reverse the dictionary to match the order of output in R
     return dict(reversed(list(aggregated_data.items())))

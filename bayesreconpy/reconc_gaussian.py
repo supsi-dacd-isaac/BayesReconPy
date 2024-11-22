@@ -1,6 +1,6 @@
 import numpy as np
 from scipy.linalg import solve, LinAlgError
-
+from typing import List, Dict, Tuple
 
 def check_cov(matrix, name, pd_check=False, symm_check=False):
     """Check if a covariance matrix is positive definite and/or symmetric.
@@ -21,7 +21,33 @@ def check_cov(matrix, name, pd_check=False, symm_check=False):
             raise ValueError(f"Input error: {name} is not positive definite")
 
 
-def reconc_gaussian(A, base_forecasts_mu, base_forecasts_Sigma):
+def reconc_gaussian(A: np.ndarray, base_forecasts_mu: List[float], base_forecasts_Sigma: np.ndarray) -> Dict[str, np.ndarray]:
+    """
+    Reconciles forecasts using a Gaussian-based approach.
+
+    Parameters
+    ----------
+    A : numpy.ndarray
+        A 2D array (matrix) representing the reconciliation constraints.
+        Shape: (n_bottoms, n_uppers).
+    base_forecasts_mu : list of float
+        A list containing the mean forecasts for each series.
+        Length: n = n_bottoms + n_uppers.
+    base_forecasts_Sigma : numpy.ndarray
+        A 2D covariance matrix representing the forecast uncertainties.
+        Shape: (n_forecasts, n_forecasts).
+
+    Returns
+    -------
+    numpy.ndarray
+        A reconciled forecast vector, satisfying the constraints imposed by `A`.
+        Length: n_forecasts.
+
+    Notes
+    -----
+    - The method assumes that `base_forecasts_mu` is Gaussian-distributed.
+    - The covariance matrix `base_forecasts_Sigma` should be symmetric and positive semi-definite.
+    """
     k = A.shape[0]  # number of upper TS
     m = A.shape[1]  # number of bottom TS
     n = len(base_forecasts_mu)  # total number of TS

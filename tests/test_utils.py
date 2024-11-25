@@ -2,7 +2,7 @@ import unittest
 import numpy as np
 import pandas as pd
 from bayesreconpy import hierarchy, shrink_cov, PMF
-
+from bayesreconpy.utils import check_S, check_A, check_cov
 
 class TestUtils(unittest.TestCase):
     def test_hierarchy_gen(self):
@@ -39,5 +39,25 @@ class TestUtils(unittest.TestCase):
         assert np.isclose(1, np.sum(PMF.pmf_tempering(pmf_poisson, 1)))
         assert np.isclose(1, np.sum(PMF.pmf_tempering(pmf_poisson, 0.9)))
 
+    def test_checks(self):
+
+        Ss = [np.random.randn(10, 10), np.array([[1,1], [1,1]]), np.vstack([np.ones((1, 5)), np.eye(5)[:4,:]])]
+        counter = 0
+        for S in Ss:
+            try:
+                check_S(S)
+            except ValueError:
+                counter += 1
+        assert counter == len(Ss)
+
+
+        As = [np.random.randn(10, 10), np.array([[0,0], [0,0]]), np.ones((5, 5))]
+        counter = 0
+        for A in As:
+            try:
+                check_A(A)
+            except ValueError:
+                counter += 1
+        assert counter == len(As)-1
 if __name__ == '__main__':
     unittest.main()

@@ -5,7 +5,7 @@ from bayesreconpy.reconc_BUIS import reconc_BUIS
 from bayesreconpy.reconc_gaussian import reconc_gaussian
 from bayesreconpy.utils import gen_gaussian as gen_gaussian_samples
 from bayesreconpy.utils import gen_poisson as gen_poisson_samples
-from bayesreconpy.hierarchy import check_hierarchical, lowest_lev
+from bayesreconpy.hierarchy import check_hierarchical, lowest_lev, temporal_aggregation, get_reconc_matrices
 from bayesreconpy.reconc_MCMC import reconc_MCMC
 from bayesreconpy.PMF import pmf_get_var as PMF_get_var
 from bayesreconpy.PMF import pmf_get_mean as PMF_get_mean
@@ -22,6 +22,21 @@ class TestScenarios(unittest.TestCase):
 
         assert check_hierarchical(A) == True
 
+    def test_temporal_aggregation(self):
+        # inputa data, DataFrame, the time series data with columns as months and index as years.
+        A = pd.DataFrame(np.random.randn(10, 12), columns=range(1, 13), index=range(2010, 2020))
+        # list of int, aggregation levels in terms of months per period.
+        agg = temporal_aggregation(A, [1, 2, 3, 4, 6, 12])
+        agg = temporal_aggregation(A, [2, 3, 4, 6, 12])
+        agg = temporal_aggregation(A, None)
+
+    def test_get_recon_matrices(self):
+        agg_levels = [1, 2, 3, 4, 6, 12]
+        h = 48
+        matrices_dict = get_reconc_matrices(agg_levels, h)
+
+        aggs = np.sum([h // a if a != 1 else  0 for a in agg_levels ])
+        assert matrices_dict['A'].shape[0] == aggs
 
     def test_weekly_in_type_params_distr_gaussian(self):
         A = pd.read_csv("tests/Weekly-Gaussian_A.csv", header=None).values

@@ -1,8 +1,116 @@
 import numpy as np
 from bayesreconpy.utils import check_input_BUIS, distr_sample, distr_pmf
+from bayesreconpy.reconc_BUIS import reconc_BUIS
+from typing import Optional, Dict
 
 
-def reconc_MCMC(A, base_forecasts, distr, num_samples=10000, tuning_int=100, init_scale=1, burn_in=1000, seed=None):
+def reconc_MCMC(
+    A: np.ndarray,
+    base_forecasts: list,
+    distr: str,
+    num_samples: int = 10000,
+    tuning_int: int = 100,
+    init_scale: float = 1,
+    burn_in: int = 1000,
+    seed: Optional[int] = None
+) -> Dict[str, np.ndarray]:
+    """
+    MCMC for Probabilistic Reconciliation of forecasts via conditioning.
+
+    Uses a Markov Chain Monte Carlo (MCMC) algorithm to draw samples from the reconciled
+    forecast distribution, obtained via conditioning. This implementation uses the
+    Metropolis-Hastings algorithm.
+
+    **Note**: This implementation only supports Poisson or Negative Binomial base forecasts.
+    Gaussian distributions are not supported for MCMC.
+
+    Parameters
+    ----------
+    A : numpy.ndarray
+        Aggregation matrix of shape `(n_upper, n_bottom)`. Each column represents a bottom-level
+        forecast, and each row represents an upper-level forecast. A value of `1` in `A[i, j]`
+        indicates that bottom-level forecast `j` contributes to upper-level forecast `i`.
+
+    base_forecasts : list
+        A list containing the parameters of the base forecast distributions. The first `n_upper` elements
+        correspond to the upper base forecasts (in the order of rows in `A`), and the remaining `n_bottom`
+        elements correspond to the bottom base forecasts (in the order of columns in `A`). Each element is a dictionary:
+        - For `'poisson'`: {"lambda": float}
+        - For `'nbinom'`: {"size": float, "prob": float} or {"size": float, "mu": float}
+
+    distr : str
+        Type of predictive distribution. Supported values:
+        - `'poisson'`
+        - `'nbinom'`
+
+    num_samples : int, optional
+        Number of samples to draw using MCMC. Default is `10,000`.
+
+    tuning_int : int, optional
+        Number of iterations between scale updates of the proposal. Default is `100`.
+
+    init_scale : float, optional
+        Initial scale of the proposal distribution. Default is `1.0`.
+
+    burn_in : int, optional
+        Number of initial samples to discard. Default is `1,000`.
+
+    seed : int or None, optional
+        Random seed for reproducibility. Default is `None`.
+
+    Returns
+    -------
+    Dict[str, numpy.ndarray]
+        A dictionary containing the reconciled forecasts:
+        - `'bottom_reconciled_samples'`: A matrix of shape `(n_bottom, num_samples)` containing
+          reconciled samples for the bottom-level time series.
+        - `'upper_reconciled_samples'`: A matrix of shape `(n_upper, num_samples)` containing
+          reconciled samples for the upper-level time series.
+        - `'reconciled_samples'`: A matrix of shape `(n, num_samples)` containing the reconciled
+          samples for all time series, where `n = n_upper + n_bottom`.
+
+    Notes
+    -----
+    - This is a bare-bones implementation of the Metropolis-Hastings algorithm.
+    - We recommend using additional tools to assess the convergence of the MCMC chains.
+    - The `reconc_BUIS` function is generally faster for most hierarchies.
+
+    Examples
+    --------
+    Example: Simple hierarchy with Poisson base forecasts
+        >>> import numpy as np
+        >>> from bayesreconpy.reconc_BUIS import reconc_BUIS
+        >>>
+        >>> # Create a minimal hierarchy with 1 upper and 2 bottom variables
+        >>> A = np.array([[1, 1]])  # Aggregation matrix
+        >>>
+        >>> # Set the parameters of the Poisson base forecast distributions
+        >>> lambda_vals = [9, 2, 4]
+        >>> base_forecasts = [{"lambda": lam} for lam in lambda_vals]
+        >>>
+        >>> # Perform MCMC reconciliation
+        >>> mcmc_result = reconc_MCMC(A, base_forecasts, distr="poisson", num_samples=30000, seed=42)
+        >>>
+        >>> # Access reconciled samples
+        >>> samples_mcmc = mcmc_result['reconciled_samples']
+        >>>
+        >>> # Compare reconciled means with those from BUIS
+        >>> buis_result = reconc_BUIS(A, base_forecasts, in_type="params", distr="poisson", num_samples=100000, seed=42)
+        >>> samples_buis = buis_result['reconciled_samples']
+        >>>
+        >>> print("MCMC Reconciled Means:", np.mean(samples_mcmc, axis=1))
+        >>> print("BUIS Reconciled Means:", np.mean(samples_buis, axis=1))
+
+    References
+    ----------
+    - Corani, G., Azzimonti, D., Rubattu, N. (2024).
+      *Probabilistic reconciliation of count time series*.
+      International Journal of Forecasting, 40(2), 457-469.
+
+    See Also
+    --------
+    reconc_BUIS : Faster reconciliation method for most hierarchies.
+    """
     if seed is not None:
         np.random.seed(seed)
 

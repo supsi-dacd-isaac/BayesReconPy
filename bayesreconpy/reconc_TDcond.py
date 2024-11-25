@@ -4,7 +4,7 @@ from bayesreconpy.hierarchy import lowest_lev, get_Au
 from bayesreconpy.reconc_gaussian import reconc_gaussian
 from bayesreconpy.PMF import pmf_from_samples, pmf_from_params, pmf_check_support, pmf_bottom_up
 from bayesreconpy.utils import MVN_sample
-from typing import Union
+from typing import Union, Optional, Dict, List, Tuple
 
 def cond_biv_sampling(u, pmf1, pmf2):
     # Initialize switch flag
@@ -65,8 +65,148 @@ def TD_sampling(u, bott_pmf, toll=DEFAULT_PARS['TOL'], rtol=DEFAULT_PARS['RTOL']
     return b_new
 
 
-def reconc_TDcond(A, fc_bottom:Union[np.array, dict], fc_upper:dict, bottom_in_type="pmf", distr=None,
-                  num_samples=20000, return_type="pmf", suppress_warnings=False, seed=None, return_num_samples_ok=False):
+def reconc_TDcond(
+    A: np.ndarray,
+    fc_bottom: Union[np.array, dict],
+    fc_upper: dict,
+    bottom_in_type: str = "pmf",
+    distr: Optional[str] = None,
+    num_samples: int = 20000,
+    return_type: str = "pmf",
+    suppress_warnings: bool = False,
+    seed: Optional[int] = None,
+    return_num_samples_ok: bool = False
+) -> Union[Dict[str, Dict[str, Union[List, np.ndarray]]], Tuple[Dict, int]]:
+    """
+    Probabilistic forecast reconciliation of mixed hierarchies via top-down conditioning.
+
+    Uses the top-down conditioning algorithm to draw samples from the reconciled forecast distribution.
+    Reconciliation is performed in two steps:
+    1. Upper base forecasts are reconciled via conditioning using the hierarchical constraints between upper variables.
+    2. Bottom distributions are updated via a probabilistic top-down procedure.
+
+    Parameters
+    ----------
+    A : numpy.ndarray
+        Aggregation matrix with shape `(n_upper, n_bottom)`. Each column represents a bottom-level
+        forecast, and each row represents an upper-level forecast. A value of `1` in `A[i, j]` indicates
+        that bottom-level forecast `j` contributes to upper-level forecast `i`.
+
+    fc_bottom : Union[np.array, dict]
+        Base bottom forecasts. The format depends on `bottom_in_type`:
+        - If `bottom_in_type == "pmf"`: A dictionary where each value is a PMF object (probability mass function).
+        - If `bottom_in_type == "samples"`: A dictionary or array where each value contains samples.
+        - If `bottom_in_type == "params"`: A dictionary where each value contains parameters:
+            * `'poisson'`: {"lambda": float}
+            * `'nbinom'`: {"size": float, "prob": float} or {"size": float, "mu": float}
+
+    fc_upper : dict
+        Base upper forecasts, represented as parameters of a multivariate Gaussian distribution:
+        - `'mu'`: A vector of length `n_upper` containing the means.
+        - `'Sigma'`: A covariance matrix of shape `(n_upper, n_upper)`.
+
+    bottom_in_type : str, optional
+        Specifies the type of the base bottom forecasts. Possible values are:
+        - `'pmf'`: Bottom base forecasts are provided as PMF objects.
+        - `'samples'`: Bottom base forecasts are provided as samples.
+        - `'params'`: Bottom base forecasts are provided as estimated parameters.
+        Default is `'pmf'`.
+
+    distr : str, optional
+        Specifies the distribution type for the bottom base forecasts. Only used if `bottom_in_type == "params"`.
+        Possible values:
+        - `'poisson'`
+        - `'nbinom'`
+
+    num_samples : int, optional
+        Number of samples to draw from the reconciled distribution. Ignored if `bottom_in_type == "samples"`.
+        In this case, the number of reconciled samples equals the number of samples in the base forecasts.
+        Default is `20,000`.
+
+    return_type : str, optional
+        Specifies the return type of the reconciled distributions. Possible values:
+        - `'pmf'`: Returns reconciled marginal PMF objects.
+        - `'samples'`: Returns reconciled multivariate samples.
+        - `'all'`: Returns both PMF objects and samples.
+        Default is `'pmf'`.
+
+    suppress_warnings : bool, optional
+        Whether to suppress warnings about samples lying outside the support of the bottom-up distribution.
+        Default is `False`.
+
+    seed : int or None, optional
+        Random seed for reproducibility. Default is `None`.
+
+    return_num_samples_ok : bool, optional
+        Whether to return the number of samples that were valid after reconciliation. Default is `False`.
+
+    Returns
+    -------
+    Union[Dict[str, Dict[str, Union[List, np.ndarray]]], Tuple[Dict, int]]
+        A dictionary containing the reconciled forecasts:
+        - `'bottom_reconciled'`: Contains the reconciled forecasts for the bottom-level variables.
+          - If `return_type == "pmf"`: A list of PMF objects.
+          - If `return_type == "samples"`: A matrix of shape `(n_bottom, num_samples)`.
+          - If `return_type == "all"`: Contains both PMF objects and samples.
+        - `'upper_reconciled'`: Contains the reconciled forecasts for the upper-level variables.
+          - If `return_type == "pmf"`: A list of PMF objects.
+          - If `return_type == "samples"`: A matrix of shape `(n_upper, num_samples)`.
+          - If `return_type == "all"`: Contains both PMF objects and samples.
+
+        If `return_num_samples_ok` is `True`, a tuple is returned:
+        - The first element is the above dictionary.
+        - The second element is the number of valid samples after reconciliation.
+
+    Notes
+    -----
+    - A PMF object is a numerical vector where each element corresponds to the probability of integers
+      from `0` to the last value in the support.
+    - Samples lying outside the support of the bottom-up distribution are discarded, and a warning is issued
+      if `suppress_warnings` is `False`.
+
+    Examples
+    --------
+    Simple hierarchy with PMF inputs
+        >>> import numpy as np
+        >>> from scipy.stats import poisson
+        >>>
+        >>> # Simple hierarchy with one upper and two bottom nodes
+        >>> A = np.array([[1, 1]])  # Aggregation matrix
+        >>>
+        >>> # Bottom forecasts as Poisson distributions
+        >>> lambda_val = 15
+        >>> n_tot = 60
+        >>> fc_bottom = {
+        ...     0: np.array([poisson.pmf(x, lambda_val) for x in range(n_tot + 1)]),
+        ...     1: np.array([poisson.pmf(x, lambda_val) for x in range(n_tot + 1)])
+        ... }
+        >>>
+        >>> # Upper forecast as Gaussian parameters
+        >>> fc_upper = {
+        ...     "mu": np.array([40]),  # Mean
+        ...     "Sigma": np.array([[25]])  # Variance (standard deviation squared)
+        ... }
+        >>>
+        >>> # Perform reconciliation
+        >>> result = reconc_TDcond(A, fc_bottom, fc_upper, bottom_in_type="pmf", return_type="all")
+        >>>
+        >>> # Check the results
+        >>> print(result['bottom_reconciled']['pmf'][0])
+        >>> print(result['bottom_reconciled']['pmf'][1])
+        >>> print(result['upper_reconciled']['pmf'][0])
+
+
+    References
+    ----------
+    - Zambon, L., Azzimonti, D., Rubattu, N., Corani, G. (2024).
+      *Probabilistic reconciliation of mixed-type hierarchical time series*.
+      40th Conference on Uncertainty in Artificial Intelligence.
+
+    See Also
+    --------
+    reconc_MixCond : Reconciliation for mixed-type hierarchies.
+    reconc_BUIS : Reconciliation using Bottom-Up Importance Sampling (BUIS).
+    """
     if seed is not None:
         np.random.seed(seed)
 

@@ -4,7 +4,7 @@ from scipy.stats import norm
 from bayesreconpy.utils import DEFAULT_PARS, check_input_BUIS, check_weights, resample, distr_sample, distr_pmf
 from bayesreconpy.hierarchy import check_hierarchical, get_HG
 from KDEpy import FFTKDE
-
+from typing import List, Dict, Union
 
 def check_hierfamily_rel(sh_res, distr, debug=False):
     bottom_idxs = sh_res['bottom_idxs']
@@ -75,7 +75,122 @@ def compute_weights(b, u, in_type_, distr_):
 
 
 
-def reconc_BUIS(A, base_forecasts, in_type, distr, num_samples=20000, suppress_warnings=False, seed=None):
+def reconc_BUIS(
+    A: np.ndarray,
+    base_forecasts: List[Union[Dict[str, float], np.ndarray]],
+    in_type: Union[str, List[str]],
+    distr: Union[str, List[str]],
+    num_samples: int = 20000,
+    suppress_warnings: bool = False,
+    seed: Union[int, None] = None
+) -> Dict[str, np.ndarray]:
+    """
+    BUIS for Probabilistic Reconciliation of Forecasts via Conditioning
+
+    Uses the Bottom-Up Importance Sampling (BUIS) algorithm to draw samples from the reconciled
+    forecast distribution obtained via conditioning.
+
+    Parameters
+    ----------
+    A : numpy.ndarray
+        Aggregation matrix with shape `(n_upper, n_bottom)`. Each column represents a bottom-level
+        forecast, and each row represents an upper-level forecast. A value of `1` indicates a
+        contribution of a bottom-level forecast to an upper-level forecast.
+
+    base_forecasts : list of dict or numpy.ndarray
+        A list containing `n_upper + n_bottom` elements. The first `n_upper` elements represent
+        the upper-level base forecasts (in the order of rows in `A`), and the remaining elements
+        represent the bottom-level base forecasts (in the order of columns in `A`).
+
+        - If `in_type[i] == "samples"`, `base_forecasts[i]` is a NumPy array containing samples
+          from the base forecast distribution.
+          Example:
+              np.array([2, 3, 4])
+
+        - If `in_type[i] == "params"`, `base_forecasts[i]` is a dictionary containing parameters
+          for the specified distribution in `distr[i]`:
+          * `'gaussian'`: {"mean": float, "sd": float}
+          * `'poisson'`: {"lambda": float}
+          * `'nbinom'`: {"size": float, "prob": float} or {"size": float, "mu": float}
+          Example:
+              {"mean": 2.7, "sd": 1.3}
+
+    in_type : str or list of str
+        Specifies the input type for each base forecast. If a string, the same input type is applied
+        to all forecasts. If a list, `in_type[i]` specifies the type for the `i`-th forecast:
+        - `'samples'`: The forecast is provided as samples.
+        - `'params'`: The forecast is provided as parameters.
+
+    distr : str or list of str
+        Specifies the distribution type for each base forecast. If a string, the same distribution
+        is applied to all forecasts. If a list, `distr[i]` specifies the distribution for the `i`-th forecast:
+        - `'continuous'` or `'discrete'` if `in_type[i] == "samples"`.
+        - `'gaussian'`, `'poisson'`, or `'nbinom'` if `in_type[i] == "params"`.
+
+    num_samples : int, optional
+        Number of samples to draw from the reconciled distribution. Ignored if `in_type == "samples"`,
+        in which case the number of reconciled samples matches the number of samples in the base forecasts.
+        Default is 20,000.
+
+    suppress_warnings : bool, optional
+        Whether to suppress warnings during the importance sampling step. Default is `False`.
+
+    seed : int or None, optional
+        Random seed for reproducibility. Default is `None`.
+
+    Returns
+    -------
+    dict
+        A dictionary containing the reconciled forecasts:
+        - `'bottom_reconciled_samples'`: numpy.ndarray
+            A matrix of shape `(n_bottom, num_samples)` containing the reconciled samples
+            for the bottom-level forecasts.
+        - `'upper_reconciled_samples'`: numpy.ndarray
+            A matrix of shape `(n_upper, num_samples)` containing the reconciled samples
+            for the upper-level forecasts.
+        - `'reconciled_samples'`: numpy.ndarray
+            A matrix of shape `(n, num_samples)` containing the reconciled samples
+            for all forecasts.
+
+    Notes
+    -----
+    - Warnings are triggered during the importance sampling step if:
+      * All weights are zero (the corresponding upper forecast is ignored).
+      * Effective sample size is less than 200.
+      * Effective sample size is less than 1% of the total number of samples.
+    - Such warnings indicate potential issues with the base forecasts. Check the inputs in case of warnings.
+
+    Examples
+    --------
+    Example 1: Gaussian base forecasts (in params form)
+        >>> A = np.array([
+        ...     [1, 0, 0],
+        ...     [0, 1, 1]
+        ... ])
+        >>> base_forecasts = [
+        ...     {"mean": 9.0, "sd": 3.0},  # Upper forecast
+        ...     {"mean": 2.0, "sd": 2.0},  # Bottom forecast 1
+        ...     {"mean": 4.0, "sd": 2.0}   # Bottom forecast 2
+        ... ]
+        >>> result = reconc_BUIS(A, base_forecasts, in_type="params", distr="gaussian", num_samples=10000, seed=42)
+        >>> print(result['reconciled_samples'].shape)
+        (3, 10000)
+
+    Example 2: Poisson base forecasts (in params form)
+        >>> A = np.array([
+        ...     [1, 0, 0],
+        ...     [0, 1, 1]
+        ... ])
+        >>> base_forecasts = [
+        ...     {"lambda": 9.0},  # Upper forecast
+        ...     {"lambda": 2.0},  # Bottom forecast 1
+        ...     {"lambda": 4.0}   # Bottom forecast 2
+        ... ]
+        >>> result = reconc_BUIS(A, base_forecasts, in_type="params", distr="poisson", num_samples=10000, seed=42)
+        >>> print(result['reconciled_samples'].shape)
+        (3, 10000)
+
+    """
     if seed is not None:
         np.random.seed(seed)
 

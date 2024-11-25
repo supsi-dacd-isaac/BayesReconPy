@@ -23,35 +23,87 @@ def check_cov(matrix, name, pd_check=False, symm_check=False):
 
 def reconc_gaussian(A: np.ndarray, base_forecasts_mu: List[float], base_forecasts_Sigma: np.ndarray) -> Dict[str, np.ndarray]:
     """
-    Reconciles forecasts using a Gaussian-based approach.
+    Analytical reconciliation of Gaussian base forecasts.
+
+    Reconciles forecasts using a closed-form computation for Gaussian base forecasts.
 
     Parameters
     ----------
     A : numpy.ndarray
-        A 2D array (matrix) representing the reconciliation constraints.
-        Shape: (n_bottoms, n_uppers).
+        Aggregation matrix with shape `(n_upper, n_bottom)`. Each column represents a bottom-level
+        forecast, and each row represents an upper-level forecast. A value of `1` in `A[i, j]` indicates
+        that the bottom-level forecast `j` contributes to the upper-level forecast `i`.
+
     base_forecasts_mu : List[float]
-        A list containing the mean forecasts for each series.
-        Length: n = n_bottoms + n_uppers.
+        A 1D list containing the means of the base forecasts. The order is:
+        - First, the upper-level means (in the order of rows in `A`).
+        - Then, the bottom-level means (in the order of columns in `A`).
+
+        Example:
+            base_forecasts_mu = [9.0, 2.0, 4.0]
+
     base_forecasts_Sigma : numpy.ndarray
-        A 2D covariance matrix representing the forecast uncertainties.
-        Shape: (n_forecasts, n_forecasts).
+        A 2D covariance matrix representing the uncertainties in the base forecasts.
+        The order of rows and columns must match the order of `base_forecasts_mu`.
+        Shape: `(n, n)`, where `n = n_upper + n_bottom`.
+
+        Example:
+            Sigma = np.array([
+                [9.0, 0.0, 0.0],
+                [0.0, 4.0, 0.0],
+                [0.0, 0.0, 4.0]
+            ])
 
     Returns
     -------
-     Dict[str, numpy.ndarray]
+    Dict[str, numpy.ndarray]
         A dictionary containing:
-            - 'bottom_reconciled_mean': numpy.ndarray
-                A 1D array of the reconciled mean forecasts.
-                Shape: (n,).
-            - 'bottom_reconciled_covariance': numpy.ndarray
-                A 2D covariance matrix of the reconciled forecasts.
-                Shape: (n, n).
+        - `'bottom_reconciled_mean'` : numpy.ndarray
+            A 1D array of the reconciled means for the bottom-level forecasts.
+            Shape: `(n_bottom,)`.
+        - `'bottom_reconciled_covariance'` : numpy.ndarray
+            A 2D covariance matrix of the reconciled bottom-level forecasts.
+            Shape: `(n_bottom, n_bottom)`.
 
     Notes
     -----
-    - The method assumes that base forecasts follows a multivariate Gaussian distribution.
+    - The function assumes that base forecasts follow a multivariate Gaussian distribution.
     - The covariance matrix `base_forecasts_Sigma` should be symmetric and positive semi-definite.
+    - The order of elements in `base_forecasts_mu` and rows/columns in `base_forecasts_Sigma` is critical:
+      first the upper-level forecasts (in the order of rows in `A`), followed by the bottom-level forecasts
+      (in the order of columns in `A`).
+    - The function returns only the reconciled parameters for the bottom-level forecasts. Reconciled
+      parameters for upper-level forecasts and the entire hierarchy can be derived using the reconciliation
+      matrix `A`.
+
+    Examples
+    --------
+    Example 1: Minimal hierarchy with Gaussian base forecasts
+        >>> A = np.array([
+        ...     [1, 0, 0],
+        ...     [0, 1, 1]
+        ... ])
+        >>> base_forecasts_mu = [9.0, 2.0, 4.0]
+        >>> base_forecasts_Sigma = np.diag([9.0, 4.0, 4.0])
+        >>> result = reconc_gaussian(A, base_forecasts_mu, base_forecasts_Sigma)
+        >>> print(result['bottom_reconciled_mean'])
+        [2.5, 4.0]
+        >>> print(result['bottom_reconciled_covariance'])
+        [[2.25, 1.5 ],
+         [1.5 , 2.0 ]]
+
+
+    References
+    ----------
+    - Corani, G., Azzimonti, D., Augusto, J.P.S.C., Zaffalon, M. (2021).
+      *Probabilistic Reconciliation of Hierarchical Forecast via Bayes' Rule*.
+      ECML PKDD 2020. Lecture Notes in Computer Science, vol 12459.
+      https://doi.org/10.1007/978-3-030-67664-3_13
+    - Zambon, L., Agosto, A., Giudici, P., Corani, G. (2024).
+      *Properties of the reconciled distributions for Gaussian and count forecasts*.
+      International Journal of Forecasting (in press).
+      https://doi.org/10.1016/j.ijforecast.2023.12.004
+
     """
 
     k = A.shape[0]  # number of upper TS

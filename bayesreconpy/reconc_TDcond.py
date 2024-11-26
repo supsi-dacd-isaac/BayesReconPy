@@ -162,8 +162,7 @@ def reconc_TDcond(
             - If `return_type == "samples"`: A matrix of shape `(n_upper, num_samples)`.
             - If `return_type == "all"`: Contains both PMF objects and samples.
 
-        If `return_num_samples_ok` is `True`, a tuple is returned:
-
+        - If `return_num_samples_ok` is `True`, a tuple is returned.
         - The first element is the above dictionary.
         - The second element is the number of valid samples after reconciliation.
 

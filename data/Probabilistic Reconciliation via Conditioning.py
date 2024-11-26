@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from properscoring import crps_ensemble
-from bayesreconpy.hierarchy import get_reconc_matrices, temporal_aggregation
+from bayesreconpy.hierarchy import _get_reconc_matrices, _temporal_aggregation
 from bayesreconpy.reconc_BUIS import reconc_BUIS
 from bayesreconpy.reconc_gaussian import reconc_gaussian
 from scipy.stats import norm
@@ -83,7 +83,7 @@ fc_samples = pd.read_pickle('fc_samples.pkl')
 
 agg_levels = [2, 3, 4, 6, 12]
 h = 12
-recon_matrices = get_reconc_matrices(agg_levels, h)
+recon_matrices = _get_reconc_matrices(agg_levels, h)
 
 # Aggregation matrix A
 A = recon_matrices['A']
@@ -149,7 +149,7 @@ plt.title("N1485")
 plt.show()
 
 agg_levels = [12, 6, 4, 3, 2, 1]  # Corresponding to Annual, Biannual, etc.
-train_agg = temporal_aggregation(M3_example['train'], agg_levels)
+train_agg = _temporal_aggregation(M3_example['train'], agg_levels)
 
 # Rename the aggregated levels for easier reference
 levels = ["Annual", "Biannual", "4-Monthly", "Quarterly", "2-Monthly", "Monthly"]
@@ -161,7 +161,7 @@ agg_levels = [2, 3, 4, 6, 12]
 h = 18
 
 # Generate the reconciliation matrices
-rmat = get_reconc_matrices(agg_levels=agg_levels, h=h)
+rmat = _get_reconc_matrices(agg_levels=agg_levels, h=h)
 
 # Prepare the matrix A for plotting
 matrix_A = rmat['A']
@@ -303,13 +303,13 @@ plt.tight_layout()
 plt.show()
 
 
-from bayesreconpy.shrink_cov import schafer_strimmer_cov  # Replace with the actual import path if different
+from bayesreconpy.shrink_cov import _schafer_strimmer_cov  # Replace with the actual import path if different
 
 # Means
 mu = np.array([fcast[0] for fcast in fc.values()])  # Extracting the means from each forecast entry
 
 # Shrinkage covariance
-shrink_res = schafer_strimmer_cov(residuals)  # Apply shrinkage covariance estimation
+shrink_res = _schafer_strimmer_cov(residuals)  # Apply shrinkage covariance estimation
 lambda_star = shrink_res['lambda_star']
 Sigma = shrink_res['shrink_cov']
 

@@ -2,13 +2,13 @@
 import pandas as pd
 import numpy as np
 import time
-from bayesreconpy.PMF import pmf_get_mean as PMF_get_mean
-from bayesreconpy.PMF import pmf_get_var as PMF_get_var
-from bayesreconpy.shrink_cov import schafer_strimmer_cov
+from bayesreconpy.PMF import _pmf_get_mean as PMF_get_mean
+from bayesreconpy.PMF import _pmf_get_var as PMF_get_var
+from bayesreconpy.shrink_cov import _schafer_strimmer_cov
 from bayesreconpy.reconc_gaussian import reconc_gaussian
 from bayesreconpy.reconc_MixCond import reconc_MixCond
 from bayesreconpy.reconc_TDcond import reconc_TDcond
-from bayesreconpy.utils import MVN_sample, samples_from_pmf
+from bayesreconpy.utils import _MVN_sample, _samples_from_pmf
 from bayesreconpy.reconc_BUIS import reconc_BUIS
 
 M5_CA1_basefc = pd.read_pickle('data/M5_CA1_basefc.pkl')
@@ -44,7 +44,7 @@ residuals_upper = np.vstack([residuals for residuals in residuals_dict.values()]
 
 # Compute the (shrinked) covariance matrix of the residuals
 
-Sigma_u = schafer_strimmer_cov(residuals_upper)['shrink_cov']  # Assuming a custom function for shrinkage
+Sigma_u = _schafer_strimmer_cov(residuals_upper)['shrink_cov']  # Assuming a custom function for shrinkage
 Sigma_u = {
     'names': list(residuals_dict.keys()),  # List of names corresponding to the diagonal elements
     'Sigma_u': Sigma_u           # Covariance matrix
@@ -184,14 +184,14 @@ print(f"Computational time for TD-cond reconciliation: {TDCond_time} seconds")
 
 n_buis = int(1e5)
 mus = np.array(list(fc_upper_4rec['mu'].values()))
-upp_fore_samp = MVN_sample(n_buis, mus, fc_upper_4rec['Sigma'])
+upp_fore_samp = _MVN_sample(n_buis, mus, fc_upper_4rec['Sigma'])
 upp_fore_samp = np.maximum(0,upp_fore_samp)
 
 idx = list(fc_bottom_4rec.keys())
 
 bot_fore_samp = np.zeros((n_buis,n_b))
 for i in range(n_b):
-    bot_fore_samp[:,i] = samples_from_pmf(fc_bottom_4rec[idx[i]], n_buis)
+    bot_fore_samp[:,i] = _samples_from_pmf(fc_bottom_4rec[idx[i]], n_buis)
 
 fc_samples = np.column_stack((upp_fore_samp, bot_fore_samp))
 fc_4buis = []

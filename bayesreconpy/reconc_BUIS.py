@@ -104,8 +104,6 @@ def reconc_BUIS(
 
         - If `in_type[i] == "samples"`, `base_forecasts[i]` is a NumPy array containing samples
           from the base forecast distribution.
-          Example:
-              np.array([2, 3, 4])
 
         - If `in_type[i] == "params"`, `base_forecasts[i]` is a dictionary containing parameters
           for the specified distribution in `distr[i]`:
@@ -113,8 +111,6 @@ def reconc_BUIS(
           * `'gaussian'`: {"mean": float, "sd": float}
           * `'poisson'`: {"lambda": float}
           * `'nbinom'`: {"size": float, "prob": float} or {"size": float, "mu": float}
-          Example:
-              {"mean": 2.7, "sd": 1.3}
 
     in_type : str or list of str
         Specifies the input type for each base forecast. If a string, the same input type is applied

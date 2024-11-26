@@ -62,7 +62,7 @@ def reconc_MCMC(
 
     Returns
     -------
-    Dict[str, numpy.ndarray]
+    Dict
         A dictionary containing the reconciled forecasts:
 
         - `'bottom_reconciled_samples'`: numpy.ndarray

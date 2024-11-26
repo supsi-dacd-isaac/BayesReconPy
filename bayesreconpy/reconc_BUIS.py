@@ -109,6 +109,7 @@ def reconc_BUIS(
 
         - If `in_type[i] == "params"`, `base_forecasts[i]` is a dictionary containing parameters
           for the specified distribution in `distr[i]`:
+
           * `'gaussian'`: {"mean": float, "sd": float}
           * `'poisson'`: {"lambda": float}
           * `'nbinom'`: {"size": float, "prob": float} or {"size": float, "mu": float}
@@ -118,12 +119,14 @@ def reconc_BUIS(
     in_type : str or list of str
         Specifies the input type for each base forecast. If a string, the same input type is applied
         to all forecasts. If a list, `in_type[i]` specifies the type for the `i`-th forecast:
+
         - `'samples'`: The forecast is provided as samples.
         - `'params'`: The forecast is provided as parameters.
 
     distr : str or list of str
         Specifies the distribution type for each base forecast. If a string, the same distribution
         is applied to all forecasts. If a list, `distr[i]` specifies the distribution for the `i`-th forecast:
+
         - `'continuous'` or `'discrete'` if `in_type[i] == "samples"`.
         - `'gaussian'`, `'poisson'`, or `'nbinom'` if `in_type[i] == "params"`.
 
@@ -156,6 +159,7 @@ def reconc_BUIS(
     Notes
     -----
     - Warnings are triggered during the importance sampling step if:
+
       * All weights are zero (the corresponding upper forecast is ignored).
       * Effective sample size is less than 200.
       * Effective sample size is less than 1% of the total number of samples.

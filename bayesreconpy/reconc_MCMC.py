@@ -35,11 +35,13 @@ def reconc_MCMC(
         A list containing the parameters of the base forecast distributions. The first `n_upper` elements
         correspond to the upper base forecasts (in the order of rows in `A`), and the remaining `n_bottom`
         elements correspond to the bottom base forecasts (in the order of columns in `A`). Each element is a dictionary:
+
         - For `'poisson'`: {"lambda": float}
         - For `'nbinom'`: {"size": float, "prob": float} or {"size": float, "mu": float}
 
     distr : str
         Type of predictive distribution. Supported values:
+
         - `'poisson'`
         - `'nbinom'`
 

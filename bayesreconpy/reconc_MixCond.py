@@ -35,6 +35,7 @@ def reconc_MixCond(
         - If `bottom_in_type == "pmf"`: A dictionary where each value is a PMF object (probability mass function).
         - If `bottom_in_type == "samples"`: A dictionary or array where each value contains samples.
         - If `bottom_in_type == "params"`: A dictionary where each value contains parameters:
+
             * `'poisson'`: {"lambda": float}
             * `'nbinom'`: {"size": float, "prob": float} or {"size": float, "mu": float}
 
@@ -85,10 +86,13 @@ def reconc_MixCond(
         A dictionary containing the reconciled forecasts:
 
         - `'bottom_reconciled'`: Contains the reconciled forecasts for the bottom-level variables.
+
           - If `return_type == "pmf"`: A list of PMF objects.
           - If `return_type == "samples"`: A matrix of shape `(n_bottom, num_samples)`.
           - If `return_type == "all"`: Contains both PMF objects and samples.
+
         - `'upper_reconciled'`: Contains the reconciled forecasts for the upper-level variables.
+
           - If `return_type == "pmf"`: A list of PMF objects.
           - If `return_type == "samples"`: A matrix of shape `(n_upper, num_samples)`.
           - If `return_type == "all"`: Contains both PMF objects and samples.
@@ -99,6 +103,7 @@ def reconc_MixCond(
     - A PMF object is a numerical vector where each element corresponds to the probability of integers
       from `0` to the last value in the support.
     - Warnings are triggered during the importance sampling step if:
+
       * All weights are zero, causing the upper forecast to be ignored.
       * Effective sample size (ESS) is less than `200`.
       * ESS is less than `1%` of the total sample size.

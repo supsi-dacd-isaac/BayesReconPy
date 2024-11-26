@@ -31,6 +31,7 @@ def reconc_MixCond(
 
     fc_bottom : Union[np.array, dict]
         Base bottom forecasts. The format depends on `bottom_in_type`:
+
         - If `bottom_in_type == "pmf"`: A dictionary where each value is a PMF object (probability mass function).
         - If `bottom_in_type == "samples"`: A dictionary or array where each value contains samples.
         - If `bottom_in_type == "params"`: A dictionary where each value contains parameters:
@@ -39,11 +40,13 @@ def reconc_MixCond(
 
     fc_upper : dict
         Base upper forecasts, represented as parameters of a multivariate Gaussian distribution:
+
         - `'mu'`: A vector of length `n_upper` containing the means.
         - `'Sigma'`: A covariance matrix of shape `(n_upper, n_upper)`.
 
     bottom_in_type : str, optional
         Specifies the type of the base bottom forecasts. Possible values are:
+
         - `'pmf'`: Bottom base forecasts are provided as PMF objects.
         - `'samples'`: Bottom base forecasts are provided as samples.
         - `'params'`: Bottom base forecasts are provided as estimated parameters.
@@ -52,6 +55,7 @@ def reconc_MixCond(
     distr : str, optional
         Specifies the distribution type for the bottom base forecasts. Only used if `bottom_in_type == "params"`.
         Possible values:
+
         - `'poisson'`
         - `'nbinom'`
 
@@ -62,6 +66,7 @@ def reconc_MixCond(
 
     return_type : str, optional
         Specifies the return type of the reconciled distributions. Possible values:
+
         - `'pmf'`: Returns reconciled marginal PMF objects.
         - `'samples'`: Returns reconciled multivariate samples.
         - `'all'`: Returns both PMF objects and samples.
@@ -78,6 +83,7 @@ def reconc_MixCond(
     -------
     Dict[str, Union[Dict[str, Union[List, np.ndarray]], float]]
         A dictionary containing the reconciled forecasts:
+
         - `'bottom_reconciled'`: Contains the reconciled forecasts for the bottom-level variables.
           - If `return_type == "pmf"`: A list of PMF objects.
           - If `return_type == "samples"`: A matrix of shape `(n_bottom, num_samples)`.

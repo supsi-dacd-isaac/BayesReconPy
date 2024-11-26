@@ -142,6 +142,7 @@ def reconc_BUIS(
     -------
     dict
         A dictionary containing the reconciled forecasts:
+
         - `'bottom_reconciled_samples'`: numpy.ndarray
             A matrix of shape `(n_bottom, num_samples)` containing the reconciled samples
             for the bottom-level forecasts.

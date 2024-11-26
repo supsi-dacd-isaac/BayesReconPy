@@ -1,0 +1,1105 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>bayesreconpy package &#8212; bayesreconpy 0.1 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!-- 
+    this give us a css class that will be invisible only if js is disabled 
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="_static/scripts/fontawesome.js?digest=26a4bc78f4c0ddb94549"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
+
+    <script src="_static/documentation_options.js?v=2709fde1"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'bayesreconpy';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Welcome to bayesreconpy’s documentation!" href="index.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">bayesreconpy 0.1 documentation</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="#">
+    bayesreconpy package
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/supsi-dacd-isaac/BayesReconPy" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="#">
+    bayesreconpy package
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/supsi-dacd-isaac/BayesReconPy" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"></div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">bayesreconpy package</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="bayesreconpy-package">
+<h1>bayesreconpy package<a class="headerlink" href="#bayesreconpy-package" title="Link to this heading">#</a></h1>
+<section id="module-bayesreconpy.reconc_BUIS">
+<span id="bayesreconpy-reconc-buis"></span><h2>bayesreconpy.reconc_BUIS<a class="headerlink" href="#module-bayesreconpy.reconc_BUIS" title="Link to this heading">#</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="bayesreconpy.reconc_BUIS.reconc_BUIS">
+<span class="sig-prename descclassname"><span class="pre">bayesreconpy.reconc_BUIS.</span></span><span class="sig-name descname"><span class="pre">reconc_BUIS</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">A</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base_forecasts</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_samples</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suppress_warnings</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bayesreconpy.reconc_BUIS.reconc_BUIS" title="Link to this definition">#</a></dt>
+<dd><p>BUIS for Probabilistic Reconciliation of Forecasts via Conditioning</p>
+<p>Uses the Bottom-Up Importance Sampling (BUIS) algorithm to draw samples from the reconciled
+forecast distribution obtained via conditioning.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>A</strong> (<em>numpy.ndarray</em>) – Aggregation matrix with shape <cite>(n_upper, n_bottom)</cite>. Each column represents a bottom-level
+forecast, and each row represents an upper-level forecast. A value of <cite>1</cite> indicates a
+contribution of a bottom-level forecast to an upper-level forecast.</p></li>
+<li><p><strong>base_forecasts</strong> (<em>list</em><em> of </em><em>dict</em><em> or </em><em>numpy.ndarray</em>) – <p>A list containing <cite>n_upper + n_bottom</cite> elements. The first <cite>n_upper</cite> elements represent
+the upper-level base forecasts (in the order of rows in <cite>A</cite>), and the remaining elements
+represent the bottom-level base forecasts (in the order of columns in <cite>A</cite>).</p>
+<ul>
+<li><p>If <cite>in_type[i] == “samples”</cite>, <cite>base_forecasts[i]</cite> is a NumPy array containing samples
+from the base forecast distribution.</p></li>
+<li><p>If <cite>in_type[i] == “params”</cite>, <cite>base_forecasts[i]</cite> is a dictionary containing parameters
+for the specified distribution in <cite>distr[i]</cite>:</p>
+<ul>
+<li><p><cite>’gaussian’</cite>: {“mean”: float, “sd”: float}</p></li>
+<li><p><cite>’poisson’</cite>: {“lambda”: float}</p></li>
+<li><p><cite>’nbinom’</cite>: {“size”: float, “prob”: float} or {“size”: float, “mu”: float}</p></li>
+</ul>
+</li>
+</ul>
+</p></li>
+<li><p><strong>in_type</strong> (<em>str</em><em> or </em><em>list</em><em> of </em><em>str</em>) – <p>Specifies the input type for each base forecast. If a string, the same input type is applied
+to all forecasts. If a list, <cite>in_type[i]</cite> specifies the type for the <cite>i</cite>-th forecast:</p>
+<ul>
+<li><p><cite>’samples’</cite>: The forecast is provided as samples.</p></li>
+<li><p><cite>’params’</cite>: The forecast is provided as parameters.</p></li>
+</ul>
+</p></li>
+<li><p><strong>distr</strong> (<em>str</em><em> or </em><em>list</em><em> of </em><em>str</em>) – <p>Specifies the distribution type for each base forecast. If a string, the same distribution
+is applied to all forecasts. If a list, <cite>distr[i]</cite> specifies the distribution for the <cite>i</cite>-th forecast:</p>
+<ul>
+<li><p><cite>’continuous’</cite> or <cite>‘discrete’</cite> if <cite>in_type[i] == “samples”</cite>.</p></li>
+<li><p><cite>’gaussian’</cite>, <cite>‘poisson’</cite>, or <cite>‘nbinom’</cite> if <cite>in_type[i] == “params”</cite>.</p></li>
+</ul>
+</p></li>
+<li><p><strong>num_samples</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of samples to draw from the reconciled distribution. Ignored if <cite>in_type == “samples”</cite>,
+in which case the number of reconciled samples matches the number of samples in the base forecasts.
+Default is 20,000.</p></li>
+<li><p><strong>suppress_warnings</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to suppress warnings during the importance sampling step. Default is <cite>False</cite>.</p></li>
+<li><p><strong>seed</strong> (<em>int</em><em> or </em><em>None</em><em>, </em><em>optional</em>) – Random seed for reproducibility. Default is <cite>None</cite>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><p>A dictionary containing the reconciled forecasts:</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt><cite>’bottom_reconciled_samples’</cite>: numpy.ndarray</dt><dd><p>A matrix of shape <cite>(n_bottom, num_samples)</cite> containing the reconciled samples
+for the bottom-level forecasts.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><cite>’upper_reconciled_samples’</cite>: numpy.ndarray</dt><dd><p>A matrix of shape <cite>(n_upper, num_samples)</cite> containing the reconciled samples
+for the upper-level forecasts.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><cite>’reconciled_samples’</cite>: numpy.ndarray</dt><dd><p>A matrix of shape <cite>(n, num_samples)</cite> containing the reconciled samples
+for all forecasts.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>Warnings are triggered during the importance sampling step if:</p>
+<ul>
+<li><p>All weights are zero (the corresponding upper forecast is ignored).</p></li>
+<li><p>Effective sample size is less than 200.</p></li>
+<li><p>Effective sample size is less than 1% of the total number of samples.</p></li>
+</ul>
+</li>
+<li><p>Such warnings indicate potential issues with the base forecasts. Check the inputs in case of warnings.</p></li>
+</ul>
+<p class="rubric">Examples</p>
+<dl>
+<dt>Example 1: Gaussian base forecasts (in params form)</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="gp">... </span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">base_forecasts</span> <span class="o">=</span> <span class="p">[</span>
+<span class="gp">... </span>    <span class="p">{</span><span class="s2">&quot;mean&quot;</span><span class="p">:</span> <span class="mf">9.0</span><span class="p">,</span> <span class="s2">&quot;sd&quot;</span><span class="p">:</span> <span class="mf">3.0</span><span class="p">},</span>  <span class="c1"># Upper forecast</span>
+<span class="gp">... </span>    <span class="p">{</span><span class="s2">&quot;mean&quot;</span><span class="p">:</span> <span class="mf">2.0</span><span class="p">,</span> <span class="s2">&quot;sd&quot;</span><span class="p">:</span> <span class="mf">2.0</span><span class="p">},</span>  <span class="c1"># Bottom forecast 1</span>
+<span class="gp">... </span>    <span class="p">{</span><span class="s2">&quot;mean&quot;</span><span class="p">:</span> <span class="mf">4.0</span><span class="p">,</span> <span class="s2">&quot;sd&quot;</span><span class="p">:</span> <span class="mf">2.0</span><span class="p">}</span>   <span class="c1"># Bottom forecast 2</span>
+<span class="gp">... </span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">reconc_BUIS</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">base_forecasts</span><span class="p">,</span> <span class="n">in_type</span><span class="o">=</span><span class="s2">&quot;params&quot;</span><span class="p">,</span> <span class="n">distr</span><span class="o">=</span><span class="s2">&quot;gaussian&quot;</span><span class="p">,</span> <span class="n">num_samples</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;reconciled_samples&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="go">(3, 10000)</span>
+</pre></div>
+</div>
+</dd>
+<dt>Example 2: Poisson base forecasts (in params form)</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="gp">... </span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">base_forecasts</span> <span class="o">=</span> <span class="p">[</span>
+<span class="gp">... </span>    <span class="p">{</span><span class="s2">&quot;lambda&quot;</span><span class="p">:</span> <span class="mf">9.0</span><span class="p">},</span>  <span class="c1"># Upper forecast</span>
+<span class="gp">... </span>    <span class="p">{</span><span class="s2">&quot;lambda&quot;</span><span class="p">:</span> <span class="mf">2.0</span><span class="p">},</span>  <span class="c1"># Bottom forecast 1</span>
+<span class="gp">... </span>    <span class="p">{</span><span class="s2">&quot;lambda&quot;</span><span class="p">:</span> <span class="mf">4.0</span><span class="p">}</span>   <span class="c1"># Bottom forecast 2</span>
+<span class="gp">... </span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">reconc_BUIS</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">base_forecasts</span><span class="p">,</span> <span class="n">in_type</span><span class="o">=</span><span class="s2">&quot;params&quot;</span><span class="p">,</span> <span class="n">distr</span><span class="o">=</span><span class="s2">&quot;poisson&quot;</span><span class="p">,</span> <span class="n">num_samples</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;reconciled_samples&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="go">(3, 10000)</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-bayesreconpy.reconc_MCMC">
+<span id="bayesreconpy-reconc-mcmc"></span><h2>bayesreconpy.reconc_MCMC<a class="headerlink" href="#module-bayesreconpy.reconc_MCMC" title="Link to this heading">#</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="bayesreconpy.reconc_MCMC.reconc_MCMC">
+<span class="sig-prename descclassname"><span class="pre">bayesreconpy.reconc_MCMC.</span></span><span class="sig-name descname"><span class="pre">reconc_MCMC</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">A</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base_forecasts</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_samples</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tuning_int</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">burn_in</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bayesreconpy.reconc_MCMC.reconc_MCMC" title="Link to this definition">#</a></dt>
+<dd><p>MCMC for Probabilistic Reconciliation of forecasts via conditioning.</p>
+<p>Uses a Markov Chain Monte Carlo (MCMC) algorithm to draw samples from the reconciled
+forecast distribution, obtained via conditioning. This implementation uses the
+Metropolis-Hastings algorithm.</p>
+<p><strong>Note</strong>: This implementation only supports Poisson or Negative Binomial base forecasts.
+Gaussian distributions are not supported for MCMC.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>A</strong> (<em>numpy.ndarray</em>) – Aggregation matrix of shape <cite>(n_upper, n_bottom)</cite>. Each column represents a bottom-level
+forecast, and each row represents an upper-level forecast. A value of <cite>1</cite> in <cite>A[i, j]</cite>
+indicates that bottom-level forecast <cite>j</cite> contributes to upper-level forecast <cite>i</cite>.</p></li>
+<li><p><strong>base_forecasts</strong> (<em>list</em>) – <p>A list containing the parameters of the base forecast distributions. The first <cite>n_upper</cite> elements
+correspond to the upper base forecasts (in the order of rows in <cite>A</cite>), and the remaining <cite>n_bottom</cite>
+elements correspond to the bottom base forecasts (in the order of columns in <cite>A</cite>). Each element is a dictionary:</p>
+<ul>
+<li><p>For <cite>‘poisson’</cite>: {“lambda”: float}</p></li>
+<li><p>For <cite>‘nbinom’</cite>: {“size”: float, “prob”: float} or {“size”: float, “mu”: float}</p></li>
+</ul>
+</p></li>
+<li><p><strong>distr</strong> (<em>str</em>) – <p>Type of predictive distribution. Supported values:</p>
+<ul>
+<li><p><cite>’poisson’</cite></p></li>
+<li><p><cite>’nbinom’</cite></p></li>
+</ul>
+</p></li>
+<li><p><strong>num_samples</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of samples to draw using MCMC. Default is <cite>10,000</cite>.</p></li>
+<li><p><strong>tuning_int</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of iterations between scale updates of the proposal. Default is <cite>100</cite>.</p></li>
+<li><p><strong>init_scale</strong> (<em>float</em><em>, </em><em>optional</em>) – Initial scale of the proposal distribution. Default is <cite>1.0</cite>.</p></li>
+<li><p><strong>burn_in</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of initial samples to discard. Default is <cite>1,000</cite>.</p></li>
+<li><p><strong>seed</strong> (<em>int</em><em> or </em><em>None</em><em>, </em><em>optional</em>) – Random seed for reproducibility. Default is <cite>None</cite>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><p>A dictionary containing the reconciled forecasts:</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt><cite>’bottom_reconciled_samples’</cite>: numpy.ndarray</dt><dd><p>A matrix of shape <cite>(n_bottom, num_samples)</cite> containing
+reconciled samples for the bottom-level time series.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><cite>’upper_reconciled_samples’</cite>: numpy.ndarray</dt><dd><p>A matrix of shape <cite>(n_upper, num_samples)</cite> containing
+reconciled samples for the upper-level time series.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><cite>’reconciled_samples’</cite>: numpy.ndarray</dt><dd><p>A matrix of shape <cite>(n, num_samples)</cite> containing the reconciled
+samples for all time series, where <cite>n = n_upper + n_bottom</cite>.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dict</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>This is a bare-bones implementation of the Metropolis-Hastings algorithm.</p></li>
+<li><p>We recommend using additional tools to assess the convergence of the MCMC chains.</p></li>
+<li><p>The <cite>reconc_BUIS</cite> function is generally faster for most hierarchies.</p></li>
+</ul>
+<p class="rubric">Examples</p>
+<dl>
+<dt>Example: Simple hierarchy with Poisson base forecasts</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">bayesreconpy.reconc_BUIS</span> <span class="kn">import</span> <span class="n">reconc_BUIS</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create a minimal hierarchy with 1 upper and 2 bottom variables</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>  <span class="c1"># Aggregation matrix</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Set the parameters of the Poisson base forecast distributions</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">lambda_vals</span> <span class="o">=</span> <span class="p">[</span><span class="mi">9</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">base_forecasts</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">&quot;lambda&quot;</span><span class="p">:</span> <span class="n">lam</span><span class="p">}</span> <span class="k">for</span> <span class="n">lam</span> <span class="ow">in</span> <span class="n">lambda_vals</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Perform MCMC reconciliation</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mcmc_result</span> <span class="o">=</span> <span class="n">reconc_MCMC</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">base_forecasts</span><span class="p">,</span> <span class="n">distr</span><span class="o">=</span><span class="s2">&quot;poisson&quot;</span><span class="p">,</span> <span class="n">num_samples</span><span class="o">=</span><span class="mi">30000</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Access reconciled samples</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">samples_mcmc</span> <span class="o">=</span> <span class="n">mcmc_result</span><span class="p">[</span><span class="s1">&#39;reconciled_samples&#39;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Compare reconciled means with those from BUIS</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">buis_result</span> <span class="o">=</span> <span class="n">reconc_BUIS</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">base_forecasts</span><span class="p">,</span> <span class="n">in_type</span><span class="o">=</span><span class="s2">&quot;params&quot;</span><span class="p">,</span> <span class="n">distr</span><span class="o">=</span><span class="s2">&quot;poisson&quot;</span><span class="p">,</span> <span class="n">num_samples</span><span class="o">=</span><span class="mi">100000</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">samples_buis</span> <span class="o">=</span> <span class="n">buis_result</span><span class="p">[</span><span class="s1">&#39;reconciled_samples&#39;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;MCMC Reconciled Means:&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">samples_mcmc</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;BUIS Reconciled Means:&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">samples_buis</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+<p class="rubric">References</p>
+<ul class="simple">
+<li><p>Corani, G., Azzimonti, D., Rubattu, N. (2024).
+<em>Probabilistic reconciliation of count time series</em>.
+International Journal of Forecasting, 40(2), 457-469.</p></li>
+</ul>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">reconc_BUIS</span></code></dt><dd><p>Faster reconciliation method for most hierarchies.</p>
+</dd>
+</dl>
+</div>
+</dd></dl>
+
+</section>
+<section id="module-bayesreconpy.reconc_MixCond">
+<span id="bayesreconpy-reconc-mixcond"></span><h2>bayesreconpy.reconc_MixCond<a class="headerlink" href="#module-bayesreconpy.reconc_MixCond" title="Link to this heading">#</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="bayesreconpy.reconc_MixCond.reconc_MixCond">
+<span class="sig-prename descclassname"><span class="pre">bayesreconpy.reconc_MixCond.</span></span><span class="sig-name descname"><span class="pre">reconc_MixCond</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">A</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fc_bottom</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fc_upper</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bottom_in_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pmf'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_samples</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pmf'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suppress_warnings</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bayesreconpy.reconc_MixCond.reconc_MixCond" title="Link to this definition">#</a></dt>
+<dd><p>Probabilistic forecast reconciliation of mixed hierarchies via conditioning.</p>
+<p>Uses importance sampling to draw samples from the reconciled forecast distribution,
+obtained via conditioning, in the case of a mixed hierarchy.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>A</strong> (<em>numpy.ndarray</em>) – Aggregation matrix with shape <cite>(n_upper, n_bottom)</cite>. Each column represents a bottom-level
+forecast, and each row represents an upper-level forecast. A value of <cite>1</cite> in <cite>A[i, j]</cite>
+indicates that bottom-level forecast <cite>j</cite> contributes to upper-level forecast <cite>i</cite>.</p></li>
+<li><p><strong>fc_bottom</strong> (<em>Union</em><em>[</em><em>np.array</em><em>, </em><em>dict</em><em>]</em>) – <p>Base bottom forecasts. The format depends on <cite>bottom_in_type</cite>:</p>
+<ul>
+<li><p>If <cite>bottom_in_type == “pmf”</cite>: A dictionary where each value is a PMF object (probability mass function).</p></li>
+<li><p>If <cite>bottom_in_type == “samples”</cite>: A dictionary or array where each value contains samples.</p></li>
+<li><p>If <cite>bottom_in_type == “params”</cite>: A dictionary where each value contains parameters:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><cite>’poisson’</cite>: {“lambda”: float}</p></li>
+<li><p><cite>’nbinom’</cite>: {“size”: float, “prob”: float} or {“size”: float, “mu”: float}</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</p></li>
+<li><p><strong>fc_upper</strong> (<em>dict</em>) – <p>Base upper forecasts, represented as parameters of a multivariate Gaussian distribution:</p>
+<ul>
+<li><p><cite>’mu’</cite>: A vector of length <cite>n_upper</cite> containing the means.</p></li>
+<li><p><cite>’Sigma’</cite>: A covariance matrix of shape <cite>(n_upper, n_upper)</cite>.</p></li>
+</ul>
+</p></li>
+<li><p><strong>bottom_in_type</strong> (<em>str</em><em>, </em><em>optional</em>) – <p>Specifies the type of the base bottom forecasts. Possible values are:</p>
+<ul>
+<li><p><cite>’pmf’</cite>: Bottom base forecasts are provided as PMF objects.</p></li>
+<li><p><cite>’samples’</cite>: Bottom base forecasts are provided as samples.</p></li>
+<li><p><cite>’params’</cite>: Bottom base forecasts are provided as estimated parameters.</p></li>
+</ul>
+<p>Default is <cite>‘pmf’</cite>.</p>
+</p></li>
+<li><p><strong>distr</strong> (<em>str</em><em>, </em><em>optional</em>) – <p>Specifies the distribution type for the bottom base forecasts. Only used if <cite>bottom_in_type == “params”</cite>.
+Possible values:</p>
+<ul>
+<li><p><cite>’poisson’</cite></p></li>
+<li><p><cite>’nbinom’</cite></p></li>
+</ul>
+</p></li>
+<li><p><strong>num_samples</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of samples to draw from the reconciled distribution. Ignored if <cite>bottom_in_type == “samples”</cite>.
+In this case, the number of reconciled samples equals the number of samples in the base forecasts.
+Default is <cite>20,000</cite>.</p></li>
+<li><p><strong>return_type</strong> (<em>str</em><em>, </em><em>optional</em>) – <p>Specifies the return type of the reconciled distributions. Possible values:</p>
+<ul>
+<li><p><cite>’pmf’</cite>: Returns reconciled marginal PMF objects.</p></li>
+<li><p><cite>’samples’</cite>: Returns reconciled multivariate samples.</p></li>
+<li><p><cite>’all’</cite>: Returns both PMF objects and samples.</p></li>
+</ul>
+<p>Default is <cite>‘pmf’</cite>.</p>
+</p></li>
+<li><p><strong>suppress_warnings</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to suppress warnings about importance sampling weights.
+Default is <cite>False</cite>.</p></li>
+<li><p><strong>seed</strong> (<em>int</em><em> or </em><em>None</em><em>, </em><em>optional</em>) – Random seed for reproducibility. Default is <cite>None</cite>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><p>A dictionary containing the reconciled forecasts:</p>
+<ul>
+<li><p><cite>’bottom_reconciled’</cite>: Contains the reconciled forecasts for the bottom-level variables.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>If <cite>return_type == “pmf”</cite>: A list of PMF objects.</p></li>
+<li><p>If <cite>return_type == “samples”</cite>: A matrix of shape <cite>(n_bottom, num_samples)</cite>.</p></li>
+<li><p>If <cite>return_type == “all”</cite>: Contains both PMF objects and samples.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><cite>’upper_reconciled’</cite>: Contains the reconciled forecasts for the upper-level variables.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>If <cite>return_type == “pmf”</cite>: A list of PMF objects.</p></li>
+<li><p>If <cite>return_type == “samples”</cite>: A matrix of shape <cite>(n_upper, num_samples)</cite>.</p></li>
+<li><p>If <cite>return_type == “all”</cite>: Contains both PMF objects and samples.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><cite>’ESS’</cite>: Effective sample size after importance sampling.</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Dict[str, Union[Dict[str, Union[List, np.ndarray]], float]]</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>A PMF object is a numerical vector where each element corresponds to the probability of integers
+from <cite>0</cite> to the last value in the support.</p></li>
+<li><p>Warnings are triggered during the importance sampling step if:</p>
+<ul>
+<li><p>All weights are zero, causing the upper forecast to be ignored.</p></li>
+<li><p>Effective sample size (ESS) is less than <cite>200</cite>.</p></li>
+<li><p>ESS is less than <cite>1%</cite> of the total sample size.</p></li>
+</ul>
+</li>
+</ul>
+<p class="rubric">Examples</p>
+<dl>
+<dt>Simple hierarchy with PMF inputs</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">poisson</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Simple hierarchy with one upper and two bottom nodes</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>  <span class="c1"># Aggregation matrix</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Bottom forecasts as Poisson distributions</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">lambda_val</span> <span class="o">=</span> <span class="mi">15</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">n_tot</span> <span class="o">=</span> <span class="mi">60</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fc_bottom</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">... </span>    <span class="mi">0</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">poisson</span><span class="o">.</span><span class="n">pmf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">lambda_val</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_tot</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]),</span>
+<span class="gp">... </span>    <span class="mi">1</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">poisson</span><span class="o">.</span><span class="n">pmf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">lambda_val</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_tot</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)])</span>
+<span class="gp">... </span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Upper forecast as Gaussian parameters</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fc_upper</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">... </span>    <span class="s2">&quot;mu&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">40</span><span class="p">]),</span>  <span class="c1"># Mean</span>
+<span class="gp">... </span>    <span class="s2">&quot;Sigma&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">25</span><span class="p">]])</span>  <span class="c1"># Variance (standard deviation squared)</span>
+<span class="gp">... </span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Perform reconciliation</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">reconc_MixCond</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">fc_bottom</span><span class="p">,</span> <span class="n">fc_upper</span><span class="p">,</span> <span class="n">bottom_in_type</span><span class="o">=</span><span class="s2">&quot;pmf&quot;</span><span class="p">,</span> <span class="n">return_type</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Check the results</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;bottom_reconciled&#39;</span><span class="p">][</span><span class="s1">&#39;pmf&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;bottom_reconciled&#39;</span><span class="p">][</span><span class="s1">&#39;pmf&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;upper_reconciled&#39;</span><span class="p">][</span><span class="s1">&#39;pmf&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+<p class="rubric">References</p>
+<ul class="simple">
+<li><p>Zambon, L., Azzimonti, D., Rubattu, N., Corani, G. (2024).
+<em>Probabilistic reconciliation of mixed-type hierarchical time series</em>.
+40th Conference on Uncertainty in Artificial Intelligence.</p></li>
+</ul>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">reconc_TDcond</span></code></dt><dd><p>Probabilistic reconciliation via top-down conditioning.</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">reconc_BUIS</span></code></dt><dd><p>Reconciliation using Bottom-Up Importance Sampling (BUIS).</p>
+</dd>
+</dl>
+</div>
+</dd></dl>
+
+</section>
+<section id="module-bayesreconpy.reconc_TDcond">
+<span id="bayesreconpy-reconc-tdcond"></span><h2>bayesreconpy.reconc_TDcond<a class="headerlink" href="#module-bayesreconpy.reconc_TDcond" title="Link to this heading">#</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="bayesreconpy.reconc_TDcond.reconc_TDcond">
+<span class="sig-prename descclassname"><span class="pre">bayesreconpy.reconc_TDcond.</span></span><span class="sig-name descname"><span class="pre">reconc_TDcond</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">A</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fc_bottom</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fc_upper</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bottom_in_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pmf'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_samples</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pmf'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suppress_warnings</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_num_samples_ok</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bayesreconpy.reconc_TDcond.reconc_TDcond" title="Link to this definition">#</a></dt>
+<dd><p>Probabilistic forecast reconciliation of mixed hierarchies via top-down conditioning.</p>
+<p>Uses the top-down conditioning algorithm to draw samples from the reconciled forecast distribution.
+Reconciliation is performed in two steps:
+1. Upper base forecasts are reconciled via conditioning using the hierarchical constraints between upper variables.
+2. Bottom distributions are updated via a probabilistic top-down procedure.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>A</strong> (<em>numpy.ndarray</em>) – Aggregation matrix with shape <cite>(n_upper, n_bottom)</cite>. Each column represents a bottom-level
+forecast, and each row represents an upper-level forecast. A value of <cite>1</cite> in <cite>A[i, j]</cite> indicates
+that bottom-level forecast <cite>j</cite> contributes to upper-level forecast <cite>i</cite>.</p></li>
+<li><p><strong>fc_bottom</strong> (<em>Union</em><em>[</em><em>np.array</em><em>, </em><em>dict</em><em>]</em>) – <p>Base bottom forecasts. The format depends on <cite>bottom_in_type</cite>:</p>
+<ul>
+<li><p>If <cite>bottom_in_type == “pmf”</cite>: A dictionary where each value is a PMF object (probability mass function).</p></li>
+<li><p>If <cite>bottom_in_type == “samples”</cite>: A dictionary or array where each value contains samples.</p></li>
+<li><p>If <cite>bottom_in_type == “params”</cite>: A dictionary where each value contains parameters:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><cite>’poisson’</cite>: {“lambda”: float}</p></li>
+<li><p><cite>’nbinom’</cite>: {“size”: float, “prob”: float} or {“size”: float, “mu”: float}</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</p></li>
+<li><p><strong>fc_upper</strong> (<em>dict</em>) – <p>Base upper forecasts, represented as parameters of a multivariate Gaussian distribution:</p>
+<ul>
+<li><p><cite>’mu’</cite>: A vector of length <cite>n_upper</cite> containing the means.</p></li>
+<li><p><cite>’Sigma’</cite>: A covariance matrix of shape <cite>(n_upper, n_upper)</cite>.</p></li>
+</ul>
+</p></li>
+<li><p><strong>bottom_in_type</strong> (<em>str</em><em>, </em><em>optional</em>) – <p>Specifies the type of the base bottom forecasts. Possible values are:</p>
+<ul>
+<li><p><cite>’pmf’</cite>: Bottom base forecasts are provided as PMF objects.</p></li>
+<li><p><cite>’samples’</cite>: Bottom base forecasts are provided as samples.</p></li>
+<li><p><cite>’params’</cite>: Bottom base forecasts are provided as estimated parameters.</p></li>
+</ul>
+<p>Default is <cite>‘pmf’</cite>.</p>
+</p></li>
+<li><p><strong>distr</strong> (<em>str</em><em>, </em><em>optional</em>) – <p>Specifies the distribution type for the bottom base forecasts. Only used if <cite>bottom_in_type == “params”</cite>.
+Possible values:</p>
+<ul>
+<li><p><cite>’poisson’</cite></p></li>
+<li><p><cite>’nbinom’</cite></p></li>
+</ul>
+</p></li>
+<li><p><strong>num_samples</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of samples to draw from the reconciled distribution. Ignored if <cite>bottom_in_type == “samples”</cite>.
+In this case, the number of reconciled samples equals the number of samples in the base forecasts.
+Default is <cite>20,000</cite>.</p></li>
+<li><p><strong>return_type</strong> (<em>str</em><em>, </em><em>optional</em>) – <p>Specifies the return type of the reconciled distributions. Possible values:</p>
+<ul>
+<li><p><cite>’pmf’</cite>: Returns reconciled marginal PMF objects.</p></li>
+<li><p><cite>’samples’</cite>: Returns reconciled multivariate samples.</p></li>
+<li><p><cite>’all’</cite>: Returns both PMF objects and samples.</p></li>
+</ul>
+<p>Default is <cite>‘pmf’</cite>.</p>
+</p></li>
+<li><p><strong>suppress_warnings</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to suppress warnings about samples lying outside the support of the bottom-up distribution.
+Default is <cite>False</cite>.</p></li>
+<li><p><strong>seed</strong> (<em>int</em><em> or </em><em>None</em><em>, </em><em>optional</em>) – Random seed for reproducibility. Default is <cite>None</cite>.</p></li>
+<li><p><strong>return_num_samples_ok</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to return the number of samples that were valid after reconciliation. Default is <cite>False</cite>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><p>A dictionary containing the reconciled forecasts:</p>
+<ul>
+<li><p><cite>’bottom_reconciled’</cite>: Contains the reconciled forecasts for the bottom-level variables.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>If <cite>return_type == “pmf”</cite>: A list of PMF objects.</p></li>
+<li><p>If <cite>return_type == “samples”</cite>: A matrix of shape <cite>(n_bottom, num_samples)</cite>.</p></li>
+<li><p>If <cite>return_type == “all”</cite>: Contains both PMF objects and samples.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><cite>’upper_reconciled’</cite>: Contains the reconciled forecasts for the upper-level variables.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>If <cite>return_type == “pmf”</cite>: A list of PMF objects.</p></li>
+<li><p>If <cite>return_type == “samples”</cite>: A matrix of shape <cite>(n_upper, num_samples)</cite>.</p></li>
+<li><p>If <cite>return_type == “all”</cite>: Contains both PMF objects and samples.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>If <cite>return_num_samples_ok</cite> is <cite>True</cite>, a tuple is returned.</p></li>
+<li><p>The first element is the above dictionary.</p></li>
+<li><p>The second element is the number of valid samples after reconciliation.</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Union[Dict[str, Dict[str, Union[List, np.ndarray]]], Tuple[Dict, int]]</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>A PMF object is a numerical vector where each element corresponds to the probability of integers
+from <cite>0</cite> to the last value in the support.</p></li>
+<li><p>Samples lying outside the support of the bottom-up distribution are discarded, and a warning is issued
+if <cite>suppress_warnings</cite> is <cite>False</cite>.</p></li>
+</ul>
+<p class="rubric">Examples</p>
+<dl>
+<dt>Simple hierarchy with PMF inputs</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">poisson</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Simple hierarchy with one upper and two bottom nodes</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>  <span class="c1"># Aggregation matrix</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Bottom forecasts as Poisson distributions</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">lambda_val</span> <span class="o">=</span> <span class="mi">15</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">n_tot</span> <span class="o">=</span> <span class="mi">60</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fc_bottom</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">... </span>    <span class="mi">0</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">poisson</span><span class="o">.</span><span class="n">pmf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">lambda_val</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_tot</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]),</span>
+<span class="gp">... </span>    <span class="mi">1</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">poisson</span><span class="o">.</span><span class="n">pmf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">lambda_val</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_tot</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)])</span>
+<span class="gp">... </span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Upper forecast as Gaussian parameters</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fc_upper</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">... </span>    <span class="s2">&quot;mu&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">40</span><span class="p">]),</span>  <span class="c1"># Mean</span>
+<span class="gp">... </span>    <span class="s2">&quot;Sigma&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">25</span><span class="p">]])</span>  <span class="c1"># Variance (standard deviation squared)</span>
+<span class="gp">... </span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Perform reconciliation</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">reconc_TDcond</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">fc_bottom</span><span class="p">,</span> <span class="n">fc_upper</span><span class="p">,</span> <span class="n">bottom_in_type</span><span class="o">=</span><span class="s2">&quot;pmf&quot;</span><span class="p">,</span> <span class="n">return_type</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Check the results</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;bottom_reconciled&#39;</span><span class="p">][</span><span class="s1">&#39;pmf&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;bottom_reconciled&#39;</span><span class="p">][</span><span class="s1">&#39;pmf&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;upper_reconciled&#39;</span><span class="p">][</span><span class="s1">&#39;pmf&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+<p class="rubric">References</p>
+<ul class="simple">
+<li><p>Zambon, L., Azzimonti, D., Rubattu, N., Corani, G. (2024).
+<em>Probabilistic reconciliation of mixed-type hierarchical time series</em>.
+40th Conference on Uncertainty in Artificial Intelligence.</p></li>
+</ul>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">reconc_MixCond</span></code></dt><dd><p>Reconciliation for mixed-type hierarchies.</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">reconc_BUIS</span></code></dt><dd><p>Reconciliation using Bottom-Up Importance Sampling (BUIS).</p>
+</dd>
+</dl>
+</div>
+</dd></dl>
+
+</section>
+<section id="module-bayesreconpy.reconc_gaussian">
+<span id="bayesreconpy-reconc-gaussian"></span><h2>bayesreconpy.reconc_gaussian<a class="headerlink" href="#module-bayesreconpy.reconc_gaussian" title="Link to this heading">#</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="bayesreconpy.reconc_gaussian.reconc_gaussian">
+<span class="sig-prename descclassname"><span class="pre">bayesreconpy.reconc_gaussian.</span></span><span class="sig-name descname"><span class="pre">reconc_gaussian</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">A</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base_forecasts_mu</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base_forecasts_Sigma</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bayesreconpy.reconc_gaussian.reconc_gaussian" title="Link to this definition">#</a></dt>
+<dd><p>Analytical reconciliation of Gaussian base forecasts.
+Reconciles forecasts using a closed-form computation for Gaussian base forecasts.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>A</strong> (<em>numpy.ndarray</em>) – Aggregation matrix with shape <cite>(n_upper, n_bottom)</cite>. Each column represents a bottom-level
+forecast, and each row represents an upper-level forecast. A value of <cite>1</cite> in <cite>A[i, j]</cite> indicates
+that the bottom-level forecast <cite>j</cite> contributes to the upper-level forecast <cite>i</cite>.</p></li>
+<li><p><strong>base_forecasts_mu</strong> (<em>List</em><em>[</em><em>float</em><em>]</em>) – <p>A 1D list containing the means of the base forecasts. The order is:</p>
+<ul>
+<li><p>First, the upper-level means (in the order of rows in <cite>A</cite>).</p></li>
+<li><p>Then, the bottom-level means (in the order of columns in <cite>A</cite>).</p></li>
+</ul>
+</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>base_forecasts_Sigma<span class="classifier">numpy.ndarray</span></dt><dd><p>A 2D covariance matrix representing the uncertainties in the base forecasts.
+The order of rows and columns must match the order of <cite>base_forecasts_mu</cite>.
+Shape: <cite>(n, n)</cite>, where <cite>n = n_upper + n_bottom</cite>.</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><p>A dictionary containing:</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt><cite>’bottom_reconciled_mean’</cite><span class="classifier">numpy.ndarray</span></dt><dd><p>A 1D array of the reconciled means for the bottom-level forecasts.
+Shape: <cite>(n_bottom,)</cite>.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><cite>’bottom_reconciled_covariance’</cite><span class="classifier">numpy.ndarray</span></dt><dd><p>A 2D covariance matrix of the reconciled bottom-level forecasts.
+Shape: <cite>(n_bottom, n_bottom)</cite>.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dict[str, numpy.ndarray]</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>The function assumes that base forecasts follow a multivariate Gaussian distribution.</p></li>
+<li><p>The covariance matrix <cite>base_forecasts_Sigma</cite> should be symmetric and positive semi-definite.</p></li>
+<li><p>The order of elements in <cite>base_forecasts_mu</cite> and rows/columns in <cite>base_forecasts_Sigma</cite> is critical:
+first the upper-level forecasts (in the order of rows in <cite>A</cite>), followed by the bottom-level forecasts
+(in the order of columns in <cite>A</cite>).</p></li>
+<li><p>The function returns only the reconciled parameters for the bottom-level forecasts. Reconciled
+parameters for upper-level forecasts and the entire hierarchy can be derived using the reconciliation
+matrix <cite>A</cite>.</p></li>
+</ul>
+<p class="rubric">Examples</p>
+<dl>
+<dt>Example 1: Minimal hierarchy with Gaussian base forecasts</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="gp">... </span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">base_forecasts_mu</span> <span class="o">=</span> <span class="p">[</span><span class="mf">9.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">base_forecasts_Sigma</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">([</span><span class="mf">9.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">reconc_gaussian</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">base_forecasts_mu</span><span class="p">,</span> <span class="n">base_forecasts_Sigma</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;bottom_reconciled_mean&#39;</span><span class="p">])</span>
+<span class="go">[2.5, 4.0]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;bottom_reconciled_covariance&#39;</span><span class="p">])</span>
+<span class="go">[[2.25, 1.5 ],</span>
+<span class="go"> [1.5 , 2.0 ]]</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+<p class="rubric">References</p>
+<ul class="simple">
+<li><p>Corani, G., Azzimonti, D., Augusto, J.P.S.C., Zaffalon, M. (2021).
+<em>Probabilistic Reconciliation of Hierarchical Forecast via Bayes’ Rule</em>.
+ECML PKDD 2020. Lecture Notes in Computer Science, vol 12459.
+<a class="reference external" href="https://doi.org/10.1007/978-3-030-67664-3_13">https://doi.org/10.1007/978-3-030-67664-3_13</a></p></li>
+<li><p>Zambon, L., Agosto, A., Giudici, P., Corani, G. (2024).
+<em>Properties of the reconciled distributions for Gaussian and count forecasts</em>.
+International Journal of Forecasting (in press).
+<a class="reference external" href="https://doi.org/10.1016/j.ijforecast.2023.12.004">https://doi.org/10.1016/j.ijforecast.2023.12.004</a></p></li>
+</ul>
+</dd></dl>
+
+</section>
+<section id="module-bayesreconpy">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-bayesreconpy" title="Link to this heading">#</a></h2>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="index.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Welcome to bayesreconpy’s documentation!</p>
+      </div>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-bayesreconpy.reconc_BUIS">bayesreconpy.reconc_BUIS</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bayesreconpy.reconc_BUIS.reconc_BUIS"><code class="docutils literal notranslate"><span class="pre">reconc_BUIS()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-bayesreconpy.reconc_MCMC">bayesreconpy.reconc_MCMC</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bayesreconpy.reconc_MCMC.reconc_MCMC"><code class="docutils literal notranslate"><span class="pre">reconc_MCMC()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-bayesreconpy.reconc_MixCond">bayesreconpy.reconc_MixCond</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bayesreconpy.reconc_MixCond.reconc_MixCond"><code class="docutils literal notranslate"><span class="pre">reconc_MixCond()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-bayesreconpy.reconc_TDcond">bayesreconpy.reconc_TDcond</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bayesreconpy.reconc_TDcond.reconc_TDcond"><code class="docutils literal notranslate"><span class="pre">reconc_TDcond()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-bayesreconpy.reconc_gaussian">bayesreconpy.reconc_gaussian</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bayesreconpy.reconc_gaussian.reconc_gaussian"><code class="docutils literal notranslate"><span class="pre">reconc_gaussian()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-bayesreconpy">Module contents</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  <div class="tocsection sourcelink">
+    <a href="_sources/bayesreconpy.rst.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2024, A. Biswas, L. Nespoli.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

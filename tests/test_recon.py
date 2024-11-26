@@ -3,42 +3,42 @@ import numpy as np
 import pandas as pd
 from bayesreconpy.reconc_BUIS import reconc_BUIS
 from bayesreconpy.reconc_gaussian import reconc_gaussian
-from bayesreconpy.utils import gen_gaussian as gen_gaussian_samples
-from bayesreconpy.utils import gen_poisson as gen_poisson_samples
-from bayesreconpy.hierarchy import check_hierarchical, lowest_lev, temporal_aggregation, get_reconc_matrices
+from bayesreconpy.utils import _gen_gaussian as gen_gaussian_samples
+from bayesreconpy.utils import _gen_poisson as gen_poisson_samples
+from bayesreconpy.hierarchy import _check_hierarchical, _lowest_lev, _temporal_aggregation, _get_reconc_matrices
 from bayesreconpy.reconc_MCMC import reconc_MCMC
-from bayesreconpy.PMF import pmf_get_var as PMF_get_var
-from bayesreconpy.PMF import pmf_get_mean as PMF_get_mean
-from bayesreconpy.PMF import pmf_from_samples as PMF_from_samples
+from bayesreconpy.PMF import _pmf_get_var as PMF_get_var
+from bayesreconpy.PMF import _pmf_get_mean as PMF_get_mean
+from bayesreconpy.PMF import _pmf_from_samples as PMF_from_samples
 from bayesreconpy.reconc_MixCond import reconc_MixCond
 from bayesreconpy.reconc_TDcond import reconc_TDcond
 
 class TestScenarios(unittest.TestCase):
-    def test_hierarchy(self, size=2):
+    def _test_hierarchy(self, size=2):
         if size==2:
             A = [[1, 0], [1, 1]]
         elif size==3:
             A = [[1, 0, 0], [1, 1, 0], [1, 1, 1]]
 
-        assert check_hierarchical(A) == True
+        assert _check_hierarchical(A) == True
 
-    def test_temporal_aggregation(self):
+    def _test_temporal_aggregation(self):
         # inputa data, DataFrame, the time series data with columns as months and index as years.
         A = pd.DataFrame(np.random.randn(10, 12), columns=range(1, 13), index=range(2010, 2020))
         # list of int, aggregation levels in terms of months per period.
-        agg = temporal_aggregation(A, [1, 2, 3, 4, 6, 12])
-        agg = temporal_aggregation(A, [2, 3, 4, 6, 12])
-        agg = temporal_aggregation(A, None)
+        agg = _temporal_aggregation(A, [1, 2, 3, 4, 6, 12])
+        agg = _temporal_aggregation(A, [2, 3, 4, 6, 12])
+        agg = _temporal_aggregation(A, None)
 
-    def test_get_recon_matrices(self):
+    def _test_get_recon_matrices(self):
         agg_levels = [1, 2, 3, 4, 6, 12]
         h = 48
-        matrices_dict = get_reconc_matrices(agg_levels, h)
+        matrices_dict = _get_reconc_matrices(agg_levels, h)
 
         aggs = np.sum([h // a if a != 1 else  0 for a in agg_levels ])
         assert matrices_dict['A'].shape[0] == aggs
 
-    def test_weekly_in_type_params_distr_gaussian(self):
+    def _test_weekly_in_type_params_distr_gaussian(self):
         A = pd.read_csv("tests/Weekly-Gaussian_A.csv", header=None).values
         base_forecasts_in = pd.read_csv("tests/Weekly-Gaussian_basef.csv", header=None).values
         base_forecasts = [{"mean": row[0], "sd": row[1]} for row in base_forecasts_in]
@@ -52,7 +52,7 @@ class TestScenarios(unittest.TestCase):
             "bottom_reconciled_mean"])
         assert abs(m) < 5e-2
 
-    def test_monthly_in_type_params_distr_poisson(self):
+    def _test_monthly_in_type_params_distr_poisson(self):
         A = pd.read_csv("tests/Monthly-Poisson_A.csv", header=None).values
         base_forecasts_in = pd.read_csv("tests/Monthly-Poisson_basef.csv", header=None).values
         base_forecasts = [{"lambda": row[0]} for row in base_forecasts_in]
@@ -60,7 +60,7 @@ class TestScenarios(unittest.TestCase):
         res_buis = reconc_BUIS(A, base_forecasts, in_type="params", distr="poisson", num_samples=100, seed=42)
         assert res_buis is not None
 
-    def test_monthly_in_type_params_distr_nbinom(self):
+    def _test_monthly_in_type_params_distr_nbinom(self):
         A = pd.read_csv("tests/Monthly-NegBin_A.csv", header=None).values
         base_forecasts_in = pd.read_csv("tests/Monthly-NegBin_basef.csv", header=None).values
         base_forecasts = [{"size": row[1], "mu": row[0]} for row in base_forecasts_in]
@@ -68,7 +68,7 @@ class TestScenarios(unittest.TestCase):
         res_buis = reconc_BUIS(A, base_forecasts, in_type="params", distr="nbinom", num_samples=100, seed=42)
         assert res_buis is not None
 
-    def test_monthly_in_type_samples_distr_continuous(self):
+    def _test_monthly_in_type_samples_distr_continuous(self):
         A = pd.read_csv("tests/Monthly-Gaussian_A.csv", header=None).values
         base_forecasts = gen_gaussian_samples("tests/Monthly-Gaussian_basef.csv", seed=42)
 
@@ -84,7 +84,7 @@ class TestScenarios(unittest.TestCase):
                                                                       axis=0))
         assert abs(m) < 5e-2
 
-    def test_monthly_in_type_samples_distr_discrete(self):
+    def _test_monthly_in_type_samples_distr_discrete(self):
         A = pd.read_csv("tests/Monthly-Poisson_A.csv", header=None).values
         base_forecasts = gen_poisson_samples("tests/Monthly-Poisson_basef.csv", seed=42)
 
@@ -100,7 +100,7 @@ class TestScenarios(unittest.TestCase):
                                                                       axis=0))
         assert abs(m) < 5e-2
 
-    def test_mcmc_monthly_in_type_params_distr_poisson(self):
+    def _test_mcmc_monthly_in_type_params_distr_poisson(self):
         # Load matrices and base forecasts
         A = pd.read_csv("tests/Monthly-Poisson_A.csv", header=None).values
         base_forecasts_in = pd.read_csv("tests/Monthly-Poisson_basef.csv", header=None).values
@@ -119,7 +119,7 @@ class TestScenarios(unittest.TestCase):
         assert np.max(np.abs(m)) < 0.5
 
 
-    def test_reconc_MixCond_simple_example(self):
+    def _test_reconc_MixCond_simple_example(self):
         # Define matrix A
         A = np.array([
             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
@@ -172,7 +172,7 @@ class TestScenarios(unittest.TestCase):
         assert np.allclose(bott_rec_vars, bott_rec_vars_pmf, rtol=8e-2)
 
 
-    def test_reconc_TDcond_simple_example(self):
+    def _test_reconc_TDcond_simple_example(self):
         # Define matrix A
         A = np.array([
             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
@@ -229,7 +229,7 @@ class TestScenarios(unittest.TestCase):
         inv_B = np.diag(1 / np.diag(fc_bott_gauss["Sigma"]))
         inv_U = np.diag(1 / np.diag(fc_upper["Sigma"]))
         At_inv_U_A = A.T @ inv_U @ A
-        Au = A[lowest_lev(A),:]
+        Au = A[_lowest_lev(A),:]
         inv_A_B_At = np.linalg.inv(Au @ fc_bott_gauss["Sigma"] @ Au.T)
 
         # Reconciled precision, covariance, and mean

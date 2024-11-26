@@ -2,7 +2,7 @@ import numpy as np
 from scipy.linalg import solve, LinAlgError
 from typing import List, Dict, Tuple
 
-def check_cov(matrix, name, pd_check=False, symm_check=False):
+def _check_cov(matrix, name, pd_check=False, symm_check=False):
     """Check if a covariance matrix is positive definite and/or symmetric.
 
     Parameters:
@@ -24,7 +24,6 @@ def check_cov(matrix, name, pd_check=False, symm_check=False):
 def reconc_gaussian(A: np.ndarray, base_forecasts_mu: List[float], base_forecasts_Sigma: np.ndarray) -> Dict[str, np.ndarray]:
     """
     Analytical reconciliation of Gaussian base forecasts.
-
     Reconciles forecasts using a closed-form computation for Gaussian base forecasts.
 
     Parameters
@@ -36,6 +35,7 @@ def reconc_gaussian(A: np.ndarray, base_forecasts_mu: List[float], base_forecast
 
     base_forecasts_mu : List[float]
         A 1D list containing the means of the base forecasts. The order is:
+
         - First, the upper-level means (in the order of rows in `A`).
         - Then, the bottom-level means (in the order of columns in `A`).
 
@@ -48,7 +48,7 @@ def reconc_gaussian(A: np.ndarray, base_forecasts_mu: List[float], base_forecast
         Shape: `(n, n)`, where `n = n_upper + n_bottom`.
 
         Example:
-            Sigma = np.array([
+            base_forecasts_Sigma = np.array([
                 [9.0, 0.0, 0.0],
                 [0.0, 4.0, 0.0],
                 [0.0, 0.0, 4.0]
@@ -58,9 +58,11 @@ def reconc_gaussian(A: np.ndarray, base_forecasts_mu: List[float], base_forecast
     -------
     Dict[str, numpy.ndarray]
         A dictionary containing:
+
         - `'bottom_reconciled_mean'` : numpy.ndarray
             A 1D array of the reconciled means for the bottom-level forecasts.
             Shape: `(n_bottom,)`.
+
         - `'bottom_reconciled_covariance'` : numpy.ndarray
             A 2D covariance matrix of the reconciled bottom-level forecasts.
             Shape: `(n_bottom, n_bottom)`.
@@ -92,7 +94,6 @@ def reconc_gaussian(A: np.ndarray, base_forecasts_mu: List[float], base_forecast
         [[2.25, 1.5 ],
          [1.5 , 2.0 ]]
 
-
     References
     ----------
     - Corani, G., Azzimonti, D., Augusto, J.P.S.C., Zaffalon, M. (2021).
@@ -103,8 +104,8 @@ def reconc_gaussian(A: np.ndarray, base_forecasts_mu: List[float], base_forecast
       *Properties of the reconciled distributions for Gaussian and count forecasts*.
       International Journal of Forecasting (in press).
       https://doi.org/10.1016/j.ijforecast.2023.12.004
-
     """
+
 
     k = A.shape[0]  # number of upper TS
     m = A.shape[1]  # number of bottom TS
@@ -117,7 +118,7 @@ def reconc_gaussian(A: np.ndarray, base_forecasts_mu: List[float], base_forecast
     if k + m != n:
         raise ValueError("Input error: the shape of A is not correct")
 
-    check_cov(base_forecasts_Sigma, "Sigma", pd_check=False, symm_check=True)
+    _check_cov(base_forecasts_Sigma, "Sigma", pd_check=False, symm_check=True)
 
     Sigma_u = base_forecasts_Sigma[:k, :k]
     Sigma_b = base_forecasts_Sigma[k:, k:]
@@ -129,7 +130,7 @@ def reconc_gaussian(A: np.ndarray, base_forecasts_mu: List[float], base_forecast
     Q = Sigma_u - Sigma_ub @ A.T - A @ Sigma_ub.T + A @ Sigma_b @ A.T
 
     # Check if Q is positive definite
-    check_cov(Q, "Q", pd_check=True, symm_check=False)
+    _check_cov(Q, "Q", pd_check=True, symm_check=False)
 
     # Calculate invQ
     invQ = np.linalg.inv(Q)

@@ -1,6 +1,6 @@
 import numpy as np
 
-def cov2cor(cov):
+def _cov2cor(cov):
     """
     Convert a covariance matrix to a correlation matrix.
     """
@@ -10,7 +10,7 @@ def cov2cor(cov):
     return corr
 
 
-def schafer_strimmer_cov(x):
+def _schafer_strimmer_cov(x):
     n, p = x.shape
 
     # Compute the sample covariance matrix
@@ -24,8 +24,8 @@ def schafer_strimmer_cov(x):
     xscale = x / std_devs
 
     # Compute correlation matrices
-    rSmat = cov2cor(sMat)
-    rTmat = cov2cor(tMat)
+    rSmat = _cov2cor(sMat)
+    rTmat = _cov2cor(tMat)
 
     # Compute numerator: varSij
     xscale_sq = xscale ** 2

@@ -1,12 +1,12 @@
 import numpy as np
 from scipy import stats
 from scipy.stats import norm
-from bayesreconpy.utils import DEFAULT_PARS, check_input_BUIS, check_weights, resample, distr_sample, distr_pmf
-from bayesreconpy.hierarchy import check_hierarchical, get_HG
+from bayesreconpy.utils import DEFAULT_PARS, _check_input_BUIS, _check_weights, _resample, _distr_sample, _distr_pmf
+from bayesreconpy.hierarchy import _check_hierarchical, _get_HG
 from KDEpy import FFTKDE
 from typing import List, Dict, Union
 
-def check_hierfamily_rel(sh_res, distr, debug=False):
+def _check_hierfamily_rel(sh_res, distr, debug=False):
     bottom_idxs = sh_res['bottom_idxs']
     upper_idxs = sh_res['upper_idxs']
     A = sh_res['A']
@@ -37,7 +37,7 @@ def check_hierfamily_rel(sh_res, distr, debug=False):
 
 
 
-def emp_pmf(l, density_samples):
+def _emp_pmf(l, density_samples):
     # Compute the empirical PMF from the density samples
     values, counts = np.unique(density_samples, return_counts=True)
     empirical_pmf = dict(zip(values, counts / len(density_samples)))
@@ -47,11 +47,11 @@ def emp_pmf(l, density_samples):
     return w
 
 
-def compute_weights(b, u, in_type_, distr_):
+def _compute_weights(b, u, in_type_, distr_):
     if in_type_ == "samples":
         if distr_ == "discrete":
             # Discrete samples
-            w = emp_pmf(b, u)
+            w = _emp_pmf(b, u)
         elif distr_ == "continuous":
             # KDE (Kernel Density Estimation)
             fftkde = FFTKDE(kernel='gaussian', bw='ISJ').fit(u)
@@ -65,7 +65,7 @@ def compute_weights(b, u, in_type_, distr_):
         w[np.isnan(w)] = 0
     elif in_type_ == "params":
         # This function needs to be defined separately
-        w = distr_pmf(b, u, distr_)
+        w = _distr_pmf(b, u, distr_)
 
     # Ensure not to return all 0 weights, return ones instead
     if np.sum(w) == 0:
@@ -205,7 +205,7 @@ def reconc_BUIS(
         in_type = np.tile(in_type, n_tot).tolist()
 
     # Ensure that data inputs are valid
-    check_input_BUIS(A, base_forecasts, in_type, distr)
+    _check_input_BUIS(A, base_forecasts, in_type, distr)
 
     # Split bottoms and uppers
     upper_base_forecasts = base_forecasts[:n_upper]
@@ -220,10 +220,10 @@ def reconc_BUIS(
     }
 
     # Check on continuous/discrete in relationship to the hierarchy
-    check_hierfamily_rel(split_hierarchy_res, distr)
+    _check_hierfamily_rel(split_hierarchy_res, distr)
 
     # H, G
-    is_hier = check_hierarchical(A)
+    is_hier = _check_hierarchical(A)
     if is_hier:
         H = A
         G = None
@@ -234,7 +234,7 @@ def reconc_BUIS(
         in_typeG = None
         distr_G = None
     else:
-        get_HG_res = get_HG(A, upper_base_forecasts, [distr[i] for i in split_hierarchy_res['upper_idxs']],
+        get_HG_res = _get_HG(A, upper_base_forecasts, [distr[i] for i in split_hierarchy_res['upper_idxs']],
                             [in_type[i] for i in split_hierarchy_res['upper_idxs']])
         H = get_HG_res['H']
         upper_base_forecasts_H = get_HG_res['Hv']
@@ -255,7 +255,7 @@ def reconc_BUIS(
             B.append(np.array(bottom_base_forecasts[bi]))
         elif in_type_bottom[bi] == "params":
             B.append(
-                distr_sample(bottom_base_forecasts[bi], np.array(distr)[split_hierarchy_res['bottom_idxs']][bi], num_samples))
+                _distr_sample(bottom_base_forecasts[bi], np.array(distr)[split_hierarchy_res['bottom_idxs']][bi], num_samples))
 
     B = np.column_stack(B)  # B is a matrix (num_samples x n_bottom)
 
@@ -263,13 +263,13 @@ def reconc_BUIS(
     for hi in range(H.shape[0]):
         c = H[hi, :]
         b_mask = (c != 0)
-        weights = compute_weights(
+        weights = _compute_weights(
             b=np.dot(B, c),
             u=upper_base_forecasts_H[hi],
             in_type_=in_typeH[hi],
             distr_=distr_H[hi]
         )
-        check_weights_res = check_weights(weights)
+        check_weights_res = _check_weights(weights)
         if check_weights_res['warning'] and not suppress_warnings:
             warning_msg = check_weights_res['warning_msg']
             upper_fromA_i = [i for i, row in enumerate(A) if np.allclose(row, c)]
@@ -279,20 +279,20 @@ def reconc_BUIS(
         if check_weights_res['warning'] and 1 in check_weights_res['warning_code']:
             continue
 
-        B[:, b_mask] = resample(B[:, b_mask], weights)
+        B[:, b_mask] = _resample(B[:, b_mask], weights)
 
     if G is not None:
         # Plain IS on the additional constraints
         weights = np.ones(B.shape[0])
         for gi in range(G.shape[0]):
             c = G[gi, :]
-            weights *= compute_weights(
+            weights *= _compute_weights(
                 b=np.dot(B, c),
                 u=upper_base_forecasts_G[gi],
                 in_type_=in_typeG[gi],
                 distr_=distr_G[gi]
             )
-        check_weights_res = check_weights(weights)
+        check_weights_res = _check_weights(weights)
         if check_weights_res['warning'] and not suppress_warnings:
             warning_msg = check_weights_res['warning_msg']
             upper_fromA_i = [i for i in range(n_upper) for gi in range(G.shape[0]) if np.allclose(A[i, :], G[gi, :])]
@@ -300,7 +300,7 @@ def reconc_BUIS(
                 wmsg = f"{wmsg} Check the upper forecasts at index: {{{', '.join(map(str, upper_fromA_i))}}}."
                 print(f"Warning: {wmsg}")
         if not (check_weights_res['warning'] and 1 in check_weights_res['warning_code']):
-            B = resample(B, weights)
+            B = _resample(B, weights)
 
     B = B.T
     U = np.dot(A, B)

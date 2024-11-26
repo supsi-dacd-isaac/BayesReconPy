@@ -1,12 +1,12 @@
 import numpy as np
-from bayesreconpy.utils import DEFAULT_PARS, check_input_TD
-from bayesreconpy.hierarchy import lowest_lev, get_Au
+from bayesreconpy.utils import DEFAULT_PARS, _check_input_TD
+from bayesreconpy.hierarchy import _lowest_lev, _get_Au
 from bayesreconpy.reconc_gaussian import reconc_gaussian
-from bayesreconpy.PMF import pmf_from_samples, pmf_from_params, pmf_check_support, pmf_bottom_up
-from bayesreconpy.utils import MVN_sample
+from bayesreconpy.PMF import _pmf_from_samples, _pmf_from_params, _pmf_check_support, _pmf_bottom_up
+from bayesreconpy.utils import _MVN_sample
 from typing import Union, Optional, Dict, List, Tuple
 
-def cond_biv_sampling(u, pmf1, pmf2):
+def _cond_biv_sampling(u, pmf1, pmf2):
     # Initialize switch flag
     pmf1 = np.atleast_1d(pmf1)
     pmf2 = np.atleast_1d(pmf2)
@@ -41,12 +41,12 @@ def cond_biv_sampling(u, pmf1, pmf2):
     return b1, u - b1
 
 
-def TD_sampling(u, bott_pmf, toll=DEFAULT_PARS['TOL'], rtol=DEFAULT_PARS['RTOL'], smoothing=True,
+def _TD_sampling(u, bott_pmf, toll=DEFAULT_PARS['TOL'], rtol=DEFAULT_PARS['RTOL'], smoothing=True,
                 al_smooth=DEFAULT_PARS['ALPHA_SMOOTHING'], lap_smooth=DEFAULT_PARS['LAP_SMOOTHING']):
     if len(bott_pmf) == 1:
         return np.tile(u, (1, 1))
 
-    l_l_pmf = pmf_bottom_up(bott_pmf, toll=toll, rtol=rtol, return_all=True,
+    l_l_pmf = _pmf_bottom_up(bott_pmf, toll=toll, rtol=rtol, return_all=True,
                             smoothing=smoothing, alpha_smooth=al_smooth, laplace_smooth=lap_smooth)
     l_l_pmf = l_l_pmf[::-1] # flipping the list sa that we skip the upper pmf
 
@@ -55,7 +55,7 @@ def TD_sampling(u, bott_pmf, toll=DEFAULT_PARS['TOL'], rtol=DEFAULT_PARS['RTOL']
         L = len(l_pmf)
         b_new = np.empty((L, len(u)))
         for j in range(L // 2):
-            b = cond_biv_sampling(b_old[j, :], l_pmf[2 * j], l_pmf[2 * j + 1])
+            b = _cond_biv_sampling(b_old[j, :], l_pmf[2 * j], l_pmf[2 * j + 1])
             b_new[2 * j, :] = b[0]
             b_new[2 * j + 1, :] = b[1]
         if L % 2 == 1:
@@ -211,12 +211,12 @@ def reconc_TDcond(
         np.random.seed(seed)
 
     # Check inputs
-    check_input_TD(A, fc_bottom, fc_upper, bottom_in_type, distr, return_type)
+    _check_input_TD(A, fc_bottom, fc_upper, bottom_in_type, distr, return_type)
 
     # Find the "lowest upper"
     n_u = A.shape[0]
     n_b = A.shape[1]
-    lowest_rows = lowest_lev(A)
+    lowest_rows = _lowest_lev(A)
     n_u_low = len(lowest_rows)  # number of lowest upper
     n_u_upp = n_u - n_u_low  # number of "upper upper"
 
@@ -228,12 +228,12 @@ def reconc_TDcond(
 
     # Get upper samples
     if n_u == n_u_low:
-        U = MVN_sample(num_samples, mu_u, Sigma_u)  # (dim: num_samples x n_u_low)
+        U = _MVN_sample(num_samples, mu_u, Sigma_u)  # (dim: num_samples x n_u_low)
         U = np.round(U)  # round to integer
         U_js = [U[:, i] for i in range(U.shape[1])]
     else:
         # Reconcile the upper
-        A_u = get_Au(A, lowest_rows)
+        A_u = _get_Au(A, lowest_rows)
         mu_u_ord = np.concatenate([np.delete(mu_u,lowest_rows), mu_u[lowest_rows]])
         Sigma_u_ord = np.zeros((n_u, n_u))
         Sigma_u_ord[:n_u_upp, :n_u_upp] = np.delete(np.delete(Sigma_u, lowest_rows, axis=0), lowest_rows, axis=1)
@@ -242,7 +242,7 @@ def reconc_TDcond(
         Sigma_u_ord[n_u_upp:, n_u_upp:] = Sigma_u[np.ix_(lowest_rows, lowest_rows)]
 
         rec_gauss_u = reconc_gaussian(A_u, mu_u_ord, Sigma_u_ord)
-        U = MVN_sample(num_samples, rec_gauss_u['bottom_reconciled_mean'], rec_gauss_u['bottom_reconciled_covariance'])
+        U = _MVN_sample(num_samples, rec_gauss_u['bottom_reconciled_mean'], rec_gauss_u['bottom_reconciled_covariance'])
         U = np.round(U)  # round to integer
         U_js = [U[:, i] for i in range(U.shape[1])]
 
@@ -251,11 +251,11 @@ def reconc_TDcond(
         L_pmf = [v for v in fc_bottom.values()]
     elif bottom_in_type == "samples":
         if isinstance(fc_bottom, dict):
-            L_pmf = [pmf_from_samples(fc) for fc in fc_bottom.values()]
+            L_pmf = [_pmf_from_samples(fc) for fc in fc_bottom.values()]
         else:
-            L_pmf = [pmf_from_samples(fc) for fc in fc_bottom]
+            L_pmf = [_pmf_from_samples(fc) for fc in fc_bottom]
     elif bottom_in_type == "params":
-        L_pmf = [pmf_from_params(fc, distr) for key, fc in fc_bottom.items()]
+        L_pmf = [_pmf_from_params(fc, distr) for key, fc in fc_bottom.items()]
 
     # Prepare list of lists of bottom pmf relative to each lowest upper
     L_pmf_js = []
@@ -264,7 +264,7 @@ def reconc_TDcond(
         L_pmf_js.append([L_pmf[i] for i in range(len(Aj)) if Aj[i]])
 
     # Check that each multiv. sample of U is contained in the supp of the bottom-up distr
-    samp_ok = np.array([pmf_check_support(u_j, L_pmf_j) for u_j, L_pmf_j in zip(U_js, L_pmf_js)])
+    samp_ok = np.array([_pmf_check_support(u_j, L_pmf_j) for u_j, L_pmf_j in zip(U_js, L_pmf_js)])
     samp_ok = np.sum(samp_ok, axis=0) == n_u_low
 
     U_js = [U_j[samp_ok] for U_j in U_js]
@@ -279,7 +279,7 @@ def reconc_TDcond(
     for j in range(n_u_low):
 
         mask_j = A[lowest_rows[j], :]  # mask for the position of the bottom referring to lowest upper j
-        B[np.where(mask_j)[0], :] = TD_sampling(U_js[j], L_pmf_js[j])
+        B[np.where(mask_j)[0], :] = _TD_sampling(U_js[j], L_pmf_js[j])
 
     U = A @ B  # dim: n_upper x num_samples
     B = B.astype(int)
@@ -289,8 +289,8 @@ def reconc_TDcond(
     result = {'bottom_reconciled': {}, 'upper_reconciled': {}}
 
     if return_type in ['pmf', 'all']:
-        upper_pmf = [pmf_from_samples(U[i, :]) for i in range(n_u)]
-        bottom_pmf = [pmf_from_samples(B[i, :]) for i in range(n_b)]
+        upper_pmf = [_pmf_from_samples(U[i, :]) for i in range(n_u)]
+        bottom_pmf = [_pmf_from_samples(B[i, :]) for i in range(n_b)]
         result['bottom_reconciled']['pmf'] = bottom_pmf
         result['upper_reconciled']['pmf'] = upper_pmf
 

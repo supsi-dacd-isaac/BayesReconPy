@@ -34,7 +34,7 @@ DEFAULT_PARS = {
 ################################################################################
 # CHECK INPUT
 
-def check_S(S):
+def _check_S(S):
     # Check if S contains only 0s and 1s
     if not np.array_equal(np.sort(np.unique(S)), np.array([0, 1])):
         raise ValueError("Input error in S: S must be a matrix containing only 0s and 1s.")
@@ -60,7 +60,7 @@ def check_S(S):
 
 ################################################################################
 # Function to check aggregation matrix A
-def check_A(A):
+def _check_A(A):
     # Check if A contains only 0s and 1s
     if not np.all(np.isin(A, [0, 1])):
         raise ValueError("Input error in A: A must be a matrix containing only 0s and 1s.")
@@ -77,7 +77,7 @@ def check_A(A):
 
 ################################################################################
 # Check if it is a covariance matrix (i.e., symmetric and positive definite)
-def check_cov(cov_matrix, Sigma_str, pd_check=False, symm_check=False):
+def _check_cov(cov_matrix, Sigma_str, pd_check=False, symm_check=False):
     # Check if the matrix is square
     if not isinstance(cov_matrix, np.ndarray) or cov_matrix.shape[0] != cov_matrix.shape[1]:
         raise ValueError(f"{Sigma_str} is not square")
@@ -103,20 +103,20 @@ def check_cov(cov_matrix, Sigma_str, pd_check=False, symm_check=False):
 
 ################################################################################
 # Checks if the input is a real number
-def check_real_number(x):
+def _check_real_number(x):
     return isinstance(x, (int, float)) and not isinstance(x, bool)
 
 
 ################################################################################
 # Checks if the input is a positive number
-def check_positive_number(x):
+def _check_positive_number(x):
     return isinstance(x, (int, float)) and not isinstance(x, bool) and x > 0
 
 
 ################################################################################
 # Check that the distribution is implemented
 
-def check_implemented_distr(distr):
+def _check_implemented_distr(distr):
     if distr not in DISCR_DISTR + CONT_DISTR:
         raise ValueError(
             f"Input error: the distribution must be one of {{{', '.join(DISCR_DISTR + CONT_DISTR)}}}"
@@ -126,8 +126,8 @@ def check_implemented_distr(distr):
 ################################################################################
 # Check the parameters of the distribution
 
-def check_distr_params(distr, params):
-    check_implemented_distr(distr)
+def _check_distr_params(distr, params):
+    _check_implemented_distr(distr)
 
     if not isinstance(params, dict):
         raise ValueError("Input error: the parameters of the distribution must be given as a dictionary.")
@@ -135,14 +135,14 @@ def check_distr_params(distr, params):
     if distr == "gaussian":
         mean = params.get("mean")
         sd = params.get("sd")
-        if not check_real_number(mean):
+        if not _check_real_number(mean):
             raise ValueError("Input error: mean of Gaussian must be a real number")
-        if not check_positive_number(sd):
+        if not _check_positive_number(sd):
             raise ValueError("Input error: sd of Gaussian must be a positive number")
 
     elif distr == "poisson":
         lambda_ = params.get("lambda")
-        if not check_positive_number(lambda_):
+        if not _check_positive_number(lambda_):
             raise ValueError("Input error: lambda of Poisson must be a positive number")
 
     elif distr == "nbinom":
@@ -152,7 +152,7 @@ def check_distr_params(distr, params):
 
         if size is None:
             raise ValueError("Input error: size parameter for the nbinom distribution must be specified")
-        if not check_positive_number(size):
+        if not _check_positive_number(size):
             raise ValueError("Input error: size of nbinom must be a positive number")
 
         if prob is not None and mu is not None:
@@ -161,24 +161,24 @@ def check_distr_params(distr, params):
             raise ValueError("Input error: either prob or mu must be specified")
         else:
             if prob is not None:
-                if not check_positive_number(prob) or prob > 1:
+                if not _check_positive_number(prob) or prob > 1:
                     raise ValueError("Input error: prob of nbinom must be positive and <= 1")
             elif mu is not None:
-                if not check_positive_number(mu):
+                if not _check_positive_number(mu):
                     raise ValueError("Input error: mu of nbinom must be positive")
 
 
 ################################################################################
 # Check that the samples are discrete
-def check_discrete_samples(samples):
+def _check_discrete_samples(samples):
     if not np.array_equal(samples, np.floor(samples)):
         raise ValueError("Input error: samples are not all discrete")
 
 
 ################################################################################
 # Check input for BUIS (and for MH)
-def check_input_BUIS(A, base_forecasts, in_type, distr):
-    check_A(A)
+def _check_input_BUIS(A, base_forecasts, in_type, distr):
+    _check_A(A)
 
     n_tot_A = A.shape[1] + A.shape[0]
 
@@ -203,18 +203,18 @@ def check_input_BUIS(A, base_forecasts, in_type, distr):
 
     for i in range(n_tot_A):
         if in_type[i] == "params":
-            check_distr_params(distr[i], base_forecasts[i])
+            _check_distr_params(distr[i], base_forecasts[i])
         elif in_type[i] == "samples":
             if distr[i] not in DISTR_TYPES:
                 raise ValueError(f"Input error: the distribution must be one of {{{', '.join(DISTR_TYPES)}}}")
             if distr[i] == "discrete":
-                check_discrete_samples(base_forecasts[i])
+                _check_discrete_samples(base_forecasts[i])
 
 
 ################################################################################
 # Check input for TDcond
-def check_input_TD(A, fc_bottom, fc_upper, bottom_in_type, distr, return_type):
-    check_A(A)
+def _check_input_TD(A, fc_bottom, fc_upper, bottom_in_type, distr, return_type):
+    _check_A(A)
 
     n_b = A.shape[1]  # number of bottom TS
     n_u = A.shape[0]  # number of upper TS
@@ -242,7 +242,7 @@ def check_input_TD(A, fc_bottom, fc_upper, bottom_in_type, distr, return_type):
         raise ValueError("Input error: the dimensions of the upper parameters do not match with A")
 
     # Check that Sigma is a covariance matrix (symmetric positive semi-definite)
-    check_cov(fc_upper['Sigma'], "Upper covariance matrix", symm_check=True)
+    _check_cov(fc_upper['Sigma'], "Upper covariance matrix", symm_check=True)
 
     # If bottom_in_type is not "params" but distr is specified, throw a warning
     if bottom_in_type in ["pmf", "samples"] and distr is not None:
@@ -256,12 +256,12 @@ def check_input_TD(A, fc_bottom, fc_upper, bottom_in_type, distr, return_type):
         if distr not in DISCR_DISTR:
             raise ValueError(f"Input error: distr must be one of {{{', '.join(DISCR_DISTR)}}}")
         for i in range(n_b):
-            check_distr_params(distr, fc_bottom[i])
+            _check_distr_params(distr, fc_bottom[i])
 
 
 ################################################################################
 # Check importance sampling weights
-def check_weights(w, n_eff_min=200, p_n_eff=0.01):
+def _check_weights(w, n_eff_min=200, p_n_eff=0.01):
     warning = False
     warning_code = []
     warning_msg = []
@@ -309,8 +309,8 @@ def check_weights(w, n_eff_min=200, p_n_eff=0.01):
 # SAMPLE
 
 # Sample from one of the implemented distributions
-def distr_sample(params, distr, n):
-    check_distr_params(distr, params)
+def _distr_sample(params, distr, n):
+    _check_distr_params(distr, params)
 
     if distr == "gaussian":
         mean = params['mean']
@@ -339,11 +339,11 @@ def distr_sample(params, distr, n):
 
 ################################################################################
 # Sample from a multivariate Gaussian distribution with specified mean and cov. matrix
-def MVN_sample(n_samples, mu, Sigma):
+def _MVN_sample(n_samples, mu, Sigma):
     return np.random.multivariate_normal(mu, Sigma, n_samples)
 
 
-def MVN_density(x, mu, Sigma, max_size_x=5000, suppress_warnings=True):
+def _MVN_density(x, mu, Sigma, max_size_x=5000, suppress_warnings=True):
     mvr = multivariate_normal(mean=mu,cov=Sigma)
     pdf = mvr.pdf(x)
     return pdf
@@ -351,7 +351,7 @@ def MVN_density(x, mu, Sigma, max_size_x=5000, suppress_warnings=True):
 
 ################################################################################
 # Resample from weighted sample
-def resample(S_, weights, num_samples=None):
+def _resample(S_, weights, num_samples=None):
 
     if num_samples is None:
         num_samples = len(weights)
@@ -368,8 +368,8 @@ def resample(S_, weights, num_samples=None):
 # Miscellaneous
 
 # Compute the PMF of the distribution specified by distr and params at the points x
-def distr_pmf(x, params, distr):
-    check_distr_params(distr, params)
+def _distr_pmf(x, params, distr):
+    _check_distr_params(distr, params)
 
     if distr == "gaussian":
         mean = params['mean']
@@ -398,7 +398,7 @@ def distr_pmf(x, params, distr):
 
 ################################################################################
 # Print the shape of a matrix or array
-def shape(m):
+def _shape(m):
     print(f"({m.shape[0]}, {m.shape[1]})")
 
 
@@ -406,7 +406,7 @@ def shape(m):
 # Functions for tests
 
 # Generate Gaussian samples based on parameters from a CSV file
-def gen_gaussian(params_file, seed=None):
+def _gen_gaussian(params_file, seed=None):
     if seed is not None:
         np.random.seed(seed)
 
@@ -422,7 +422,7 @@ def gen_gaussian(params_file, seed=None):
 
 
 # Generate Poisson samples based on parameters from a CSV file
-def gen_poisson(params_file, seed=None):
+def _gen_poisson(params_file, seed=None):
     if seed is not None:
         np.random.seed(seed)
 
@@ -437,7 +437,7 @@ def gen_poisson(params_file, seed=None):
     return out
 
 ################################################################################
-def samples_from_pmf(pmf, n_samples):
+def _samples_from_pmf(pmf, n_samples):
     # compute the cdf of the bottom forecast
     cdf = np.cumsum(pmf)
     # use inverse sample trick to sample from the cdf

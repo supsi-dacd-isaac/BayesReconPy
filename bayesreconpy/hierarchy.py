@@ -3,7 +3,7 @@ from pulp import LpProblem, LpVariable, LpMinimize, lpSum, PULP_CBC_CMD
 import pandas as pd
 
 
-def get_hier_rows(A, scale=196):
+def _get_hier_rows(A, scale=196):
     # This function is equivalent to .get_hier_rows in python
 
     A = np.array(A)
@@ -80,8 +80,8 @@ def get_hier_rows(A, scale=196):
     return indices_sol
 
 
-def get_HG(A, v, d, it):
-    indices_sol = get_hier_rows(A)
+def _get_HG(A, v, d, it):
+    indices_sol = _get_hier_rows(A)
 
     ind_h = indices_sol.astype(bool)
     H = A[ind_h]
@@ -119,7 +119,7 @@ def get_HG(A, v, d, it):
     }
 
 
-def gen_monthly():
+def _gen_monthly():
     H = np.zeros((10, 12), dtype=int)
     for j in range(6):
         H[j, (2 * j):(2 * (j + 1))] = 1
@@ -136,7 +136,7 @@ def gen_monthly():
     return np.vstack([H, G])
 
 
-def gen_weekly():
+def _gen_weekly():
     H = np.zeros((40, 52), dtype=int)
     for j in range(26):
         H[j, (2 * j):(2 * (j + 1))] = 1
@@ -153,7 +153,7 @@ def gen_weekly():
     return np.vstack([H, G])
 
 
-def check_hierarchical(A):
+def _check_hierarchical(A):
     A = np.array(A)
     k, m = A.shape
 
@@ -169,9 +169,9 @@ def check_hierarchical(A):
 
 
 
-def lowest_lev(A):
+def _lowest_lev(A):
     A = np.array(A)
-    if not check_hierarchical(A):
+    if not _check_hierarchical(A):
         raise ValueError("Matrix A is not hierarchical")
 
     indexes = np.unique(A, return_index=True, axis=0)[1];
@@ -206,9 +206,9 @@ def lowest_lev(A):
     return low_rows_A
 
 
-def get_Au(A, lowest_rows=None):
+def _get_Au(A, lowest_rows=None):
     if lowest_rows is None:
-        lowest_rows = lowest_lev(A)
+        lowest_rows = _lowest_lev(A)
 
     if len(lowest_rows) == len(A):
         print("Warning: All the upper are lowest-upper. Return None")
@@ -229,7 +229,7 @@ def get_Au(A, lowest_rows=None):
     return A_u
 
 
-def temporal_aggregation(y, agg_levels=None):
+def _temporal_aggregation(y, agg_levels=None):
     """
     Temporally aggregates a time series at specified levels.
 
@@ -278,7 +278,7 @@ def temporal_aggregation(y, agg_levels=None):
     return dict(reversed(list(aggregated_data.items())))
 
 
-def get_reconc_matrices(agg_levels, h):
+def _get_reconc_matrices(agg_levels, h):
     """
     Generates aggregation and reconciliation matrices for hierarchical forecasting.
 

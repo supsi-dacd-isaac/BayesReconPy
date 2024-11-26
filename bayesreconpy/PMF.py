@@ -4,7 +4,7 @@ from bayesreconpy.utils import DEFAULT_PARS
 
 
 # Compute the empirical PMF from a vector of samples
-def pmf_from_samples(v):
+def _pmf_from_samples(v):
     # Check that samples are discrete
     if not np.array_equal(v, v.astype(int)):
         raise ValueError("Input error: samples are not all discrete")
@@ -21,7 +21,7 @@ def pmf_from_samples(v):
 
 
 # Compute the PMF from a parametric distribution
-def pmf_from_params(params, distr, rtol=DEFAULT_PARS['RTOL']):
+def _pmf_from_params(params, distr, rtol=DEFAULT_PARS['RTOL']):
     # Validate the distribution type
     if distr not in ['poisson', 'nbinom']:
         raise ValueError(f"Input error: distr must be one of ['poisson', 'nbinom']")
@@ -54,7 +54,7 @@ def pmf_from_params(params, distr, rtol=DEFAULT_PARS['RTOL']):
     return pmf
 
 
-def pmf_sample(pmf, N_samples):
+def _pmf_sample(pmf, N_samples):
     pmf = np.atleast_1d(pmf)
     # Ensure that pmf is a normalized probability distribution
     if not np.isclose(np.sum(pmf), 1.0):
@@ -69,7 +69,7 @@ def pmf_sample(pmf, N_samples):
     return samples
 
 
-def pmf_get_mean(pmf):
+def _pmf_get_mean(pmf):
     pmf = np.atleast_1d(pmf)
     # Ensure that pmf is a normalized probability distribution
     if not np.isclose(np.sum(pmf), 1.0):
@@ -84,7 +84,7 @@ def pmf_get_mean(pmf):
     return mean
 
 
-def pmf_get_var(pmf):
+def _pmf_get_var(pmf):
     pmf = np.atleast_1d(pmf)
     # Ensure that pmf is a normalized probability distribution
     if not np.isclose(np.sum(pmf), 1.0):
@@ -105,7 +105,7 @@ def pmf_get_var(pmf):
     return variance
 
 
-def pmf_get_quantile(pmf, p):
+def _pmf_get_quantile(pmf, p):
     # Check that the probability p is within the valid range
     if p <= 0 or p >= 1:
         raise ValueError("Input error: probability p must be between 0 and 1")
@@ -119,21 +119,21 @@ def pmf_get_quantile(pmf, p):
     return x
 
 
-def pmf_summary(pmf, Ltoll=DEFAULT_PARS['TOL'], rtol=DEFAULT_PARS['RTOL']):
+def _pmf_summary(pmf, Ltoll=DEFAULT_PARS['TOL'], rtol=DEFAULT_PARS['RTOL']):
     min_pmf = np.min(np.where(pmf > Ltoll)) - 1
     max_pmf = np.max(np.where(pmf > rtol)) - 1
     summary = {
         "Min.": min_pmf,
-        "1st Qu.": pmf_get_quantile(pmf, 0.25),
-        "Median": pmf_get_quantile(pmf, 0.5),
-        "Mean": pmf_get_mean(pmf),
-        "3rd Qu.": pmf_get_quantile(pmf, 0.75),
+        "1st Qu.": _pmf_get_quantile(pmf, 0.25),
+        "Median": _pmf_get_quantile(pmf, 0.5),
+        "Mean": _pmf_get_mean(pmf),
+        "3rd Qu.": _pmf_get_quantile(pmf, 0.75),
         "Max": max_pmf
     }
     return summary
 
 
-def pmf_smoothing(pmf, alpha=DEFAULT_PARS['ALPHA'], laplace=False):
+def _pmf_smoothing(pmf, alpha=DEFAULT_PARS['ALPHA'], laplace=False):
     if alpha is None:
         alpha = np.min(pmf[pmf != 0])
 
@@ -146,7 +146,7 @@ def pmf_smoothing(pmf, alpha=DEFAULT_PARS['ALPHA'], laplace=False):
     return pmf / np.sum(pmf)
 
 
-def pmf_conv(pmf1, pmf2, toll=DEFAULT_PARS['TOL'], rtol=DEFAULT_PARS['RTOL']):
+def _pmf_conv(pmf1, pmf2, toll=DEFAULT_PARS['TOL'], rtol=DEFAULT_PARS['RTOL']):
     # Convolution
     pmf = np.convolve(pmf1, pmf2, mode='full')
 
@@ -169,10 +169,10 @@ def pmf_conv(pmf1, pmf2, toll=DEFAULT_PARS['TOL'], rtol=DEFAULT_PARS['RTOL']):
     return pmf / np.sum(pmf)
 
 
-def pmf_bottom_up(l_pmf, toll=DEFAULT_PARS['TOL'], rtol=DEFAULT_PARS['RTOL'], return_all=False, smoothing=True, alpha_smooth=DEFAULT_PARS['ALPHA_SMOOTHING'],
+def _pmf_bottom_up(l_pmf, toll=DEFAULT_PARS['TOL'], rtol=DEFAULT_PARS['RTOL'], return_all=False, smoothing=True, alpha_smooth=DEFAULT_PARS['ALPHA_SMOOTHING'],
                   laplace_smooth=False):
     if smoothing:
-        l_pmf = [pmf_smoothing(pmf, alpha=alpha_smooth, laplace=laplace_smooth) for pmf in l_pmf]
+        l_pmf = [_pmf_smoothing(pmf, alpha=alpha_smooth, laplace=laplace_smooth) for pmf in l_pmf]
 
     if len(l_pmf) == 1:
         return l_pmf if return_all else l_pmf[0]
@@ -181,7 +181,7 @@ def pmf_bottom_up(l_pmf, toll=DEFAULT_PARS['TOL'], rtol=DEFAULT_PARS['RTOL'], re
     while len(l_pmf) > 1:
         new_v = []
         for j in range(len(l_pmf) // 2):
-            new_v.append(pmf_conv(l_pmf[2 * j], l_pmf[2 * j + 1], toll=toll, rtol=rtol))
+            new_v.append(_pmf_conv(l_pmf[2 * j], l_pmf[2 * j + 1], toll=toll, rtol=rtol))
         if len(l_pmf) % 2 == 1:
             new_v.append(l_pmf[-1])
 
@@ -191,9 +191,9 @@ def pmf_bottom_up(l_pmf, toll=DEFAULT_PARS['TOL'], rtol=DEFAULT_PARS['RTOL'], re
     return l_l_v if return_all else l_pmf[0]
 
 
-def pmf_check_support(v_u, l_pmf, toll=DEFAULT_PARS['TOL'], rtol=DEFAULT_PARS['RTOL'], smoothing=True, alpha_smooth=DEFAULT_PARS['ALPHA_SMOOTHING'], laplace_smooth=False):
+def _pmf_check_support(v_u, l_pmf, toll=DEFAULT_PARS['TOL'], rtol=DEFAULT_PARS['RTOL'], smoothing=True, alpha_smooth=DEFAULT_PARS['ALPHA_SMOOTHING'], laplace_smooth=False):
     # Compute the bottom-up PMF
-    pmf_u = pmf_bottom_up(l_pmf, toll=toll, rtol=rtol, return_all=False, smoothing=smoothing,
+    pmf_u = _pmf_bottom_up(l_pmf, toll=toll, rtol=rtol, return_all=False, smoothing=smoothing,
                           alpha_smooth=alpha_smooth, laplace_smooth=laplace_smooth)
 
     # Support of the PMF
@@ -203,7 +203,7 @@ def pmf_check_support(v_u, l_pmf, toll=DEFAULT_PARS['TOL'], rtol=DEFAULT_PARS['R
     return mask
 
 
-def pmf_tempering(pmf, temp):
+def _pmf_tempering(pmf, temp):
     if temp <= 0:
         raise ValueError("temp must be positive")
     if temp == 1:

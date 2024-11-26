@@ -1,5 +1,5 @@
 import numpy as np
-from bayesreconpy.utils import check_input_BUIS, distr_sample, distr_pmf
+from bayesreconpy.utils import _check_input_BUIS, _distr_sample, _distr_pmf
 from bayesreconpy.reconc_BUIS import reconc_BUIS
 from typing import Optional, Dict
 
@@ -126,7 +126,7 @@ def reconc_MCMC(
         distr = [distr] * n_ts
 
     # Check input
-    check_input_BUIS(A, base_forecasts, in_type=['params'] * n_ts, distr=distr)
+    _check_input_BUIS(A, base_forecasts, in_type=['params'] * n_ts, distr=distr)
 
     # the first burn_in samples will be removed
     num_samples += burn_in
@@ -155,7 +155,7 @@ def reconc_MCMC(
     bottom_distr = [distr[i] for i in split_hierarchy_res['bottom_idxs']]
 
     # Initialize first sample (draw from base distribution)
-    b[0, :] = initialize_b(bottom_base_forecasts, bottom_distr).ravel()
+    b[0, :] = _initialize_b(bottom_base_forecasts, bottom_distr).ravel()
 
     # Initialize prop list
     old_prop = {
@@ -170,9 +170,9 @@ def reconc_MCMC(
             accept_count = 0  # reset acceptance counter
             c_tuning = tuning_int  # reset tuning counter
 
-        prop = proposal(old_prop, cov_mat_prop)
+        prop = _proposal(old_prop, cov_mat_prop)
         b_prop = prop['b']
-        alpha = accept_prob(b_prop, b[i - 1, :], A, distr, base_forecasts)
+        alpha = _accept_prob(b_prop, b[i - 1, :], A, distr, base_forecasts)
 
         if np.random.uniform() < alpha:
             b[i, :] = b_prop
@@ -198,34 +198,34 @@ def reconc_MCMC(
     }
 
 
-def initialize_b(bottom_base_forecasts, bottom_distr):
+def _initialize_b(bottom_base_forecasts, bottom_distr):
     b = []
     for i in range(len(bottom_distr)):
-        b.append(distr_sample(bottom_base_forecasts[i], bottom_distr[i], 1))
+        b.append(_distr_sample(bottom_base_forecasts[i], bottom_distr[i], 1))
     return np.array(b)
 
 
-def accept_prob(b, b0, A, distr, params):
-    alpha = target_pmf(b, A, distr, params) / target_pmf(b0, A, distr, params)
+def _accept_prob(b, b0, A, distr, params):
+    alpha = _target_pmf(b, A, distr, params) / _target_pmf(b0, A, distr, params)
     return min(1, alpha)
 
 
-def target_pmf(b, A, distr, params):
+def _target_pmf(b, A, distr, params):
     n_ts = A.shape[0] + A.shape[1]
     y = np.vstack([A, np.eye(A.shape[1])]) @ b
     pmf = 1
     for j in range(n_ts):
-        pmf *= distr_pmf(y[j], params[j], distr[j])
+        pmf *= _distr_pmf(y[j], params[j], distr[j])
     return pmf
 
 
-def proposal(prev_prop, cov_mat_prop):
+def _proposal(prev_prop, cov_mat_prop):
     b0 = prev_prop['b']
     old_scale = prev_prop['scale']
     acc_rate = prev_prop.get('acc_rate', None)
 
     if acc_rate is not None:
-        scale = tune(old_scale, acc_rate)
+        scale = _tune(old_scale, acc_rate)
     else:
         scale = old_scale
 
@@ -242,7 +242,7 @@ def proposal(prev_prop, cov_mat_prop):
     return {'b': b, 'acc_rate': acc_rate, 'scale': scale}
 
 
-def tune(scale, acc_rate):
+def _tune(scale, acc_rate):
     if acc_rate < 0.001:
         return scale * 0.1
     elif acc_rate < 0.05:

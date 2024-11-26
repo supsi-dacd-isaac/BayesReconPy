@@ -1,7 +1,7 @@
 import numpy as np
 from scipy import stats
-from bayesreconpy.utils import check_input_TD, check_weights, resample, MVN_density
-from bayesreconpy.PMF import pmf_from_samples, pmf_from_params, pmf_sample
+from bayesreconpy.utils import _check_input_TD, _check_weights, _resample, _MVN_density
+from bayesreconpy.PMF import _pmf_from_samples, _pmf_from_params, _pmf_sample
 from typing import Union, Optional, Dict, List
 
 
@@ -144,7 +144,7 @@ def reconc_MixCond(
         np.random.seed(seed)
 
     # Check inputs
-    check_input_TD(A, fc_bottom, fc_upper, bottom_in_type, distr, return_type)
+    _check_input_TD(A, fc_bottom, fc_upper, bottom_in_type, distr, return_type)
 
 
     n_u = A.shape[0]
@@ -152,15 +152,15 @@ def reconc_MixCond(
 
     # Prepare samples from the base bottom distribution
     if bottom_in_type == "pmf":
-        B = np.vstack([pmf_sample(fc, num_samples) for key, fc in fc_bottom.items()])
+        B = np.vstack([_pmf_sample(fc, num_samples) for key, fc in fc_bottom.items()])
         B = B.T
     elif bottom_in_type == "samples":
         B = np.vstack(fc_bottom)
         B = B.T
         num_samples = B.shape[0]
     elif bottom_in_type == "params":
-        L_pmf = [pmf_from_params(fc, distr) for key, fc in fc_bottom.items()]
-        B = np.vstack([pmf_sample(pmf, num_samples) for pmf in L_pmf])
+        L_pmf = [_pmf_from_params(fc, distr) for key, fc in fc_bottom.items()]
+        B = np.vstack([_pmf_sample(pmf, num_samples) for pmf in L_pmf])
         B = B.T
 
     # Get mean and covariance matrix of the MVN upper base forecasts
@@ -170,16 +170,16 @@ def reconc_MixCond(
 
     # IS using MVN
     U = B @ A.T
-    weights = MVN_density(U, mu_u, Sigma_u)
+    weights = _MVN_density(U, mu_u, Sigma_u)
 
 
-    check_weights_res = check_weights(weights)
+    check_weights_res = _check_weights(weights)
     if check_weights_res['warning'] and not suppress_warnings:
         warning_msg = check_weights_res['warning_msg']
         print(f"Warning: {warning_msg}")
 
     if not (check_weights_res['warning'] and (1 in check_weights_res['warning_code'])):
-        B = resample(B, weights, num_samples)
+        B = _resample(B, weights, num_samples)
 
     ESS = np.sum(weights) ** 2 / np.sum(weights ** 2)
 
@@ -194,8 +194,8 @@ def reconc_MixCond(
     }
 
     if return_type in ['pmf', 'all']:
-        upper_pmf = [pmf_from_samples(U[i, :]) for i in range(n_u)]
-        bottom_pmf = [pmf_from_samples(B[i, :]) for i in range(n_b)]
+        upper_pmf = [_pmf_from_samples(U[i, :]) for i in range(n_u)]
+        bottom_pmf = [_pmf_from_samples(B[i, :]) for i in range(n_b)]
 
         result['bottom_reconciled']['pmf'] = bottom_pmf
         result['upper_reconciled']['pmf'] = upper_pmf

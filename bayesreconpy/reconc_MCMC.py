@@ -66,14 +66,14 @@ def reconc_MCMC(
         A dictionary containing the reconciled forecasts:
 
         - `'bottom_reconciled_samples'`: numpy.ndarray
-          A matrix of shape `(n_bottom, num_samples)` containing
-          reconciled samples for the bottom-level time series.
+            A matrix of shape `(n_bottom, num_samples)` containing
+            reconciled samples for the bottom-level time series.
         - `'upper_reconciled_samples'`: numpy.ndarray
-          A matrix of shape `(n_upper, num_samples)` containing
-          reconciled samples for the upper-level time series.
+            A matrix of shape `(n_upper, num_samples)` containing
+            reconciled samples for the upper-level time series.
         - `'reconciled_samples'`: numpy.ndarray
-          A matrix of shape `(n, num_samples)` containing the reconciled
-          samples for all time series, where `n = n_upper + n_bottom`.
+            A matrix of shape `(n, num_samples)` containing the reconciled
+            samples for all time series, where `n = n_upper + n_bottom`.
 
     Notes
     -----

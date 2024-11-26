@@ -153,14 +153,14 @@ def reconc_TDcond(
 
         - `'bottom_reconciled'`: Contains the reconciled forecasts for the bottom-level variables.
 
-          - If `return_type == "pmf"`: A list of PMF objects.
-          - If `return_type == "samples"`: A matrix of shape `(n_bottom, num_samples)`.
-          - If `return_type == "all"`: Contains both PMF objects and samples.
+            - If `return_type == "pmf"`: A list of PMF objects.
+            - If `return_type == "samples"`: A matrix of shape `(n_bottom, num_samples)`.
+            - If `return_type == "all"`: Contains both PMF objects and samples.
         - `'upper_reconciled'`: Contains the reconciled forecasts for the upper-level variables.
 
-          - If `return_type == "pmf"`: A list of PMF objects.
-          - If `return_type == "samples"`: A matrix of shape `(n_upper, num_samples)`.
-          - If `return_type == "all"`: Contains both PMF objects and samples.
+            - If `return_type == "pmf"`: A list of PMF objects.
+            - If `return_type == "samples"`: A matrix of shape `(n_upper, num_samples)`.
+            - If `return_type == "all"`: Contains both PMF objects and samples.
 
         If `return_num_samples_ok` is `True`, a tuple is returned:
 

@@ -4,3 +4,4 @@ PuLP>=2.9.0
 scipy>=1.14.1
 KDEpy>=1.1.10
 pydata-sphinx-theme
+sphinx-autodoc-typehints

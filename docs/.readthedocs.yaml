@@ -1,0 +1,18 @@
+version: 2
+
+# The build system to use
+build:
+  os: ubuntu-20.04
+  tools:
+    - python
+  image: "latest"  # Use a Docker image (or specify one)
+
+# Optionally specify additional requirements (if needed)
+python:
+  version: 3.8  # Or whatever version you are using
+  install:
+    - ./requirements.txt  # Make sure this file exists in your repo
+
+# Optionally, you can specify additional configuration for Sphinx
+sphinx:
+  configuration: conf.py  # Path to your Sphinx configuration file

@@ -1,6 +1,3 @@
-bayesreconpy package
-====================
-
 bayesreconpy.reconc\_BUIS
 --------------------------------
 

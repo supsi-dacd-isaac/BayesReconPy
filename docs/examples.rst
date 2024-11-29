@@ -119,7 +119,7 @@ The following Python code demonstrates how to perform the Gaussian reconciliatio
        'Sigma': base_forecasts_Sigma  # Full covariance matrix
    }
 
-We reconcile using the function :ref:`reconc_gaussian() <bayesreconpy.reconc_gaussian>`, which takes as input:
+We reconcile using the function `reconc_gaussian() <https://bayesreconpy.readthedocs.io/en/latest/bayesreconpy.html#module-bayesreconpy.reconc_gaussian>`_, which takes as input:
 
 - the summing matrix `A`;
 - the means of the base forecast, `base_forecasts_mu`;

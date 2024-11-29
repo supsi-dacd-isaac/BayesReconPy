@@ -11,7 +11,7 @@ Welcome to bayesreconpy's documentation!
    :alt: Codecov coverage badge
 
 .. image:: https://img.shields.io/badge/license-LGPL%20(%3E=%203)-yellow.svg
-   :target: https://www.gnu.org/licences/lgpl-3.0)
+   :target: https://www.gnu.org/licences/lgpl-3.0
    :alt: License: LGPL (\>= 3)
 
 
@@ -30,9 +30,10 @@ The github page for this python implementation can be found `here <https://githu
 
 .. toctree::
    :maxdepth: 2
-   :caption: Functions for reconciliation:
+   :caption: Contents:
 
-   bayesreconpy
+   functions
+   examples
 
 
 Indices and tables

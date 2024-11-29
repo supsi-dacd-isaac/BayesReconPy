@@ -21,7 +21,7 @@ The python package is available in pip, use the following line of command in you
 
    pip install bayesreconpy
 
-The github page for the package can be found `here <https://github.com/supsi-dacd-isaac/BayesReconPy>`_
+The github page for this python implementation can be found `here <https://github.com/supsi-dacd-isaac/BayesReconPy>`_
 
 .. toctree::
    :maxdepth: 2

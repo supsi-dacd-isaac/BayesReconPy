@@ -10,5 +10,4 @@ sphinx:
 
 python:
   install:
-    - pip:
-        requirements: requirements.txt
+    - requirements: requirements.txt

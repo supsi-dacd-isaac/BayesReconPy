@@ -3,10 +3,11 @@ version: 2
 build:
   os: ubuntu-20.04
   tools:
-    python:
-      version: 3.8
-      install:
-        - requirements.txt
+    python: 3.10  # Specify the Python version as a string (not a dictionary)
 
 sphinx:
   configuration: docs/conf.py
+
+python:
+  install:
+    - requirements.txt

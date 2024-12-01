@@ -57,11 +57,6 @@ We first perform Gaussian reconciliation (`Gauss`, Corani et al. (2021)). It ass
 
 We assume the upper base forecasts to be a multivariate Gaussian and we estimate their covariance matrix from the in-sample residuals. We assume also the bottom base forecasts to be independent Gaussians.
 
-Example Code
-------------
-
-The following Python code demonstrates how to perform the Gaussian reconciliation:
-
 .. code-block:: python
 
    # Parameters of the upper base forecast distributions
@@ -148,5 +143,87 @@ The function returns the reconciled mean and covariance for the bottom time seri
    # Output the time taken for reconciliation
    print(f"Time taken by Gaussian reconciliation: {Gauss_time} seconds")
    # Time taken by Gaussian reconciliation: 0.33 seconds
+
+
+Reconciliation with mixed-conditioning
+======================================
+
+We now reconcile the forecasts using the mixed-conditioning approach of Zambon et al. (2024), Sect. 3. The algorithm is implemented in the function `reconc_MixCond() <https://bayesreconpy.readthedocs.io/en/latest/bayesreconpy.html#module-bayesreconpy.reconc_MixCond>`_. The function takes as input:
+
+- the aggregation matrix ``A``;
+- the probability mass functions of the bottom base forecasts, stored in the list ``fc_bottom_4rec``;
+- the parameters of the multivariate Gaussian distribution for the upper variables, ``fc_upper_4rec``;
+- additional function parameters; among those note that ``num_samples`` specifies the number of samples used in the internal importance sampling (IS) algorithm.
+
+The function returns the reconciled forecasts in the form of probability mass functions for both the upper and bottom time series. The function parameter ``return_type`` can be changed to ``samples`` or ``all`` to obtain the IS samples.
+
+.. code-block:: python
+
+    seed = 1
+    N_samples_IS = int(5e4)  # 50,000 samples
+
+    # Base forecasts
+    Sigma_u_np = np.array(Sigma_u['Sigma_u'])
+    fc_upper_4rec = {'mu': mu_u, 'Sigma': Sigma_u_np}  # Dictionary for upper forecasts
+    fc_bottom_4rec = {k: np.array(fc['pmf']) for k, fc in base_fc_bottom.items()}
+
+    # Set random seed for reproducibility
+    np.random.seed(seed)
+
+    start = time.time()
+
+    # Perform MixCond reconciliation
+    mix_cond = reconc_MixCond(A, fc_bottom_4rec, fc_upper_4rec, bottom_in_type="pmf",
+                              num_samples=N_samples_IS, return_type="pmf", seed=seed)
+
+    stop = time.time()
+
+    rec_fc['Mixed_cond'] = {
+        'bottom': mix_cond['bottom_reconciled']['pmf'],  # Bottom-level reconciled PMFs
+        'upper': mix_cond['upper_reconciled']['pmf'],    # Upper-level reconciled PMFs
+        'ESS': mix_cond['ESS']                           # Effective Sample Size (ESS)
+    }
+
+    # Calculate the time taken for MixCond reconciliation
+    MixCond_time = round(stop - start, 2)
+
+    print(f"Computational time for Mix-cond reconciliation: {MixCond_time} seconds")
+    #Computational time for Mix-cond reconciliation: 8.51 seconds
+
+As discussed in Zambon et al. (2024), Sect. 3, conditioning with mixed variables performs poorly in high dimensions. This is because the bottom-up distribution, built by assuming the bottom forecasts to be independent, is untenable in high dimensions. Moreover, forecasts for count time series are usually biased and their sum tends to be strongly biased; see Zambon et al. (2024), Fig. 3, for a graphical example.
+
+Top down conditioning
+======================
+
+Top down conditioning (TD-cond; see Zambon et al. (2024), Sect. 4) is a more reliable approach for reconciling mixed variables in high dimensions. The algorithm is implemented in the function `reconc_TDcond() <https://bayesreconpy.readthedocs.io/en/latest/bayesreconpy.html#module-bayesreconpy.reconc_TDcond>`_; it takes the same arguments as `reconc_MixCond() <https://bayesreconpy.readthedocs.io/en/latest/bayesreconpy.html#module-bayesreconpy.reconc_MixCond>`_ and returns reconciled forecasts in the same format.
+
+.. code-block:: python
+
+    N_samples_TD = int(1e4)
+
+    start = time.time()
+
+    # This will raise a warning if upper samples are discarded
+    td = reconc_TDcond(A, fc_bottom_4rec, fc_upper_4rec,
+                       bottom_in_type="pmf", num_samples=N_samples_TD,
+                       return_type="pmf", seed=seed)
+    #Warning: Only 99.6% of the upper samples are in the support of the
+    #bottom-up distribution; the others are discarded.
+    stop = time.time()
+
+The algorithm TD-cond raises a warning regarding the incoherence between the joint bottom-up and the upper base forecasts. We will see that this warning does not impact the performance of TD-cond. An important note to be made here is that R and Python use different sampling schemes even with the same seed. As a result, there might be minor deviations from the results presented in R. However, as we increase ``N_samples_TD``, these deviations become negligible.
+
+.. code-block:: python
+
+    rec_fc['TD_cond'] = {
+        'bottom': td['bottom_reconciled']['pmf'],
+        'upper': td['upper_reconciled']['pmf']
+    }
+
+    TDCond_time = round(stop - start, 2)
+    print(f"Computational time for TD-cond reconciliation: {TDCond_time} seconds")
+    #Computational time for TD-cond reconciliation: 10.03 seconds
+
+The computational time required for the Gaussian reconciliation is 0.33 seconds, Mix-cond requires 8.51 seconds, and TD-cond requires 10.03 seconds.
 
 

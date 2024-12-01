@@ -4,7 +4,7 @@ Examples and Tutorials
 This page contains both code examples for using the `bayesreconpy` package and links to Jupyter notebooks for detailed walkthroughs.
 
 Example 1: Bayesian Reconciliation
------------------------------------
+===================================
 
 This page reproduces the results as presented in *Probabilistic reconciliation of mixed-type hierarchical time series* (Zambon et al. 2024), published at UAI 2024 (the 40th Conference on Uncertainty in Artificial Intelligence).
 
@@ -12,7 +12,7 @@ In particular, we replicate the reconciliation of the one-step ahead (h=1) forec
 The original vignette containing the R counterpart of this page can be found `here <https://cran.r-project.org/web/packages/bayesRecon/vignettes/mixed_reconciliation.html>`_.
 
 Data and Base Forecasts
-=======================
+-----------------------
 
 The M5 competition (Makridakis, Spiliotis, and Assimakopoulos 2022) is about daily time series of sales data referring to 10 different stores. Each store has the same hierarchy: 3049 bottom time series (single items) and 11 upper time series, obtained by aggregating the items by department, product category, and store; see the figure below.
 
@@ -51,7 +51,7 @@ We reproduce the results of the store “CA_1”. The base forecasts (for h=1) o
 
 
 Gaussian Reconciliation
-=======================
+-----------------------
 
 We first perform Gaussian reconciliation (`Gauss`, Corani et al. (2021)). It assumes all forecasts to be Gaussian, even though the bottom base forecasts are not Gaussian.
 
@@ -146,7 +146,7 @@ The function returns the reconciled mean and covariance for the bottom time seri
 
 
 Reconciliation with mixed-conditioning
-======================================
+---------------------------------------
 
 We now reconcile the forecasts using the mixed-conditioning approach of Zambon et al. (2024), Sect. 3. The algorithm is implemented in the function `reconc_MixCond() <https://bayesreconpy.readthedocs.io/en/latest/bayesreconpy.html#module-bayesreconpy.reconc_MixCond>`_. The function takes as input:
 
@@ -193,7 +193,7 @@ The function returns the reconciled forecasts in the form of probability mass fu
 As discussed in Zambon et al. (2024), Sect. 3, conditioning with mixed variables performs poorly in high dimensions. This is because the bottom-up distribution, built by assuming the bottom forecasts to be independent, is untenable in high dimensions. Moreover, forecasts for count time series are usually biased and their sum tends to be strongly biased; see Zambon et al. (2024), Fig. 3, for a graphical example.
 
 Top down conditioning
-======================
+----------------------
 
 Top down conditioning (TD-cond; see Zambon et al. (2024), Sect. 4) is a more reliable approach for reconciling mixed variables in high dimensions. The algorithm is implemented in the function `reconc_TDcond() <https://bayesreconpy.readthedocs.io/en/latest/bayesreconpy.html#module-bayesreconpy.reconc_TDcond>`_; it takes the same arguments as `reconc_MixCond() <https://bayesreconpy.readthedocs.io/en/latest/bayesreconpy.html#module-bayesreconpy.reconc_MixCond>`_ and returns reconciled forecasts in the same format.
 

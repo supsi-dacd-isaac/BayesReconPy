@@ -203,7 +203,6 @@ N_samples_TD = int(1e4)
 
 start = time.time()
 
-# Perform TD-cond reconciliation (assuming reconc_TDcond is implemented)
 # This will raise a warning if upper samples are discarded
 td = reconc_TDcond(A, fc_bottom_4rec, fc_upper_4rec,
                    bottom_in_type="pmf", num_samples=N_samples_TD,

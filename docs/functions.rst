@@ -15,13 +15,6 @@ bayesreconpy.reconc_BUIS
    :undoc-members:
    :show-inheritance:
 
-bayesreconpy.reconc_gaussian
-----------------------------
-.. automodule:: bayesreconpy.reconc_gaussian
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 bayesreconpy.reconc_MCMC
 ------------------------
 .. automodule:: bayesreconpy.reconc_MCMC
@@ -39,6 +32,13 @@ bayesreconpy.reconc_MixCond
 bayesreconpy.reconc_TDcond
 --------------------------
 .. automodule:: bayesreconpy.reconc_TDcond
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+bayesreconpy.reconc_gaussian
+----------------------------
+.. automodule:: bayesreconpy.reconc_gaussian
    :members:
    :undoc-members:
    :show-inheritance:

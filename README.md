@@ -12,6 +12,8 @@ The python package is available in pip, use the following line of command for in
 ```python
 pip install bayesreconpy
 ```
+The documentation of the reconciliation functions is available [here](https://bayesreconpy.readthedocs.io/en/latest/).
+
 ## Introduction
 
 This page reproduces the results as presented in *Probabilistic reconciliation of mixed-type hierarchical time series* (Zambon et al. 2024), published at UAI 2024 (the 40th Conference on Uncertainty in Artificial Intelligence).

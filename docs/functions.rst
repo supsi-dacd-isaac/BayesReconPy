@@ -3,11 +3,6 @@ Functions for Reconciliation
 
 This page documents the available functions for reconciliation.
 
-.. toctree::
-   :maxdepth: 2
-
-   bayesreconpy
-
 bayesreconpy.reconc_BUIS
 -------------------------
 .. automodule:: bayesreconpy.reconc_BUIS

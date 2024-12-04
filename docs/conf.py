@@ -31,7 +31,8 @@ extensions = [
     "pydata_sphinx_theme",          # PyData theme
     "sphinx.ext.autodoc",           # Automatically document modules/classes
     "sphinx.ext.napoleon",          # Support for Google/NumPy style docstrings
-    "sphinx_autodoc_typehints"      # Show type hints in the documentation
+    "sphinx_autodoc_typehints",      # Show type hints in the documentation
+    "nbsphinx"
 ]
 
 # Exclude private members by default

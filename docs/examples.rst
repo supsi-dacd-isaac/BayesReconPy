@@ -3,7 +3,7 @@ Examples and Tutorials
 
 This page contains both code examples for using the `bayesreconpy` package and links to Jupyter notebooks for detailed walkthroughs.
 
-Example 1: Bayesian Reconciliation
+Example : Bayesian Reconciliation
 ===================================
 
 This page reproduces the results as presented in *Probabilistic reconciliation of mixed-type hierarchical time series* (Zambon et al. 2024), published at UAI 2024 (the 40th Conference on Uncertainty in Artificial Intelligence).
@@ -227,3 +227,11 @@ The algorithm TD-cond raises a warning regarding the incoherence between the joi
 The computational time required for the Gaussian reconciliation is 0.33 seconds, Mix-cond requires 8.51 seconds, and TD-cond requires 10.03 seconds.
 
 
+Tutorial 1 : Properties of the reconciled distribution via conditioning (.ipynb)
+=================================================================================
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Notebooks:
+
+   notebooks/Properties\ of\ the\ reconciled\ distribution\ via\ conditioning.ipynb

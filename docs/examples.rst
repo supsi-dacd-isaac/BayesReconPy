@@ -234,7 +234,7 @@ Tutorial 1 : Properties of the reconciled distribution via conditioning
 .. toctree::
    :maxdepth: 2
 
-.. nbsphinx:: notebooks/Properties%20of%20the%20reconciled%20distribution%20via%20conditioning.ipynb
+.. nbsphinx:: ../notebooks/Properties%20of%20the%20reconciled%20distribution%20via%20conditioning.ipynb
 
 
 

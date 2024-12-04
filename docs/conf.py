@@ -35,6 +35,8 @@ extensions = [
     "nbsphinx"
 ]
 
+nbsphinx_execute = 'auto'
+
 # Exclude private members by default
 autodoc_default_options = {
     'members': True,

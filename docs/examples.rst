@@ -3,8 +3,8 @@ Examples and Tutorials
 
 This page contains both code examples for using the `bayesreconpy` package and links to Jupyter notebooks for detailed walkthroughs.
 
-Example : Bayesian Reconciliation
-===================================
+Example : Reconciliation of M5 hierarchy with mixed-type forecasts
+===================================================================
 
 This page reproduces the results as presented in *Probabilistic reconciliation of mixed-type hierarchical time series* (Zambon et al. 2024), published at UAI 2024 (the 40th Conference on Uncertainty in Artificial Intelligence).
 

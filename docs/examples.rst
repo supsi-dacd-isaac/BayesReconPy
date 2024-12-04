@@ -230,11 +230,7 @@ The computational time required for the Gaussian reconciliation is 0.33 seconds,
 Tutorial 1 : Properties of the reconciled distribution via conditioning (.ipynb)
 =================================================================================
 
-.. toctree::
-   :maxdepth: 2
-   :caption: Notebooks:
-
-   notebooks/Properties\ of\ the\ reconciled\ distribution\ via\ conditioning.ipynb
+.. nbsphinx:: notebooks/Properties%20of%20the%20reconciled%20distribution%20via%20conditioning.ipynb
 
 
 

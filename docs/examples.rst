@@ -227,8 +227,9 @@ The algorithm TD-cond raises a warning regarding the incoherence between the joi
 The computational time required for the Gaussian reconciliation is 0.33 seconds, Mix-cond requires 8.51 seconds, and TD-cond requires 10.03 seconds.
 
 
-Tutorial 1 : Properties of the reconciled distribution via conditioning (.ipynb)
-=================================================================================
+Tutorial 1 : Properties of the reconciled distribution via conditioning
+========================================================================
+
 
 .. toctree::
    :maxdepth: 2

@@ -39,7 +39,6 @@ def reconc_gaussian(A: np.ndarray, base_forecasts_mu: List[float], base_forecast
         - First, the upper-level means (in the order of rows in `A`).
         - Then, the bottom-level means (in the order of columns in `A`).
 
-
     base_forecasts_Sigma : numpy.ndarray
         A 2D covariance matrix representing the uncertainties in the base forecasts.
         The order of rows and columns must match the order of `base_forecasts_mu`.

@@ -11,7 +11,7 @@ from bayesreconpy.reconc_TDcond import reconc_TDcond
 from bayesreconpy.utils import _MVN_sample, _samples_from_pmf
 from bayesreconpy.reconc_BUIS import reconc_BUIS
 
-M5_CA1_basefc = pd.read_pickle('data/M5_CA1_basefc.pkl')
+M5_CA1_basefc = pd.read_pickle('../data/M5_CA1_basefc.pkl')
 
 n_b = 3049
 n_u = 11

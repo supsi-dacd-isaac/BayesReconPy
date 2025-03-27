@@ -287,24 +287,24 @@ class TestScenarios(unittest.TestCase):
         for i in range(base_samples.shape[2]):
             np.testing.assert_allclose(S @ np.linalg.pinv(S) @ y_rec[:, :, i], y_rec[:, :, i], rtol=1e-5)
 
-
     def test_reconc_mint_deterministic(self):
         A, base_det, _, res = self.create_mock_data()
         y_rec, var_rec = reconc_mint(A, base_det, res, samples=False)
 
-        assert y_rec.shape == base_det.shape
-        assert var_rec.shape == (A.shape[1], A.shape[1])
-        # Covariance matrix should be symmetric
+        S = get_S_from_A(A)
+        self.assertEqual(y_rec.shape, base_det.shape)
+        self.assertEqual(var_rec.shape, (S.shape[0], S.shape[0]))
         np.testing.assert_allclose(var_rec, var_rec.T, rtol=1e-5)
-
 
     def test_reconc_mint_samples(self):
         A, _, base_samples, res = self.create_mock_data()
         y_rec, var_rec = reconc_mint(A, base_samples, res, samples=True)
 
-        assert y_rec.shape == base_samples.shape
-        assert isinstance(var_rec, list)
-        assert all(v.shape == (A.shape[1], A.shape[1]) for v in var_rec)
+        S = get_S_from_A(A)
+        self.assertEqual(y_rec.shape, base_samples.shape)
+        self.assertIsInstance(var_rec, list)
+        for v in var_rec:
+            self.assertEqual(v.shape, (S.shape[0], S.shape[0]))
 
 if __name__ == '__main__':
     unittest.main()

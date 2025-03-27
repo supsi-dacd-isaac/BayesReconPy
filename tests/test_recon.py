@@ -245,23 +245,24 @@ class TestScenarios(unittest.TestCase):
 
         assert np.all(np.abs(m_diff / bott_reconc_mean) < 5e-2)
 
-
-    def create_mock_data(n_bottom=3, n_total=5, n_time=10, n_samples=50):
+    def create_mock_data(self, n_bottom=5, n_time=10, n_samples=50):
         """
-        Creates mock data for testing reconciliation functions.
+        Creates mock data consistent with full hierarchical structure.
         """
-        # A maps bottom-level to all levels, e.g., including aggregation
+        # Example: A maps 5 bottom series to 2 upper ones
         A = np.array([
-            [1, 1, 0, 0, 0],  # agg_1 = b0 + b1
-            [0, 0, 1, 1, 1],  # agg_2 = b2 + b3 + b4
+            [1, 1, 0, 0, 0],
+            [0, 0, 1, 1, 1]
         ])
+        S = get_S_from_A(A)  # Shape [7, 5]
+        n_total = S.shape[0]  # total = upper + bottom = 2 + 5 = 7
 
-        # Random base forecasts: [n_total_series, n_time]
-        base_det = np.random.rand(A.shape[1], n_time)
-        base_samples = np.random.rand(A.shape[1], n_time, n_samples)
+        # Create base forecasts at full level
+        base_det = np.random.rand(n_total, n_time)
+        base_samples = np.random.rand(n_total, n_time, n_samples)
 
-        # Random residuals: [n_time, n_total_series]
-        res = np.random.randn(n_time, A.shape[1])
+        # Residuals for all series
+        res = np.random.randn(n_time, n_total)
 
         return A, base_det, base_samples, res
 

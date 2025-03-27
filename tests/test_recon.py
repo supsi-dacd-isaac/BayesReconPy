@@ -12,6 +12,8 @@ from bayesreconpy.PMF import _pmf_get_mean as PMF_get_mean
 from bayesreconpy.PMF import _pmf_from_samples as PMF_from_samples
 from bayesreconpy.reconc_MixCond import reconc_MixCond
 from bayesreconpy.reconc_TDcond import reconc_TDcond
+from bayesreconpy.reconc_ols import reconc_ols, get_S_from_A
+from bayesreconpy.reconc_mint import reconc_mint, estimate_cov_matrix
 
 class TestScenarios(unittest.TestCase):
     def test_hierarchy(self, size=2):
@@ -243,6 +245,65 @@ class TestScenarios(unittest.TestCase):
 
         assert np.all(np.abs(m_diff / bott_reconc_mean) < 5e-2)
 
+
+    def create_mock_data(n_bottom=3, n_total=5, n_time=10, n_samples=50):
+        """
+        Creates mock data for testing reconciliation functions.
+        """
+        # A maps bottom-level to all levels, e.g., including aggregation
+        A = np.array([
+            [1, 1, 0, 0, 0],  # agg_1 = b0 + b1
+            [0, 0, 1, 1, 1],  # agg_2 = b2 + b3 + b4
+        ])
+
+        # Random base forecasts: [n_total_series, n_time]
+        base_det = np.random.rand(A.shape[1], n_time)
+        base_samples = np.random.rand(A.shape[1], n_time, n_samples)
+
+        # Random residuals: [n_time, n_total_series]
+        res = np.random.randn(n_time, A.shape[1])
+
+        return A, base_det, base_samples, res
+
+
+    def test_reconc_ols_deterministic(self):
+        A, base_det, _, _ = self.create_mock_data()
+        y_rec = reconc_ols(A, base_det, samples=False)
+
+        S = get_S_from_A(A)
+        assert y_rec.shape == base_det.shape
+        # Coherency check: aggregated series = S @ reconciled bottom series
+        np.testing.assert_allclose(S @ np.linalg.pinv(S) @ y_rec, y_rec, rtol=1e-5)
+
+
+    def test_reconc_ols_samples(self):
+        A, _, base_samples, _ = self.create_mock_data()
+        y_rec = reconc_ols(A, base_samples, samples=True)
+
+        assert y_rec.shape == base_samples.shape
+        # Optional: check that individual samples still match aggregation
+        S = get_S_from_A(A)
+        for i in range(base_samples.shape[2]):
+            np.testing.assert_allclose(S @ np.linalg.pinv(S) @ y_rec[:, :, i], y_rec[:, :, i], rtol=1e-5)
+
+
+    def test_reconc_mint_deterministic(self):
+        A, base_det, _, res = self.create_mock_data()
+        y_rec, var_rec = reconc_mint(A, base_det, res, samples=False)
+
+        assert y_rec.shape == base_det.shape
+        assert var_rec.shape == (A.shape[1], A.shape[1])
+        # Covariance matrix should be symmetric
+        np.testing.assert_allclose(var_rec, var_rec.T, rtol=1e-5)
+
+
+    def test_reconc_mint_samples(self):
+        A, _, base_samples, res = self.create_mock_data()
+        y_rec, var_rec = reconc_mint(A, base_samples, res, samples=True)
+
+        assert y_rec.shape == base_samples.shape
+        assert isinstance(var_rec, list)
+        assert all(v.shape == (A.shape[1], A.shape[1]) for v in var_rec)
 
 if __name__ == '__main__':
     unittest.main()

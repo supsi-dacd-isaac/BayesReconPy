@@ -67,14 +67,14 @@ Despite this progress, most existing software tools for reconciliation have sign
 
 ### Table 1: Probabilistic reconciliation methods comparison
 
-| Library                                       | <div align="center">Cross-temp</div> | <div align="center">Gaussian</div> | <div align="center">Continuous<br>(non-Gaussian)</div> | <div align="center">Discrete</div> | <div align="center">Mixed</div> |
-|----------------------------------------------|:------------------------------------:|:----------------------------------:|:------------------------------------------------------:|:----------------------------------:|:-------------------------------:|
-| **bayesReconPy (Ours)**                       | ❌                                   | ✅                                 | ✅                                                   | ✅                                 | ✅                              |
-| fable / fabletools (O’Hara-Wild et al., 2024) | ✅                                   | ✅                                 | ✅                                                   | ❌                                 | ❌                              |
-| FoReco (Girolimetto and Di Fonzo, 2024)       | ✅                                   | ✅                                 | ✅                                                   | ❌                                 | ❌                              |
-| gluonts (Alexandrov et al., 2020)             | ❌                                   | ✅                                 | ✅                                                   | ❌                                 | ❌                              |
-| hierarchicalforecast (Olivares et al., 2022)  | ❌                                   | ✅                                 | ✅                                                   | ❌                                 | ❌                              |
-| thief (Hyndman and Kourentzes, 2018)          | ✅                                   | ✅                                 | ❌                                                   | ❌                                 | ❌                              |
+| Library                                                  | <div align="center">Cross-temp</div> | <div align="center">Gaussian</div> | <div align="center">Continuous<br>(non-Gaussian)</div> | <div align="center">Discrete</div> | <div align="center">Mixed</div> |
+|----------------------------------------------------------|:------------------------------------:|:----------------------------------:|:------------------------------------------------------:|:----------------------------------:|:-------------------------------:|
+| **bayesReconPy (Ours)**                                  | ❌                                   | ✅                                 | ✅                                                   | ✅                                 | ✅                              |
+| fable / fabletools [@fable_O_Hara_Wild_etal2024]         | ✅                                   | ✅                                 | ✅                                                   | ❌                                 | ❌                              |
+| FoReco [@FoReco_Girolimetto_DiFonzo2024]                 | ✅                                   | ✅                                 | ✅                                                   | ❌                                 | ❌                              |
+| gluonts [@gluonTS_Alexandrov_etal2020]                   | ❌                                   | ✅                                 | ✅                                                   | ❌                                 | ❌                              |
+| hierarchicalforecast [@olivares2022hierarchicalforecast] | ❌                            | ✅                                 | ✅                                                   | ❌                                 | ❌                              |
+| thief [@thief_HyndmanKourentzes2018]                     | ✅                                   | ✅                                 | ❌                                                   | ❌                                 | ❌                              |
 
 # Usage
 

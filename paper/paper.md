@@ -40,7 +40,7 @@ affiliations:
    index: 2
    ror: 013355g38
 
-date: 1 April 2025
+date: 2 April 2025
 bibliography: paper.bib
 ---
 
@@ -67,14 +67,14 @@ Despite this progress, most existing software tools for reconciliation have sign
 
 ### Table 1: Probabilistic reconciliation methods comparison
 
-| Library                                                  | <div align="center">Cross-temp</div> | <div align="center">Gaussian</div> | <div align="center">Continuous<br>(non-Gaussian)</div> | <div align="center">Discrete</div> | <div align="center">Mixed</div> |
-|----------------------------------------------------------|:------------------------------------:|:----------------------------------:|:------------------------------------------------------:|:----------------------------------:|:-------------------------------:|
-| **bayesReconPy (Ours)**                                  | ❌                                   | ✅                                 | ✅                                                   | ✅                                 | ✅                              |
-| fable / fabletools [@fable_O_Hara_Wild_etal2024]         | ✅                                   | ✅                                 | ✅                                                   | ❌                                 | ❌                              |
-| FoReco [@FoReco_Girolimetto_DiFonzo2024]                 | ✅                                   | ✅                                 | ✅                                                   | ❌                                 | ❌                              |
-| gluonts [@gluonTS_Alexandrov_etal2020]                   | ❌                                   | ✅                                 | ✅                                                   | ❌                                 | ❌                              |
-| hierarchicalforecast [@olivares2022hierarchicalforecast] | ❌                            | ✅                                 | ✅                                                   | ❌                                 | ❌                              |
-| thief [@thief_HyndmanKourentzes2018]                     | ✅                                   | ✅                                 | ❌                                                   | ❌                                 | ❌                              |
+| Library                                                  | Cross-temp |     Gaussian     | Continuous (non-Gaussian) |    Discrete     |      Mixed      |
+|----------------------------------------------------------|:----------:|:----------------:|:--------------------------:|:---------------:|:---------------:|
+| **bayesReconPy (Ours)**                                  |     ❌      |       ✅         |            ✅             |       ✅        |       ✅        |
+| fable / fabletools [@fable_O_Hara_Wild_etal2024]         |     ✅      |       ✅         |            ✅             |       ❌        |       ❌        |
+| FoReco [@FoReco]                                         |     ✅      |       ✅         |            ✅             |       ❌        |       ❌        |
+| gluonts [@gluonTS_Alexandrov_etal2020]                   |     ❌      |       ✅         |            ✅             |       ❌        |       ❌        |
+| hierarchicalforecast [@olivares2022hierarchicalforecast] |     ❌      |       ✅         |            ✅             |       ❌        |       ❌        |
+| thief [@thief_HyndmanKourentzes2018]                     |     ✅      |       ✅         |            ❌             |       ❌        |       ❌        |
 
 # Usage
 
@@ -113,8 +113,7 @@ Note that in the case of MinT or OLS reconciliation, the input is expected to be
 
 We demonstrate the use of `bayesReconPy` on a hierarchy of extreme market events in five economic sectors over the period 2005–2018. This hierarchy consists of five bottom-level and one top-level time series (the total). These are count-valued time series, and the predictive distributions are modeled as negative binomial.
 
-The dataset `extr_mkt_events`, included in the package, contains both the observed time series and the corresponding base forecasts. It was used in the experiments of [@ZAMBON20241438]. A related Python notebook reproducing the results is available:  
-👉 [Properties of the Reconciled Distribution via Conditioning](https://github.com/supsi-dacd-isaac/BayesReconPy/blob/main/notebooks/Properties%20of%20the%20reconciled%20distribution%20via%20conditioning.ipynb)
+The dataset `extr_mkt_events`, included in the package, contains both the observed time series and the corresponding base forecasts. It was used in the experiments of [@ZAMBON20241438]. A related Python notebook reproducing the results is available: [Properties of the Reconciled Distribution via Conditioning](https://github.com/supsi-dacd-isaac/BayesReconPy/blob/main/notebooks/Properties%20of%20the%20reconciled%20distribution%20via%20conditioning.ipynb)
 
 The code below shows how to apply the `reconc_BUIS` function. The function takes the summing matrix `A`, the base forecast parameters, and the desired number of samples. Reconciliation is completed within seconds:
 
@@ -131,10 +130,9 @@ samples_y = buis['reconciled_samples']
 
 The M5 forecasting competition dataset [@MAKRIDAKIS20221325] includes daily sales time series for 10 stores. Each store contains 3049 bottom-level series and 11 upper-level series.
 
-During the competition, existing reconciliation methods failed to process the hierarchy due to the dataset’s size and the requirement for non-negative forecasts [@M5results]. `bayesReconPy` successfully reconciles 1-step-ahead base forecasts for one store, `"CA_1"`, returning non-negative and probabilistic forecasts.
+During the competition, existing reconciliation methods failed to process the hierarchy due to the dataset’s size and the requirement for non-negative forecasts [@MAKRIDAKIS20221325]. `bayesReconPy` successfully reconciles 1-step-ahead base forecasts for one store, `"CA_1"`, returning non-negative and probabilistic forecasts.
 
-Base forecasts are included in the package and were generated using the ADAM method [@svetunkov2023iets], implemented in the `smooth` R package [@smooth_pkg]. A Python notebook illustrates this example:  
-👉 [Reconciliation of M5 hierarchy with mixed-type forecasts](https://github.com/supsi-dacd-isaac/BayesReconPy/blob/main/notebooks/Reconciliation%20of%20M5%20hierarchy%20with%20mixed-type%20forecasts.ipynb)
+Base forecasts are included in the package and were generated using the ADAM method [@svetunkov2023iets], implemented in the `smooth` R package [@smooth_pkg]. A Python notebook illustrates this example, available as: [Reconciliation of M5 hierarchy with mixed-type forecasts](https://github.com/supsi-dacd-isaac/BayesReconPy/blob/main/notebooks/Reconciliation%20of%20M5%20hierarchy%20with%20mixed-type%20forecasts.ipynb)
 
 Below is a code snippet demonstrating reconciliation using `reconc_TDcond`. Here, the bottom-level forecasts are discrete, and the upper-level forecasts are continuous. The reconciliation completes in just a few seconds:
 

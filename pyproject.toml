@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bayesreconpy"
+version = "0.2.0"
+description = "Bayesian reconciliation for hierarchical forecasting"
+readme = "README.md"
+requires-python = ">=3.8"
+license = { text = "MIT" }
+authors = [
+    { name = "A.Biswas" },
+    { name = "L.Nespoli", email = "anubhab.biswas@supsi.ch" }
+]
+keywords = ["forecasting", "reconciliation", "bayesian", "hierarchical"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent"
+]
+
+dependencies = [
+    "numpy>=2.0.2",
+    "pandas>=2.2.2",
+    "PuLP>=2.9.0",
+    "scipy>=1.14.1",
+    "KDEpy>=1.1.10"
+]
+
+[project.urls]
+Homepage = "https://github.com/supsi-dacd-isaac/BayesReconPy"
+
+[tool.setuptools.packages.find]
+where = ["."]

@@ -67,14 +67,16 @@ Despite this progress, most existing software tools for reconciliation have sign
 
 ### Table 1: Probabilistic reconciliation methods comparison
 
-| Library                                                  | Cross-temp |     Gaussian     | Continuous (non-Gaussian) |    Discrete     |      Mixed      |
-|----------------------------------------------------------|:----------:|:----------------:|:--------------------------:|:---------------:|:---------------:|
-| **bayesReconPy (Ours)**                                  |     ❌      |       ✅         |            ✅             |       ✅        |       ✅        |
-| fable / fabletools [@fable_O_Hara_Wild_etal2024]         |     ✅      |       ✅         |            ✅             |       ❌        |       ❌        |
-| FoReco [@FoReco]                                         |     ✅      |       ✅         |            ✅             |       ❌        |       ❌        |
-| gluonts [@gluonTS_Alexandrov_etal2020]                   |     ❌      |       ✅         |            ✅             |       ❌        |       ❌        |
-| hierarchicalforecast [@olivares2022hierarchicalforecast] |     ❌      |       ✅         |            ✅             |       ❌        |       ❌        |
-| thief [@thief_HyndmanKourentzes2018]                     |     ✅      |       ✅         |            ❌             |       ❌        |       ❌        |
+| Library                                                  | Cross-temp | Gaussian | Continuous (non-Gaussian) | Discrete | Mixed |
+|----------------------------------------------------------|:----------:|:--------:|:--------------------------:|:--------:|:-----:|
+| **bayesReconPy (Ours)**                                  |     X      |    V     |             V              |    V     |   V   |
+| fable / fabletools [@fable_O_Hara_Wild_etal2024]         |     V      |    V     |             V              |    X     |   X   |
+| FoReco [@FoReco]                                         |     V      |    V     |             V              |    X     |   X   |
+| gluonts [@gluonTS_Alexandrov_etal2020]                   |     X      |    V     |             V              |    X     |   X   |
+| hierarchicalforecast [@olivares2022hierarchicalforecast] |     X      |    V     |             V              |    X     |   X   |
+| thief [@thief_HyndmanKourentzes2018]                     |     V      |    V     |             X              |    X     |   X   |
+**Note**: `V` = Supported, `X` = Not supported
+
 
 # Usage
 

@@ -77,7 +77,6 @@ Despite this progress, most existing software tools for reconciliation have sign
 | thief [@thief_HyndmanKourentzes2018]                     |     V      |    V     |             X              |    X     |   X   |
 **Note**: `V` = Supported, `X` = Not supported
 
-
 # Usage
 
 A hierarchy can contain, at each level, Gaussian, continuous non-Gaussian, or discrete forecast distributions (see **Figure 1**). Continuous base forecasts can be provided either in parametric form or as samples. Discrete base forecasts can be provided in parametric form, as samples, or as a probability mass function (PMF).
@@ -160,6 +159,6 @@ stop = time.time()
 
 # Acknowledgements
 
-Research funded by the Swiss National Science Foundation (grant 200021_212164), the Hasler Foundation (project: *hierarchical forecasting with mixed hierarchies*), the European Union (project: 101160720 — ENERGENIUS), and the Swiss State Secretariat for Education, Research and Innovation (SERI) in the context of the Horizon Europe research and innovation programme project DR-RISE (Grant Agreement No 101104154).
+Research funded by the Swiss National Science Foundation (grant 200021_212164), the European Union (project: 101160720 — ENERGENIUS), and the Swiss State Secretariat for Education, Research and Innovation (SERI) in the context of the Horizon Europe research and innovation programme project DR-RISE (Grant Agreement No 101104154).
 
 # References

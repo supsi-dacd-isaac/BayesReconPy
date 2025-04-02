@@ -81,13 +81,8 @@ Despite this progress, most existing software tools for reconciliation have sign
 
 A hierarchy can contain, at each level, Gaussian, continuous non-Gaussian, or discrete forecast distributions (see **Figure 1**). Continuous base forecasts can be provided either in parametric form or as samples. Discrete base forecasts can be provided in parametric form, as samples, or as a probability mass function (PMF).
 
-<div align="center">
-
-<img src="../pictures/types_of_reconciliation.png" alt="Types of reconciliation" width="600"/>
-
-**Figure 1:** Types of reconciliation — Gaussian, discrete, and mixed input forecasts, and output forms (parametric, PMF, samples).
-
-</div>
+![Types of reconciliation — Gaussian, discrete, and mixed input forecasts, and output forms (parametric, PMF, samples).](types_of_reconciliation.png)
+*Figure 1: Types of reconciliation — Gaussian, discrete, and mixed input forecasts, and output forms (parametric, PMF, samples).*
 
 Below, we describe the suitable reconciliation algorithms for each case:
 

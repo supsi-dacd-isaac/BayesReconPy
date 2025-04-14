@@ -50,20 +50,21 @@ bibliography: paper.bib
 
 # Statement of Need
 
-Forecast reconciliation is essential for ensuring coherence across hierarchical time series, where aggregate values must match the sum of their components. A common example is retail sales: item-level sales can be aggregated by product, category, or store [@MAKRIDAKIS20221325]. While the observed data are coherent by construction, independently generated forecasts (base forecasts) typically violate aggregation constraints, resulting in incoherent predictions.
+Forecast reconciliation ensures coherence across hierarchical time series, where aggregate forecasts must equal the sum of their components. In practice, base forecasts—generated independently for each series—often violate these constraints.
 
-Early work addressed this issue for point forecasts using projection-based methods such as OLS and MinT [@Hyndman_Ahmed_Athanasopoulos_Shang_2011; @Wickramasuriya_Athanasopoulos_Hyndman_2019]. More recently, probabilistic reconciliation methods have been proposed to reconcile entire forecast distributions [@Jeon_Panagiotelis_Petropoulos_2019; @taieb2021hierarchical; @Panagiotelis_Gamakumara_Athanasopoulos_Hyndman_2023; @Girolimetto_Athanasopoulos_DiFonzo_Hyndman_2024], offering a richer and more informative forecasting framework.
+Initial approaches addressed point forecasts using projection methods like OLS and MinT [@Hyndman_Ahmed_Athanasopoulos_Shang_2011; @Wickramasuriya_Athanasopoulos_Hyndman_2019]. More recently, probabilistic reconciliation methods have been introduced, providing richer uncertainty quantification [@Jeon_Panagiotelis_Petropoulos_2019; @Panagiotelis_Gamakumara_Athanasopoulos_Hyndman_2023].
 
-Despite this progress, most existing software tools for reconciliation have significant limitations (**Table 1**). Many only support Gaussian or continuous distributions, lack support for discrete or mixed-type forecasts, or are implemented only in R. Others, such as ProbReco [@Panagiotelis_Gamakumara_Athanasopoulos_Hyndman_2023] and DiscreteRecon [@ZHANG2024143], are no longer actively maintained. Notably, no existing Python library offers a unified interface for probabilistic reconciliation across distribution types.
+However, most existing tools are limited to Gaussian or continuous inputs, lack support for discrete or mixed-type forecasts, or are implemented only in R. Some, like ProbReco and DiscreteRecon, are no longer actively maintained.
 
-`bayesReconPy` fills this gap. It is a Python package that implements probabilistic reconciliation via both conditioning and projection-based methods, including OLS and MinT. It supports a broad range of forecast types:
+`bayesReconPy` addresses these gaps. It provides a unified Python interface for probabilistic reconciliation using both conditioning and projection-based methods. It supports:
 
-- Gaussian forecasts [@Corani_Azzimonti_Augusto_Zaffalon_2021]
-- Continuous non-Gaussian forecasts [@Zambon_Azzimonti_Corani_2024]
-- Discrete forecasts [@CoraniAzzimontiRubattu2024; @Zambon_Azzimonti_Corani_2024]
+- Gaussian forecasts [@Corani_Azzimonti_Augusto_Zaffalon_2021]  
+- Continuous non-Gaussian forecasts [@Zambon_Azzimonti_Corani_2024]  
+- Discrete forecasts [@CoraniAzzimontiRubattu2024]  
 - Mixed discrete-continuous hierarchies [@zambon2024probabilistic]
 
-`bayesReconPy` is an extension of the R package `bayesRecon` [@Azzimonti_Rubattu_Zambon_Corani_bayesRecon], offering the same functionality in a Python-native interface. As shown in a comparison with other reconciliation libraries, it is the only actively maintained Python package that enables probabilistic reconciliation across all major distribution types. It includes comprehensive documentation and Python notebooks that replicate key experiments from the literature [@Corani_Azzimonti_Augusto_Zaffalon_2021; @CoraniAzzimontiRubattu2024; @Zambon_Azzimonti_Corani_2024], making it accessible for researchers and practitioners alike.
+As a Python-native extension of the R package `bayesRecon`, `bayesReconPy` is the only actively maintained tool of its kind. It includes extensive documentation and example notebooks replicating key results from the literature.
+ [@Corani_Azzimonti_Augusto_Zaffalon_2021; @CoraniAzzimontiRubattu2024; @Zambon_Azzimonti_Corani_2024].
 
 ### Table 1: Probabilistic reconciliation methods comparison
 
@@ -79,40 +80,45 @@ Despite this progress, most existing software tools for reconciliation have sign
 
 # Usage
 
-A hierarchy can contain, at each level, Gaussian, continuous non-Gaussian, or discrete forecast distributions (see **Figure 1**). Continuous base forecasts can be provided either in parametric form or as samples. Discrete base forecasts can be provided in parametric form, as samples, or as a probability mass function (PMF).
+A hierarchy can contain Gaussian, continuous non-Gaussian, or discrete forecast distributions at different levels (see **Figure 1**). Base forecasts can be provided as parameters, samples, or probability mass functions (PMFs), depending on whether they are continuous or discrete.
 
-![Types of reconciliation — Gaussian, discrete, and mixed input forecasts, and output forms (parametric, PMF, samples).](types_of_reconciliation.png)
-*Figure 1: Types of reconciliation — Gaussian, discrete, and mixed input forecasts, and output forms (parametric, PMF, samples).*
+![Types of reconciliation — Gaussian, discrete, and mixed input forecasts, and output forms (parametric, PMF, samples).](types_of_reconciliation.png)  
+*Figure 1: Types of reconciliation and output forms.*
 
 Below, we describe the suitable reconciliation algorithms for each case:
 
-1. **All forecast distributions are Gaussian**  
-   Reconciliation is computed analytically using the function `reconc_gaussian`, following the approach in [@Corani_Azzimonti_Augusto_Zaffalon_2021; @ZAMBON20241438]. This is equivalent to minimum trace reconciliation (MinT) [@Wickramasuriya_Athanasopoulos_Hyndman_2019].
+1. **All Gaussian forecasts**  
+   Use `reconc_gaussian` for analytical reconciliation (MinT)  
+   _[@Corani_Azzimonti_Augusto_Zaffalon_2021; @Wickramasuriya_Athanasopoulos_Hyndman_2019]_
 
-2. **All forecast distributions are continuous (non-Gaussian) or all are discrete**  
-   Reconciliation is performed using Bottom-Up Importance Sampling (BUIS), via the function `reconc_BUIS` [@Zambon_Azzimonti_Corani_2024].
+2. **All continuous or all discrete forecasts**  
+   Use `reconc_BUIS` for sample-based reconciliation  
+   _[@Zambon_Azzimonti_Corani_2024]_
 
-3. **Mixed distributions: discrete forecasts at the bottom level and Gaussian at the upper levels**  
-   These hierarchies can be reconciled using either Mixed Conditioning (`reconc_MixCond`) or Top-Down Conditioning (`reconc_TDcond`) [@zambon2024probabilistic].
+3. **Mixed types (discrete bottom, Gaussian upper)**  
+   Use `reconc_MixCond` or `reconc_TDcond`  
+   _[@zambon2024probabilistic]_
 
-Depending on the reconciliation function used, the output is returned as:
+#### Output formats by method:
 
-- *Reconciled parameters* (for the Gaussian case, using `reconc_gaussian`)  
-- *Samples* (for continuous non-Gaussian or discrete forecasts, using `reconc_BUIS`)  
-- *Probability Mass Functions (PMFs)* (for mixed cases, using `reconc_MixCond` or `reconc_TDcond`)
+- **Parametric** → `reconc_gaussian`
+- **Samples** → `reconc_BUIS`
+- **PMF** → `reconc_MixCond`, `reconc_TDcond`
 
-Note that in the case of MinT or OLS reconciliation, the input is expected to be numpy arrays and the same is returned as the reconciled forecast. Documentation for the expected shape of these arrays is provided in the function descriptions.
+Note that in the case of MinT or OLS reconciliation, the inputs and outputs are expected as NumPy arrays. Documentation for the expected shape of these arrays is provided in the function descriptions.
 
 ## Examples
 
 ### Reconciliation of Negative Binomial Forecasts
 
-We demonstrate the use of `bayesReconPy` on a hierarchy of extreme market events in five economic sectors over the period 2005–2018. This hierarchy consists of five bottom-level and one top-level time series (the total). These are count-valued time series, and the predictive distributions are modeled as negative binomial.
+We illustrate the use of `bayesReconPy` on a hierarchy of count-valued time series representing extreme market events across five economic sectors from 2005 to 2018. These predictive distributions are modeled using negative binomial distributions, and the hierarchy includes five bottom-level and one top-level series.
 
-The dataset `extr_mkt_events`, included in the package, contains both the observed time series and the corresponding base forecasts. It was used in the experiments of [@ZAMBON20241438]. A related Python notebook reproducing the results is available: [Properties of the Reconciled Distribution via Conditioning](https://github.com/supsi-dacd-isaac/BayesReconPy/blob/main/notebooks/Properties%20of%20the%20reconciled%20distribution%20via%20conditioning.ipynb)
+The dataset `extr_mkt_events`, included in the package, provides both the observed series and corresponding base forecasts. This dataset was used in the experiments reported in [@ZAMBON20241438].
 
-The code below shows how to apply the `reconc_BUIS` function. The function takes the summing matrix `A`, the base forecast parameters, and the desired number of samples. Reconciliation is completed within seconds:
+A related Python notebook demonstrating this example is available:  
+[Properties of the Reconciled Distribution via Conditioning](https://github.com/supsi-dacd-isaac/BayesReconPy/blob/main/notebooks/Properties%20of%20the%20reconciled%20distribution%20via%20conditioning.ipynb)
 
+The code example shows how to apply the `reconc_BUIS` function using the summing matrix `A`, base forecast parameters, and the desired number of samples. Reconciliation is completed within seconds.
 ```python
 # Reconcile via importance sampling
 buis = reconc_BUIS(A, base_fc_j, 
@@ -124,14 +130,14 @@ samples_y = buis['reconciled_samples']
 
 ### Reconciliation of a Large Mixed Hierarchy
 
-The M5 forecasting competition dataset [@MAKRIDAKIS20221325] includes daily sales time series for 10 stores. Each store contains 3049 bottom-level series and 11 upper-level series.
+The M5 dataset [@MAKRIDAKIS20221325] contains daily sales time series for 10 stores, each with 3049 bottom-level and 11 upper-level series. Existing reconciliation methods struggled with the hierarchy’s scale and the requirement for non-negative forecasts.
 
-During the competition, existing reconciliation methods failed to process the hierarchy due to the dataset’s size and the requirement for non-negative forecasts [@MAKRIDAKIS20221325]. `bayesReconPy` successfully reconciles 1-step-ahead base forecasts for one store, `"CA_1"`, returning non-negative and probabilistic forecasts.
+`bayesReconPy` successfully reconciles 1-step-ahead forecasts for store `"CA_1"`, producing non-negative, probabilistic outputs. The base forecasts, generated using the ADAM method [@svetunkov2023iets] via the `smooth` R package [@smooth_pkg], are included in the package.
 
-Base forecasts are included in the package and were generated using the ADAM method [@svetunkov2023iets], implemented in the `smooth` R package [@smooth_pkg]. A Python notebook illustrates this example, available as: [Reconciliation of M5 hierarchy with mixed-type forecasts](https://github.com/supsi-dacd-isaac/BayesReconPy/blob/main/notebooks/Reconciliation%20of%20M5%20hierarchy%20with%20mixed-type%20forecasts.ipynb)
+A Python notebook illustrating this use case is available:  
+[Reconciliation of M5 hierarchy with mixed-type forecasts](https://github.com/supsi-dacd-isaac/BayesReconPy/blob/main/notebooks/Reconciliation%20of%20M5%20hierarchy%20with%20mixed-type%20forecasts.ipynb)
 
-Below is a code snippet demonstrating reconciliation using `reconc_TDcond`. Here, the bottom-level forecasts are discrete, and the upper-level forecasts are continuous. The reconciliation completes in just a few seconds:
-
+The example below demonstrates reconciliation using `reconc_TDcond`, where bottom-level forecasts are discrete and upper-level forecasts are continuous. Reconciliation completes in seconds.
 ```python
 N_samples_TD = int(1e4)
 

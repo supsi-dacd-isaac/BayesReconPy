@@ -75,7 +75,7 @@ As a Python-native extension of the R package `bayesRecon`, `bayesReconPy` is th
 | FoReco [@FoReco]                                         |     V      |    V     |             V              |    X     |   X   |
 | gluonts [@gluonTS_Alexandrov_etal2020]                   |     X      |    V     |             V              |    X     |   X   |
 | hierarchicalforecast [@olivares2022hierarchicalforecast] |     X      |    V     |             V              |    X     |   X   |
-| thief [@thief_HyndmanKourentzes2018]                     |     V      |    V     |             X              |    X     |   X   |
+| thief [@thief_HyndmanKourentzes2018]                     |     X      |    V     |             X              |    X     |   X   |
 **Note**: `V` = Supported, `X` = Not supported
 
 # Usage

@@ -4,7 +4,7 @@
 ![Python](https://img.shields.io/badge/python-3.10%2B-green)
 [![Downloads](https://static.pepy.tech/badge/bayesreconpy)](https://pepy.tech/project/bayesreconpy)
 
-<img src="pictures/BAyesreCONpy.png" width="200"/>
+<img src="pictures/BAyesreCONpy.png" width="300"/>
 
 ## Bayesian Reconciliation for Hierarchical Forecasting 
 

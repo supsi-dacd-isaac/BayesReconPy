@@ -3,6 +3,14 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
+.. raw:: html
+
+    <img src="https://raw.githubusercontent.com/supsi-dacd-isaac/BayesReconPy/main/pictures/BAyesreCONpy.png"
+         alt="Forecast example at M5"
+         width="500"
+         style="display: block; margin: auto;">
+
+
 Welcome to bayesreconpy's documentation!
 ========================================
 

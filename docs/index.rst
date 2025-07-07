@@ -14,11 +14,22 @@ Welcome to bayesreconpy's documentation!
    :target: https://www.gnu.org/licences/lgpl-3.0
    :alt: License: LGPL (\>= 3)
 
+.. image:: https://img.shields.io/badge/license-LGPL%20(%3E=%203)-yellow.svg
+   :target: https://www.gnu.org/licences/lgpl-3.0
+   :alt: License: LGPL (\>= 3)
+
 
 Bayesian Reconciliation for Hierarchical Forecasting
 ----------------------------------------------------
 
 Forecast reconciliation ensures that probabilistic forecasts across hierarchical or grouped time series remain coherent, meaning that forecasts at disaggregated levels (e.g., local components) are consistent with those at aggregated levels (e.g., system totals). It is a post-processing technique applied to a set of independently generated incoherent base forecasts that do not obey these hierarchical constraints.
+
+.. image:: _static/M5.png
+   :alt: Forecast reconciliation example
+   :width: 600px
+   :align: center
+
+   M5 dataset: Example of a hierarchical time series
 
 While several methods exist for point forecast reconciliation, BayesReconPy focuses on probabilistic reconciliation of different kinds of hierarchical and grouped time series in python. Most of the existing tools in forecast reconciliation are limited to Gaussian or continuous inputs, lack support for discrete or mixed-type forecasts, or are implemented only in R. This package supports reconciliation of discrete and non-Gaussian forecast distributions using Bayesian forecast reconciliation via conditioning methods, which are common in domains such as energy systems, demand forecasting, and risk analysis.
 

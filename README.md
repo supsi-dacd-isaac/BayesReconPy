@@ -1,7 +1,10 @@
 # BayesReconPy
 [![codecov](https://codecov.io/github/supsi-dacd-isaac/BayesReconPy/graph/badge.svg?token=KND9ZJ4GOQ)](https://codecov.io/github/supsi-dacd-isaac/BayesReconPy)
 [![License: LGPL (\>= 3)](https://img.shields.io/badge/license-LGPL%20(%3E=%203)-yellow.svg)](https://www.gnu.org/licences/lgpl-3.0)
-![Python](https://img.shields.io/badge/python-3.10%2B-blue)
+![Python](https://img.shields.io/badge/python-3.10%2B-green)
+[![Downloads](https://static.pepy.tech/badge/bayesreconpy)](https://pepy.tech/project/bayesreconpy)
+
+<img src="pictures/BAyesreCONpy.png" width="200"/>
 
 ## Bayesian Reconciliation for Hierarchical Forecasting 
 
@@ -698,3 +701,18 @@ From the above tables, it seems evident that the results in both the implementat
 | **bottom sd** | 0.4295341  | 1.661562e-05  | 1.999992 |
 
 For the bottom reconciled forecasts we get results similar to the ones we have obtained so far. There are a few outliers, but apart from them, the results are similar. Here we see larger deviations than the other methods, but those might be due to the different randomization in the two implementations.  
+
+## Contributors
+<div style="display: flex; justify-content: center; gap: 40px;">
+
+  <div style="text-align: center;">
+    <img src="pictures/biswas.jpg" width="200"/>
+    <div><a href="mailto:anubhab.biswas@supsi.ch">anubhab.biswas@supsi.ch</a></div>
+  </div>
+
+  <div style="text-align: center;">
+    <img src="pictures/nespoli.jpg" width="200"/>
+    <div><a href="mailto:lorenzo.nespoli@supsi.ch">lorenzo.nespoli@supsi.ch</a></div>
+  </div>
+
+</div>

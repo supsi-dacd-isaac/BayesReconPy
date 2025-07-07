@@ -7,7 +7,7 @@ name = "bayesreconpy"
 version = "0.2.0"
 description = "Bayesian reconciliation for hierarchical forecasting"
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.10"
 license = { text = "MIT" }
 authors = [
     { name = "A.Biswas" },

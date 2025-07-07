@@ -269,7 +269,7 @@ def _temporal_aggregation(y, agg_levels=None):
         # Define frequency and start time
         y_f = f // k
         start_year = y.index[0] + (L - num_aggs * k) // f
-        agg_index = pd.date_range(start=f'{start_year}-01-01', periods=num_aggs, freq=f'{12 // y_f}ME')
+        agg_index = pd.date_range(start=f'{start_year}-01-01', periods=num_aggs, freq=f'{12 // y_f}M')
 
         # Store the result in DataFrame form
         aggregated_data[f"{k}-Monthly"] = pd.Series(y_agg, index=agg_index)

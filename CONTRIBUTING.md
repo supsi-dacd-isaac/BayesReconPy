@@ -28,7 +28,7 @@ First off, thanks for considering contributing! These guidelines will help you g
 
 Make sure you have:
 
-- Python 3.8+ (preferably via `venv` or `conda`)
+- Python 3.10+ (preferably via `venv` or `conda`)
 - Core dependencies installed via:
 
   ```bash

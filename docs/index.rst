@@ -22,6 +22,12 @@ Welcome to bayesreconpy's documentation!
    :target: https://www.gnu.org/licences/lgpl-3.0
    :alt: License: LGPL (\>= 3)
 
+.. image:: https://img.shields.io/badge/python-3.10%2B-green
+   :alt: Python 3.10+
+
+.. image:: https://static.pepy.tech/badge/bayesreconpy
+   :target: https://pepy.tech/project/bayesreconpy
+   :alt: Total downloads
 
 Bayesian Reconciliation for Hierarchical Forecasting
 ----------------------------------------------------

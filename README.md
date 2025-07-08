@@ -1,6 +1,7 @@
 # BayesReconPy
 [![codecov](https://codecov.io/github/supsi-dacd-isaac/BayesReconPy/graph/badge.svg?token=KND9ZJ4GOQ)](https://codecov.io/github/supsi-dacd-isaac/BayesReconPy)
 [![License: LGPL (\>= 3)](https://img.shields.io/badge/license-LGPL%20(%3E=%203)-yellow.svg)](https://www.gnu.org/licences/lgpl-3.0)
+![PyPI](https://img.shields.io/pypi/v/bayesreconpy)
 ![Python](https://img.shields.io/badge/python-3.10%2B-green)
 [![Downloads](https://static.pepy.tech/badge/bayesreconpy)](https://pepy.tech/project/bayesreconpy)
 

@@ -22,6 +22,10 @@ Welcome to bayesreconpy's documentation!
    :target: https://www.gnu.org/licences/lgpl-3.0
    :alt: License: LGPL (\>= 3)
 
+.. image:: https://img.shields.io/pypi/v/bayesreconpy
+   :target: https://pypi.org/project/bayesreconpy/
+   :alt: PyPI
+
 .. image:: https://img.shields.io/badge/python-3.10%2B-green
    :alt: Python 3.10+
 

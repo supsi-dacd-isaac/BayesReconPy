@@ -320,11 +320,11 @@
                   
   <section id="bayesreconpy-package">
 <h1>bayesreconpy package<a class="headerlink" href="#bayesreconpy-package" title="Link to this heading">#</a></h1>
-<section id="module-bayesreconpy.reconc_BUIS">
-<span id="bayesreconpy-reconc-buis"></span><h2>bayesreconpy.reconc_BUIS<a class="headerlink" href="#module-bayesreconpy.reconc_BUIS" title="Link to this heading">#</a></h2>
+<section id="module-bayesreconpy.reconc_buis">
+<span id="bayesreconpy-reconc-buis"></span><h2>bayesreconpy.reconc_buis<a class="headerlink" href="#module-bayesreconpy.reconc_buis" title="Link to this heading">#</a></h2>
 <dl class="py function">
-<dt class="sig sig-object py" id="bayesreconpy.reconc_BUIS.reconc_BUIS">
-<span class="sig-prename descclassname"><span class="pre">bayesreconpy.reconc_BUIS.</span></span><span class="sig-name descname"><span class="pre">reconc_BUIS</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">A</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base_forecasts</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_samples</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suppress_warnings</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bayesreconpy.reconc_BUIS.reconc_BUIS" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="bayesreconpy.reconc_buis.reconc_buis">
+<span class="sig-prename descclassname"><span class="pre">bayesreconpy.reconc_buis.</span></span><span class="sig-name descname"><span class="pre">reconc_buis</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">A</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base_forecasts</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_samples</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suppress_warnings</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bayesreconpy.reconc_buis.reconc_buis" title="Link to this definition">#</a></dt>
 <dd><p>BUIS for Probabilistic Reconciliation of Forecasts via Conditioning</p>
 <p>Uses the Bottom-Up Importance Sampling (BUIS) algorithm to draw samples from the reconciled
 forecast distribution obtained via conditioning.</p>
@@ -421,7 +421,7 @@ for all forecasts.</p>
 <span class="gp">... </span>    <span class="p">{</span><span class="s2">&quot;mean&quot;</span><span class="p">:</span> <span class="mf">2.0</span><span class="p">,</span> <span class="s2">&quot;sd&quot;</span><span class="p">:</span> <span class="mf">2.0</span><span class="p">},</span>  <span class="c1"># Bottom forecast 1</span>
 <span class="gp">... </span>    <span class="p">{</span><span class="s2">&quot;mean&quot;</span><span class="p">:</span> <span class="mf">4.0</span><span class="p">,</span> <span class="s2">&quot;sd&quot;</span><span class="p">:</span> <span class="mf">2.0</span><span class="p">}</span>   <span class="c1"># Bottom forecast 2</span>
 <span class="gp">... </span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">reconc_BUIS</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">base_forecasts</span><span class="p">,</span> <span class="n">in_type</span><span class="o">=</span><span class="s2">&quot;params&quot;</span><span class="p">,</span> <span class="n">distr</span><span class="o">=</span><span class="s2">&quot;gaussian&quot;</span><span class="p">,</span> <span class="n">num_samples</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">reconc_buis</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">base_forecasts</span><span class="p">,</span> <span class="n">in_type</span><span class="o">=</span><span class="s2">&quot;params&quot;</span><span class="p">,</span> <span class="n">distr</span><span class="o">=</span><span class="s2">&quot;gaussian&quot;</span><span class="p">,</span> <span class="n">num_samples</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;reconciled_samples&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 <span class="go">(3, 10000)</span>
 </pre></div>
@@ -436,7 +436,7 @@ for all forecasts.</p>
 <span class="gp">... </span>    <span class="p">{</span><span class="s2">&quot;lambda&quot;</span><span class="p">:</span> <span class="mf">2.0</span><span class="p">},</span>  <span class="c1"># Bottom forecast 1</span>
 <span class="gp">... </span>    <span class="p">{</span><span class="s2">&quot;lambda&quot;</span><span class="p">:</span> <span class="mf">4.0</span><span class="p">}</span>   <span class="c1"># Bottom forecast 2</span>
 <span class="gp">... </span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">reconc_BUIS</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">base_forecasts</span><span class="p">,</span> <span class="n">in_type</span><span class="o">=</span><span class="s2">&quot;params&quot;</span><span class="p">,</span> <span class="n">distr</span><span class="o">=</span><span class="s2">&quot;poisson&quot;</span><span class="p">,</span> <span class="n">num_samples</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">reconc_buis</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">base_forecasts</span><span class="p">,</span> <span class="n">in_type</span><span class="o">=</span><span class="s2">&quot;params&quot;</span><span class="p">,</span> <span class="n">distr</span><span class="o">=</span><span class="s2">&quot;poisson&quot;</span><span class="p">,</span> <span class="n">num_samples</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;reconciled_samples&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 <span class="go">(3, 10000)</span>
 </pre></div>
@@ -516,12 +516,12 @@ samples for all time series, where <cite>n = n_upper + n_bottom</cite>.</p>
 <ul class="simple">
 <li><p>This is a bare-bones implementation of the Metropolis-Hastings algorithm.</p></li>
 <li><p>We recommend using additional tools to assess the convergence of the MCMC chains.</p></li>
-<li><p>The <cite>reconc_BUIS</cite> function is generally faster for most hierarchies.</p></li>
+<li><p>The <cite>reconc_buis</cite> function is generally faster for most hierarchies.</p></li>
 </ul>
 <p class="rubric">Examples</p>
 <dl>
 <dt>Example: Simple hierarchy with Poisson base forecasts</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">bayesreconpy.reconc_BUIS</span> <span class="kn">import</span> <span class="n">reconc_BUIS</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">bayesreconpy.reconc_buis</span> <span class="kn">import</span> <span class="n">reconc_buis</span>
 <span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create a minimal hierarchy with 1 upper and 2 bottom variables</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>  <span class="c1"># Aggregation matrix</span>
@@ -537,7 +537,7 @@ samples for all time series, where <cite>n = n_upper + n_bottom</cite>.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">samples_mcmc</span> <span class="o">=</span> <span class="n">mcmc_result</span><span class="p">[</span><span class="s1">&#39;reconciled_samples&#39;</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Compare reconciled means with those from BUIS</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">buis_result</span> <span class="o">=</span> <span class="n">reconc_BUIS</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">base_forecasts</span><span class="p">,</span> <span class="n">in_type</span><span class="o">=</span><span class="s2">&quot;params&quot;</span><span class="p">,</span> <span class="n">distr</span><span class="o">=</span><span class="s2">&quot;poisson&quot;</span><span class="p">,</span> <span class="n">num_samples</span><span class="o">=</span><span class="mi">100000</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">buis_result</span> <span class="o">=</span> <span class="n">reconc_buis</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">base_forecasts</span><span class="p">,</span> <span class="n">in_type</span><span class="o">=</span><span class="s2">&quot;params&quot;</span><span class="p">,</span> <span class="n">distr</span><span class="o">=</span><span class="s2">&quot;poisson&quot;</span><span class="p">,</span> <span class="n">num_samples</span><span class="o">=</span><span class="mi">100000</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">samples_buis</span> <span class="o">=</span> <span class="n">buis_result</span><span class="p">[</span><span class="s1">&#39;reconciled_samples&#39;</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;MCMC Reconciled Means:&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">samples_mcmc</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
@@ -555,18 +555,18 @@ International Journal of Forecasting, 40(2), 457-469.</p></li>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <dl class="simple">
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">reconc_BUIS</span></code></dt><dd><p>Faster reconciliation method for most hierarchies.</p>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">reconc_buis</span></code></dt><dd><p>Faster reconciliation method for most hierarchies.</p>
 </dd>
 </dl>
 </div>
 </dd></dl>
 
 </section>
-<section id="module-bayesreconpy.reconc_MixCond">
-<span id="bayesreconpy-reconc-mixcond"></span><h2>bayesreconpy.reconc_MixCond<a class="headerlink" href="#module-bayesreconpy.reconc_MixCond" title="Link to this heading">#</a></h2>
+<section id="module-bayesreconpy.reconc_mix_cond">
+<span id="bayesreconpy-reconc-mixcond"></span><h2>bayesreconpy.reconc_mix_cond<a class="headerlink" href="#module-bayesreconpy.reconc_mix_cond" title="Link to this heading">#</a></h2>
 <dl class="py function">
-<dt class="sig sig-object py" id="bayesreconpy.reconc_MixCond.reconc_MixCond">
-<span class="sig-prename descclassname"><span class="pre">bayesreconpy.reconc_MixCond.</span></span><span class="sig-name descname"><span class="pre">reconc_MixCond</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">A</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fc_bottom</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fc_upper</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bottom_in_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pmf'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_samples</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pmf'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suppress_warnings</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bayesreconpy.reconc_MixCond.reconc_MixCond" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="bayesreconpy.reconc_mix_cond.reconc_mix_cond">
+<span class="sig-prename descclassname"><span class="pre">bayesreconpy.reconc_mix_cond.</span></span><span class="sig-name descname"><span class="pre">reconc_mix_cond</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">A</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fc_bottom</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fc_upper</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bottom_in_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pmf'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_samples</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pmf'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suppress_warnings</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bayesreconpy.reconc_mix_cond.reconc_mix_cond" title="Link to this definition">#</a></dt>
 <dd><p>Probabilistic forecast reconciliation of mixed hierarchies via conditioning.</p>
 <p>Uses importance sampling to draw samples from the reconciled forecast distribution,
 obtained via conditioning, in the case of a mixed hierarchy.</p>
@@ -691,7 +691,7 @@ from <cite>0</cite> to the last value in the support.</p></li>
 <span class="gp">... </span><span class="p">}</span>
 <span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Perform reconciliation</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">reconc_MixCond</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">fc_bottom</span><span class="p">,</span> <span class="n">fc_upper</span><span class="p">,</span> <span class="n">bottom_in_type</span><span class="o">=</span><span class="s2">&quot;pmf&quot;</span><span class="p">,</span> <span class="n">return_type</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">reconc_mix_cond</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">fc_bottom</span><span class="p">,</span> <span class="n">fc_upper</span><span class="p">,</span> <span class="n">bottom_in_type</span><span class="o">=</span><span class="s2">&quot;pmf&quot;</span><span class="p">,</span> <span class="n">return_type</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Check the results</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;bottom_reconciled&#39;</span><span class="p">][</span><span class="s1">&#39;pmf&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
@@ -710,20 +710,20 @@ from <cite>0</cite> to the last value in the support.</p></li>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <dl class="simple">
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">reconc_TDcond</span></code></dt><dd><p>Probabilistic reconciliation via top-down conditioning.</p>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">reconc_td_cond</span></code></dt><dd><p>Probabilistic reconciliation via top-down conditioning.</p>
 </dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">reconc_BUIS</span></code></dt><dd><p>Reconciliation using Bottom-Up Importance Sampling (BUIS).</p>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">reconc_buis</span></code></dt><dd><p>Reconciliation using Bottom-Up Importance Sampling (BUIS).</p>
 </dd>
 </dl>
 </div>
 </dd></dl>
 
 </section>
-<section id="module-bayesreconpy.reconc_TDcond">
-<span id="bayesreconpy-reconc-tdcond"></span><h2>bayesreconpy.reconc_TDcond<a class="headerlink" href="#module-bayesreconpy.reconc_TDcond" title="Link to this heading">#</a></h2>
+<section id="module-bayesreconpy.reconc_td_cond">
+<span id="bayesreconpy-reconc-tdcond"></span><h2>bayesreconpy.reconc_td_cond<a class="headerlink" href="#module-bayesreconpy.reconc_td_cond" title="Link to this heading">#</a></h2>
 <dl class="py function">
-<dt class="sig sig-object py" id="bayesreconpy.reconc_TDcond.reconc_TDcond">
-<span class="sig-prename descclassname"><span class="pre">bayesreconpy.reconc_TDcond.</span></span><span class="sig-name descname"><span class="pre">reconc_TDcond</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">A</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fc_bottom</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fc_upper</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bottom_in_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pmf'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_samples</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pmf'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suppress_warnings</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_num_samples_ok</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bayesreconpy.reconc_TDcond.reconc_TDcond" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object py" id="bayesreconpy.reconc_td_cond.reconc_td_cond">
+<span class="sig-prename descclassname"><span class="pre">bayesreconpy.reconc_td_cond.</span></span><span class="sig-name descname"><span class="pre">reconc_td_cond</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">A</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fc_bottom</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fc_upper</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bottom_in_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pmf'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_samples</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'pmf'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suppress_warnings</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_num_samples_ok</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bayesreconpy.reconc_td_cond.reconc_td_cond" title="Link to this definition">#</a></dt>
 <dd><p>Probabilistic forecast reconciliation of mixed hierarchies via top-down conditioning.</p>
 <p>Uses the top-down conditioning algorithm to draw samples from the reconciled forecast distribution.
 Reconciliation is performed in two steps:
@@ -848,7 +848,7 @@ if <cite>suppress_warnings</cite> is <cite>False</cite>.</p></li>
 <span class="gp">... </span><span class="p">}</span>
 <span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Perform reconciliation</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">reconc_TDcond</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">fc_bottom</span><span class="p">,</span> <span class="n">fc_upper</span><span class="p">,</span> <span class="n">bottom_in_type</span><span class="o">=</span><span class="s2">&quot;pmf&quot;</span><span class="p">,</span> <span class="n">return_type</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">reconc_td_cond</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">fc_bottom</span><span class="p">,</span> <span class="n">fc_upper</span><span class="p">,</span> <span class="n">bottom_in_type</span><span class="o">=</span><span class="s2">&quot;pmf&quot;</span><span class="p">,</span> <span class="n">return_type</span><span class="o">=</span><span class="s2">&quot;all&quot;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Check the results</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;bottom_reconciled&#39;</span><span class="p">][</span><span class="s1">&#39;pmf&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
@@ -867,9 +867,9 @@ if <cite>suppress_warnings</cite> is <cite>False</cite>.</p></li>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <dl class="simple">
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">reconc_MixCond</span></code></dt><dd><p>Reconciliation for mixed-type hierarchies.</p>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">reconc_mix_cond</span></code></dt><dd><p>Reconciliation for mixed-type hierarchies.</p>
 </dd>
-<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">reconc_BUIS</span></code></dt><dd><p>Reconciliation using Bottom-Up Importance Sampling (BUIS).</p>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">reconc_buis</span></code></dt><dd><p>Reconciliation using Bottom-Up Importance Sampling (BUIS).</p>
 </dd>
 </dl>
 </div>
@@ -1010,20 +1010,20 @@ International Journal of Forecasting (in press).
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-bayesreconpy.reconc_BUIS">bayesreconpy.reconc_BUIS</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bayesreconpy.reconc_BUIS.reconc_BUIS"><code class="docutils literal notranslate"><span class="pre">reconc_BUIS()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-bayesreconpy.reconc_buis">bayesreconpy.reconc_buis</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bayesreconpy.reconc_buis.reconc_buis"><code class="docutils literal notranslate"><span class="pre">reconc_buis()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-bayesreconpy.reconc_MCMC">bayesreconpy.reconc_MCMC</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bayesreconpy.reconc_MCMC.reconc_MCMC"><code class="docutils literal notranslate"><span class="pre">reconc_MCMC()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-bayesreconpy.reconc_MixCond">bayesreconpy.reconc_MixCond</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bayesreconpy.reconc_MixCond.reconc_MixCond"><code class="docutils literal notranslate"><span class="pre">reconc_MixCond()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-bayesreconpy.reconc_mix_cond">bayesreconpy.reconc_mix_cond</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bayesreconpy.reconc_mix_cond.reconc_mix_cond"><code class="docutils literal notranslate"><span class="pre">reconc_mix_cond()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-bayesreconpy.reconc_TDcond">bayesreconpy.reconc_TDcond</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bayesreconpy.reconc_TDcond.reconc_TDcond"><code class="docutils literal notranslate"><span class="pre">reconc_TDcond()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-bayesreconpy.reconc_td_cond">bayesreconpy.reconc_td_cond</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bayesreconpy.reconc_td_cond.reconc_td_cond"><code class="docutils literal notranslate"><span class="pre">reconc_td_cond()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-bayesreconpy.reconc_gaussian">bayesreconpy.reconc_gaussian</a><ul class="nav section-nav flex-column">

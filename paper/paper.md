@@ -92,18 +92,18 @@ Below, we describe the suitable reconciliation algorithms for each case:
    _[@Corani_Azzimonti_Augusto_Zaffalon_2021; @Wickramasuriya_Athanasopoulos_Hyndman_2019]_
 
 2. **All continuous or all discrete forecasts**  
-   Use `reconc_BUIS` for sample-based reconciliation  
+   Use `reconc_buis` for sample-based reconciliation  
    _[@Zambon_Azzimonti_Corani_2024]_
 
 3. **Mixed types (discrete bottom, Gaussian upper)**  
-   Use `reconc_MixCond` or `reconc_TDcond`  
+   Use `reconc_mix_cond` or `reconc_td_cond`  
    _[@zambon2024probabilistic]_
 
 #### Output formats by method:
 
 - **Parametric** → `reconc_gaussian`
-- **Samples** → `reconc_BUIS`
-- **PMF** → `reconc_MixCond`, `reconc_TDcond`
+- **Samples** → `reconc_buis`
+- **PMF** → `reconc_mix_cond`, `reconc_td_cond`
 
 Note that in the case of MinT or OLS reconciliation, the inputs and outputs are expected as NumPy arrays. Documentation for the expected shape of these arrays is provided in the function descriptions.
 
@@ -118,10 +118,10 @@ The dataset `extr_mkt_events`, included in the package, provides both the observ
 A related Python notebook demonstrating this example is available:  
 [Properties of the Reconciled Distribution via Conditioning](https://github.com/supsi-dacd-isaac/BayesReconPy/blob/main/notebooks/Properties%20of%20the%20reconciled%20distribution%20via%20conditioning.ipynb)
 
-The code example shows how to apply the `reconc_BUIS` function using the summing matrix `A`, base forecast parameters, and the desired number of samples. Reconciliation is completed within seconds.
+The code example shows how to apply the `reconc_buis` function using the summing matrix `A`, base forecast parameters, and the desired number of samples. Reconciliation is completed within seconds.
 ```python
 # Reconcile via importance sampling
-buis = reconc_BUIS(A, base_fc_j, 
+buis = reconc_buis(A, base_fc_j, 
         "params", "nbinom",
         num_samples=N_samples, seed=42)
 samples_y = buis['reconciled_samples']
@@ -137,13 +137,13 @@ The M5 dataset [@MAKRIDAKIS20221325] contains daily sales time series for 10 sto
 A Python notebook illustrating this use case is available:  
 [Reconciliation of M5 hierarchy with mixed-type forecasts](https://github.com/supsi-dacd-isaac/BayesReconPy/blob/main/notebooks/Reconciliation%20of%20M5%20hierarchy%20with%20mixed-type%20forecasts.ipynb)
 
-The example below demonstrates reconciliation using `reconc_TDcond`, where bottom-level forecasts are discrete and upper-level forecasts are continuous. Reconciliation completes in seconds.
+The example below demonstrates reconciliation using `reconc_td_cond`, where bottom-level forecasts are discrete and upper-level forecasts are continuous. Reconciliation completes in seconds.
 ```python
 N_samples_TD = int(1e4)
 
 # TDCond reconciliation
 start = time.time()
-td = reconc_TDcond(
+td = reconc_td_cond(
     A,
     fc_bottom_4rec, 
     fc_upper_4rec, 

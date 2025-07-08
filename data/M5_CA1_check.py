@@ -6,10 +6,10 @@ from bayesreconpy.PMF import _pmf_get_mean as PMF_get_mean
 from bayesreconpy.PMF import _pmf_get_var as PMF_get_var
 from bayesreconpy.shrink_cov import _schafer_strimmer_cov
 from bayesreconpy.reconc_gaussian import reconc_gaussian
-from bayesreconpy.reconc_MixCond import reconc_MixCond
-from bayesreconpy.reconc_TDcond import reconc_TDcond
+from bayesreconpy.reconc_mix_cond import reconc_mix_cond
+from bayesreconpy.reconc_td_cond import reconc_td_cond
 from bayesreconpy.utils import _MVN_sample, _samples_from_pmf
-from bayesreconpy.reconc_BUIS import reconc_BUIS
+from bayesreconpy.reconc_buis import reconc_buis
 
 M5_CA1_basefc = pd.read_pickle('../data/M5_CA1_basefc.pkl')
 
@@ -129,8 +129,8 @@ np.random.seed(seed)
 # Start timing
 start = time.time()
 
-# Perform MixCond reconciliation (assuming reconc_MixCond is implemented)
-mix_cond = reconc_MixCond(A, fc_bottom_4rec, fc_upper_4rec, bottom_in_type="pmf",
+# Perform MixCond reconciliation (assuming reconc_mix_cond is implemented)
+mix_cond = reconc_mix_cond(A, fc_bottom_4rec, fc_upper_4rec, bottom_in_type="pmf",
                           num_samples=N_samples_IS, return_type="pmf", seed=seed)
 
 # Stop timing
@@ -160,7 +160,7 @@ start = time.time()
 
 # Perform TD-cond reconciliation 
 # This will raise a warning if upper samples are discarded
-td = reconc_TDcond(A, fc_bottom_4rec, fc_upper_4rec,
+td = reconc_td_cond(A, fc_bottom_4rec, fc_upper_4rec,
                    bottom_in_type="pmf", num_samples=N_samples_TD,
                    return_type="samples", seed=seed)
 
@@ -200,7 +200,7 @@ for i in range(fc_samples.shape[1]):
     fc_4buis.append(np.round(fc_samples[:, i]))
 
 start = time.time()
-BUIS_rec = reconc_BUIS(
+BUIS_rec = reconc_buis(
   A,
   base_forecasts = fc_4buis,
   in_type = "samples",

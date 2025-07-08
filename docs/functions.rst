@@ -3,9 +3,9 @@ Functions for Reconciliation
 
 This page documents the available functions for reconciliation.
 
-bayesreconpy.reconc_BUIS
+bayesreconpy.reconc_buis
 -------------------------
-.. automodule:: bayesreconpy.reconc_BUIS
+.. automodule:: bayesreconpy.reconc_buis
    :members:
    :undoc-members:
    :show-inheritance:
@@ -24,16 +24,16 @@ bayesreconpy.reconc_MCMC
    :undoc-members:
    :show-inheritance:
 
-bayesreconpy.reconc_MixCond
+bayesreconpy.reconc_mix_cond
 ---------------------------
-.. automodule:: bayesreconpy.reconc_MixCond
+.. automodule:: bayesreconpy.reconc_mix_cond
    :members:
    :undoc-members:
    :show-inheritance:
 
-bayesreconpy.reconc_TDcond
+bayesreconpy.reconc_td_cond
 --------------------------
-.. automodule:: bayesreconpy.reconc_TDcond
+.. automodule:: bayesreconpy.reconc_td_cond
    :members:
    :undoc-members:
    :show-inheritance:

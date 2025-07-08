@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 from properscoring import crps_ensemble
 from bayesreconpy.hierarchy import _get_reconc_matrices, _temporal_aggregation
-from bayesreconpy.reconc_BUIS import reconc_BUIS
+from bayesreconpy.reconc_buis import reconc_buis
 from bayesreconpy.reconc_gaussian import reconc_gaussian
 from scipy.stats import norm
 
@@ -89,7 +89,7 @@ recon_matrices = _get_reconc_matrices(agg_levels, h)
 A = recon_matrices['A']
 
 np.random.seed(42)
-recon_res = reconc_BUIS(A, fc_samples, in_type="samples", distr="discrete", seed=42)
+recon_res = reconc_buis(A, fc_samples, in_type="samples", distr="discrete", seed=42)
 
 print("Dimensions of reconciled_samples:", recon_res['reconciled_samples'].shape)
 
@@ -190,7 +190,7 @@ recon_gauss = reconc_gaussian(
 )
 
 # Reconcile BUIS method
-reconc_buis = reconc_BUIS(
+reconc_buis = reconc_buis(
     A=rmat['A'],
     base_forecasts=fc,
     in_type="params",

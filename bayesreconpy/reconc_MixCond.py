@@ -5,7 +5,7 @@ from bayesreconpy.PMF import _pmf_from_samples, _pmf_from_params, _pmf_sample
 from typing import Union, Optional, Dict, List
 
 
-def reconc_MixCond(
+def reconc_mix_cond(
     A: np.ndarray,
     fc_bottom: Union[np.array, dict],
     fc_upper: dict,
@@ -132,7 +132,7 @@ def reconc_MixCond(
         ... }
         >>>
         >>> # Perform reconciliation
-        >>> result = reconc_MixCond(A, fc_bottom, fc_upper, bottom_in_type="pmf", return_type="all")
+        >>> result = reconc_mix_cond(A, fc_bottom, fc_upper, bottom_in_type="pmf", return_type="all")
         >>>
         >>> # Check the results
         >>> print(result['bottom_reconciled']['pmf'][0])
@@ -147,8 +147,8 @@ def reconc_MixCond(
 
     See Also
     --------
-    reconc_TDcond : Probabilistic reconciliation via top-down conditioning.
-    reconc_BUIS : Reconciliation using Bottom-Up Importance Sampling (BUIS).
+    reconc_td_cond : Probabilistic reconciliation via top-down conditioning.
+    reconc_buis : Reconciliation using Bottom-Up Importance Sampling (BUIS).
     """
 
     if seed is not None:

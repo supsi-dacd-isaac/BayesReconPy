@@ -65,7 +65,7 @@ def _TD_sampling(u, bott_pmf, toll=DEFAULT_PARS['TOL'], rtol=DEFAULT_PARS['RTOL'
     return b_new
 
 
-def reconc_TDcond(
+def reconc_td_cond(
     A: np.ndarray,
     fc_bottom: Union[np.array, dict],
     fc_upper: dict,
@@ -197,7 +197,7 @@ def reconc_TDcond(
         ... }
         >>>
         >>> # Perform reconciliation
-        >>> result = reconc_TDcond(A, fc_bottom, fc_upper, bottom_in_type="pmf", return_type="all")
+        >>> result = reconc_td_cond(A, fc_bottom, fc_upper, bottom_in_type="pmf", return_type="all")
         >>>
         >>> # Check the results
         >>> print(result['bottom_reconciled']['pmf'][0])
@@ -213,8 +213,8 @@ def reconc_TDcond(
 
     See Also
     --------
-    reconc_MixCond : Reconciliation for mixed-type hierarchies.
-    reconc_BUIS : Reconciliation using Bottom-Up Importance Sampling (BUIS).
+    reconc_mix_cond : Reconciliation for mixed-type hierarchies.
+    reconc_buis : Reconciliation using Bottom-Up Importance Sampling (BUIS).
     """
     if seed is not None:
         np.random.seed(seed)

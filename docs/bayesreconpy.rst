@@ -1,7 +1,7 @@
 bayesreconpy.reconc\_BUIS
 --------------------------------
 
-.. automodule:: bayesreconpy.reconc_BUIS
+.. automodule:: bayesreconpy.reconc_buis
    :members:
    :undoc-members:
    :show-inheritance:
@@ -25,7 +25,7 @@ bayesreconpy.reconc\_MCMC
 bayesreconpy.reconc\_MixCond
 -----------------------------------
 
-.. automodule:: bayesreconpy.reconc_MixCond
+.. automodule:: bayesreconpy.reconc_mix_cond
    :members:
    :undoc-members:
    :show-inheritance:
@@ -33,7 +33,7 @@ bayesreconpy.reconc\_MixCond
 bayesreconpy.reconc\_TDcond
 ----------------------------------
 
-.. automodule:: bayesreconpy.reconc_TDcond
+.. automodule:: bayesreconpy.reconc_td_cond
    :members:
    :undoc-members:
    :show-inheritance:

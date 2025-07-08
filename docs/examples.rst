@@ -148,7 +148,7 @@ The function returns the reconciled mean and covariance for the bottom time seri
 Reconciliation with mixed-conditioning
 ---------------------------------------
 
-We now reconcile the forecasts using the mixed-conditioning approach of Zambon et al. (2024), Sect. 3. The algorithm is implemented in the function `reconc_MixCond() <https://bayesreconpy.readthedocs.io/en/latest/bayesreconpy.html#module-bayesreconpy.reconc_MixCond>`_. The function takes as input:
+We now reconcile the forecasts using the mixed-conditioning approach of Zambon et al. (2024), Sect. 3. The algorithm is implemented in the function `reconc_mix_cond() <https://bayesreconpy.readthedocs.io/en/latest/bayesreconpy.html#module-bayesreconpy.reconc_mix_cond>`_. The function takes as input:
 
 - the aggregation matrix ``A``;
 - the probability mass functions of the bottom base forecasts, stored in the list ``fc_bottom_4rec``;
@@ -173,7 +173,7 @@ The function returns the reconciled forecasts in the form of probability mass fu
     start = time.time()
 
     # Perform MixCond reconciliation
-    mix_cond = reconc_MixCond(A, fc_bottom_4rec, fc_upper_4rec, bottom_in_type="pmf",
+    mix_cond = reconc_mix_cond(A, fc_bottom_4rec, fc_upper_4rec, bottom_in_type="pmf",
                               num_samples=N_samples_IS, return_type="pmf", seed=seed)
 
     stop = time.time()
@@ -195,7 +195,7 @@ As discussed in Zambon et al. (2024), Sect. 3, conditioning with mixed variables
 Top down conditioning
 ----------------------
 
-Top down conditioning (TD-cond; see Zambon et al. (2024), Sect. 4) is a more reliable approach for reconciling mixed variables in high dimensions. The algorithm is implemented in the function `reconc_TDcond() <https://bayesreconpy.readthedocs.io/en/latest/bayesreconpy.html#module-bayesreconpy.reconc_TDcond>`_; it takes the same arguments as `reconc_MixCond() <https://bayesreconpy.readthedocs.io/en/latest/bayesreconpy.html#module-bayesreconpy.reconc_MixCond>`_ and returns reconciled forecasts in the same format.
+Top down conditioning (TD-cond; see Zambon et al. (2024), Sect. 4) is a more reliable approach for reconciling mixed variables in high dimensions. The algorithm is implemented in the function `reconc_td_cond() <https://bayesreconpy.readthedocs.io/en/latest/bayesreconpy.html#module-bayesreconpy.reconc_td_cond>`_; it takes the same arguments as `reconc_mix_cond() <https://bayesreconpy.readthedocs.io/en/latest/bayesreconpy.html#module-bayesreconpy.reconc_mix_cond>`_ and returns reconciled forecasts in the same format.
 
 .. code-block:: python
 
@@ -204,7 +204,7 @@ Top down conditioning (TD-cond; see Zambon et al. (2024), Sect. 4) is a more rel
     start = time.time()
 
     # This will raise a warning if upper samples are discarded
-    td = reconc_TDcond(A, fc_bottom_4rec, fc_upper_4rec,
+    td = reconc_td_cond(A, fc_bottom_4rec, fc_upper_4rec,
                        bottom_in_type="pmf", num_samples=N_samples_TD,
                        return_type="pmf", seed=seed)
     #Warning: Only 99.6% of the upper samples are in the support of the

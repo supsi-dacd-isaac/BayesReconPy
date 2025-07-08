@@ -1,6 +1,6 @@
 import numpy as np
 from bayesreconpy.utils import _check_input_BUIS, _distr_sample, _distr_pmf
-from bayesreconpy.reconc_BUIS import reconc_BUIS
+from bayesreconpy.reconc_buis import reconc_buis
 from typing import Optional, Dict
 
 
@@ -79,13 +79,13 @@ def reconc_MCMC(
     -----
     - This is a bare-bones implementation of the Metropolis-Hastings algorithm.
     - We recommend using additional tools to assess the convergence of the MCMC chains.
-    - The `reconc_BUIS` function is generally faster for most hierarchies.
+    - The `reconc_buis` function is generally faster for most hierarchies.
 
     Examples
     --------
     Example: Simple hierarchy with Poisson base forecasts
         >>> import numpy as np
-        >>> from bayesreconpy.reconc_BUIS import reconc_BUIS
+        >>> from bayesreconpy.reconc_buis import reconc_buis
         >>>
         >>> # Create a minimal hierarchy with 1 upper and 2 bottom variables
         >>> A = np.array([[1, 1]])  # Aggregation matrix
@@ -101,7 +101,7 @@ def reconc_MCMC(
         >>> samples_mcmc = mcmc_result['reconciled_samples']
         >>>
         >>> # Compare reconciled means with those from BUIS
-        >>> buis_result = reconc_BUIS(A, base_forecasts, in_type="params", distr="poisson", num_samples=100000, seed=42)
+        >>> buis_result = reconc_buis(A, base_forecasts, in_type="params", distr="poisson", num_samples=100000, seed=42)
         >>> samples_buis = buis_result['reconciled_samples']
         >>>
         >>> print("MCMC Reconciled Means:", np.mean(samples_mcmc, axis=1))
@@ -115,7 +115,7 @@ def reconc_MCMC(
 
     See Also
     --------
-    reconc_BUIS : Faster reconciliation method for most hierarchies.
+    reconc_buis : Faster reconciliation method for most hierarchies.
     """
     if seed is not None:
         np.random.seed(seed)

@@ -75,7 +75,7 @@ def _compute_weights(b, u, in_type_, distr_):
 
 
 
-def reconc_BUIS(
+def reconc_buis(
     A: np.ndarray,
     base_forecasts: List[Union[Dict[str, float], np.ndarray]],
     in_type: Union[str, List[str]],
@@ -173,7 +173,7 @@ def reconc_BUIS(
         ...     {"mean": 2.0, "sd": 2.0},  # Bottom forecast 1
         ...     {"mean": 4.0, "sd": 2.0}   # Bottom forecast 2
         ... ]
-        >>> result = reconc_BUIS(A, base_forecasts, in_type="params", distr="gaussian", num_samples=10000, seed=42)
+        >>> result = reconc_buis(A, base_forecasts, in_type="params", distr="gaussian", num_samples=10000, seed=42)
         >>> print(result['reconciled_samples'].shape)
         (3, 10000)
 
@@ -187,7 +187,7 @@ def reconc_BUIS(
         ...     {"lambda": 2.0},  # Bottom forecast 1
         ...     {"lambda": 4.0}   # Bottom forecast 2
         ... ]
-        >>> result = reconc_BUIS(A, base_forecasts, in_type="params", distr="poisson", num_samples=10000, seed=42)
+        >>> result = reconc_buis(A, base_forecasts, in_type="params", distr="poisson", num_samples=10000, seed=42)
         >>> print(result['reconciled_samples'].shape)
         (3, 10000)
 

@@ -3,7 +3,7 @@ import pandas as pd
 import time
 from scipy.stats import nbinom
 from numpy.random import default_rng
-from bayesreconpy.reconc_BUIS import reconc_BUIS
+from bayesreconpy.reconc_buis import reconc_buis
 
 #-----------------------------------------------------------------------------------------------------------------------
 #-----------------------------------------------Data and base forecasts-------------------------------------------------
@@ -62,7 +62,7 @@ for j in range(N):
         base_fc_j.append({"size": size_value, "mu": mu_value})
 
     # Reconcile via importance sampling
-    buis = reconc_BUIS(A, base_fc_j, "params", "nbinom", num_samples=N_samples, seed=42)
+    buis = reconc_buis(A, base_fc_j, "params", "nbinom", num_samples=N_samples, seed=42)
     samples_y = buis['reconciled_samples']
 
     # Save mean, median, and quantiles
@@ -164,7 +164,7 @@ for i in range(n):
     base_fc_j.append({"size": size_value, "mu": mu_value})
 
 # Reconcile via importance sampling
-buis = reconc_BUIS(A, base_fc_j, "params", "nbinom", num_samples=N_samples, seed=42)
+buis = reconc_buis(A, base_fc_j, "params", "nbinom", num_samples=N_samples, seed=42)
 samples_y = buis['reconciled_samples']
 
 # Compute the means
@@ -192,7 +192,7 @@ for i in range(n):
     base_fc_j.append({"size": size_value, "mu": mu_value})
 
 # Reconcile via importance sampling
-buis = reconc_BUIS(A, base_fc_j, "params", "nbinom", num_samples=N_samples, seed=42)
+buis = reconc_buis(A, base_fc_j, "params", "nbinom", num_samples=N_samples, seed=42)
 samples_y = buis['reconciled_samples']
 
 # Compute the means
@@ -221,7 +221,7 @@ for i in range(n):
     base_fc_j.append({"size": size_value, "mu": mu_value})
 
 # Reconcile via importance sampling
-buis = reconc_BUIS(A, base_fc_j, "params", "nbinom", num_samples=N_samples, seed=42)
+buis = reconc_buis(A, base_fc_j, "params", "nbinom", num_samples=N_samples, seed=42)
 samples_y = buis['reconciled_samples']
 
 # Compute variance of the base bottom forecasts

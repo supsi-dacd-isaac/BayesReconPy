@@ -5,7 +5,7 @@
 ![Python](https://img.shields.io/badge/python-3.10%2B-green)
 [![Downloads](https://static.pepy.tech/badge/bayesreconpy)](https://pepy.tech/project/bayesreconpy)
 
-<img src="pictures/BAyesreCONpy.png" width="400"/>
+<img src="https://github.com/supsi-dacd-isaac/BayesReconPy/blob/main/pictures/BAyesreCONpy.png?raw=true" width="400"/>
 
 ## Bayesian Reconciliation for Hierarchical Forecasting 
 
@@ -34,7 +34,7 @@ The original vignette containing the R counterpart of this page can be found [he
 
 The M5 competition (Makridakis, Spiliotis, and Assimakopoulos 2022) is about daily time series of sales data referring to 10 different stores. Each store has the same hierarchy: 3049 bottom time series (single items) and 11 upper time series, obtained by aggregating the items by department, product category, and store; see the figure below.
 
-![M5.png](pictures/M5.png)
+![M5.png](https://github.com/supsi-dacd-isaac/BayesReconPy/blob/main/pictures/M5.png?raw=true)
 
 We reproduce the results of the store “CA_1”. The base forecasts (for h=1) of the bottom and upper time series are stored in `M5_CA1_basefc` available as data in the original **‘[bayesRecon](https://cran.r-project.org/web/packages/bayesRecon/index.html)’** package in R. The base forecast are computed using ADAM (Svetunkov and Boylan 2023), implemented in the R package smooth (Svetunkov 2023).
 
@@ -707,12 +707,12 @@ For the bottom reconciled forecasts we get results similar to the ones we have o
 <div style="display: flex; justify-content: center; gap: 40px;">
 
   <div style="text-align: center;">
-    <img src="pictures/biswas.jpg" width="200"/>
+    <img src="https://avatars.githubusercontent.com/u/171348088?v=4" width="200"/>
     <div><a href="mailto:anubhab.biswas@supsi.ch">anubhab.biswas@supsi.ch</a></div>
   </div>
 
   <div style="text-align: center;">
-    <img src="pictures/nespoli.jpg" width="200"/>
+    <img src="https://avatars.githubusercontent.com/u/8004629?v=4" width="200"/>
     <div><a href="mailto:lorenzo.nespoli@supsi.ch">lorenzo.nespoli@supsi.ch</a></div>
   </div>
 

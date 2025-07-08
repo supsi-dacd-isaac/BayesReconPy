@@ -4,7 +4,7 @@ from bayesreconpy.reconc_buis import reconc_buis
 from typing import Optional, Dict
 
 
-def reconc_MCMC(
+def reconc_mcmc(
     A: np.ndarray,
     base_forecasts: list,
     distr: str,
@@ -95,7 +95,7 @@ def reconc_MCMC(
         >>> base_forecasts = [{"lambda": lam} for lam in lambda_vals]
         >>>
         >>> # Perform MCMC reconciliation
-        >>> mcmc_result = reconc_MCMC(A, base_forecasts, distr="poisson", num_samples=30000, seed=42)
+        >>> mcmc_result = reconc_mcmc(A, base_forecasts, distr="poisson", num_samples=30000, seed=42)
         >>>
         >>> # Access reconciled samples
         >>> samples_mcmc = mcmc_result['reconciled_samples']

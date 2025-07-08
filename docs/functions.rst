@@ -17,9 +17,9 @@ bayesreconpy.reconc_gaussian
    :undoc-members:
    :show-inheritance:
 
-bayesreconpy.reconc_MCMC
+bayesreconpy.reconc_mcmc
 ------------------------
-.. automodule:: bayesreconpy.reconc_MCMC
+.. automodule:: bayesreconpy.reconc_mcmc
    :members:
    :undoc-members:
    :show-inheritance:

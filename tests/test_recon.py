@@ -6,7 +6,7 @@ from bayesreconpy.reconc_gaussian import reconc_gaussian
 from bayesreconpy.utils import _gen_gaussian as gen_gaussian_samples
 from bayesreconpy.utils import _gen_poisson as gen_poisson_samples
 from bayesreconpy.hierarchy import _check_hierarchical, _lowest_lev, _temporal_aggregation, _get_reconc_matrices
-from bayesreconpy.reconc_MCMC import reconc_MCMC
+from bayesreconpy.reconc_mcmc import reconc_mcmc
 from bayesreconpy.PMF import _pmf_get_var as PMF_get_var
 from bayesreconpy.PMF import _pmf_get_mean as PMF_get_mean
 from bayesreconpy.PMF import _pmf_from_samples as PMF_from_samples
@@ -110,7 +110,7 @@ class TestScenarios(unittest.TestCase):
 
         # Perform reconciliations
         res_buis = reconc_buis(A, base_forecasts, in_type="params", distr="poisson", num_samples=int(1e4), seed=42)
-        res_mcmc = reconc_MCMC(A, base_forecasts=base_forecasts, distr="poisson", num_samples=int(1e4), seed=42)
+        res_mcmc = reconc_mcmc(A, base_forecasts=base_forecasts, distr="poisson", num_samples=int(1e4), seed=42)
 
         # Compute the relative difference between the two methods
         m = (np.mean(res_buis["reconciled_samples"], axis=0) - np.mean(res_mcmc["reconciled_samples"],

@@ -54,7 +54,7 @@ Forecast reconciliation ensures coherence across hierarchical time series, where
 
 Initial approaches addressed point forecasts using projection methods like OLS and MinT [@Hyndman_Ahmed_Athanasopoulos_Shang_2011; @Wickramasuriya_Athanasopoulos_Hyndman_2019]. More recently, probabilistic reconciliation methods have been introduced, providing richer uncertainty quantification [@Jeon_Panagiotelis_Petropoulos_2019; @Panagiotelis_Gamakumara_Athanasopoulos_Hyndman_2023].
 
-However, most existing tools are limited to Gaussian or continuous inputs, lack support for discrete or mixed-type forecasts, or are implemented only in R. Some, like ProbReco and DiscreteRecon, are no longer actively maintained, whereas pyhts does only point forecast reconciliation. A python-package covering both projection and a Bayesian method was prepared in reconcile [@dirmeier2025reconcile], but it's not complete and mentions the reconciliation functions to "loosely follow...but is not the same method", so we kept it out of the comparison. 
+However, most existing tools are limited to Gaussian or continuous inputs, lack support for discrete or mixed-type forecasts, or are implemented only in R. Some, like ProbReco and DiscreteRecon, are no longer actively maintained, whereas pyhts does only point forecast reconciliation. A python-package covering both projection and a Bayesian method was prepared in reconcile [@dirmeier2025reconcile], but it's not complete and mentions the reconciliation functions to "loosely follow...but is not the same method". 
 
 `bayesReconPy` addresses these gaps. It provides a unified Python interface for probabilistic reconciliation using both conditioning and projection-based methods. It supports:
 
@@ -68,15 +68,16 @@ As a Python-native extension of the R package `bayesRecon`, `bayesReconPy` is th
 
 ### Table 1: Probabilistic reconciliation methods comparison
 
-| Library                                                 | Cross-temp | Gaussian | Continuous (non-Gaussian) | Discrete | Mixed |
-|---------------------------------------------------------|:----------:|:--------:|:-------------------------:|:--------:|:-----:|
-| **bayesReconPy (Ours)**                                 |     X      |    V     |             V             |    V     |   V   |
-| fable / fabletools [@fable_O_Hara_Wild_etal2024]        |     V      |    V     |             V             |    X     |   X   |
-| FoReco [@FoReco]                                        |     V      |    V     |             V             |    X     |   X   |
-| gluonts [@gluonTS_Alexandrov_etal2020]                  |     X      |    V     |             V             |    X     |   X   |
-| hierarchicalforecast [@olivares2022hierarchicalforecast]|     X      |    V     |             V             |    X     |   X   |
-| thief [@thief_HyndmanKourentzes2018]                    |     X      |    V     |             X             |    X     |   X   |
-| scikit-hts [@scikit-hts]                                |     X      |    V     |             V             |    X     |   X   |
+| Library                                                  | Cross-temp | Gaussian | Continuous (non-Gaussian) | Discrete | Mixed |
+|----------------------------------------------------------|:----------:|:--------:|:-------------------------:|:--------:|:-----:|
+| **bayesReconPy (Ours)**                                  |     X      |    V     |             V             |    V     |   V   |
+| fable / fabletools [@fable_O_Hara_Wild_etal2024]         |     V      |    V     |             V             |    X     |   X   |
+| FoReco [@FoReco]                                         |     V      |    V     |             V             |    X     |   X   |
+| gluonts [@gluonTS_Alexandrov_etal2020]                   |     X      |    V     |             V             |    X     |   X   |
+| hierarchicalforecast [@olivares2022hierarchicalforecast] |     X      |    V     |             V             |    X     |   X   |
+| thief [@thief_HyndmanKourentzes2018]                     |     X      |    V     |             X             |    X     |   X   |
+| scikit-hts [@scikit-hts]                                 |     X      |    V     |             V             |    X     |   X   |
+| reconcile [@dirmeier2025reconcile]                       |     X      |    V     |             V             |    X     |   X   |
 **Note**: `V` = Supported, `X` = Not supported
 
 # Usage

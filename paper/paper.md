@@ -46,7 +46,7 @@ bibliography: paper.bib
 
 # Summary
 
-`BayesReconpy` implements methods for probabilistic forecast reconciliation in Python. It reconciles hierarchies containing real-valued time series,  discrete time series and a mixture of real-valued and discrete time series (mixed hierarchies). The package is released under the LGPL (≥ 3) license and available on [GitHub](https://github.com/supsi-dacd-isaac/BayesReconPy).
+`BayesReconpy` implements methods for probabilistic forecast reconciliation in Python. It reconciles hierarchies containing real-valued time series,  discrete time series and a mixture of real-valued and discrete time series (mixed hierarchies).
 
 # Statement of Need
 
@@ -54,7 +54,7 @@ Forecast reconciliation ensures coherence across hierarchical time series, where
 
 Initial approaches addressed point forecasts using projection methods like OLS and MinT [@Hyndman_Ahmed_Athanasopoulos_Shang_2011; @Wickramasuriya_Athanasopoulos_Hyndman_2019]. More recently, probabilistic reconciliation methods have been introduced, providing richer uncertainty quantification [@Jeon_Panagiotelis_Petropoulos_2019; @Panagiotelis_Gamakumara_Athanasopoulos_Hyndman_2023].
 
-However, most existing tools are limited to Gaussian or continuous inputs, lack support for discrete or mixed-type forecasts, or are implemented only in R. Some, like ProbReco and DiscreteRecon, are no longer actively maintained, whereas pyhts does only point forecast reconciliation. A python-package covering both projection and a Bayesian method was prepared in reconcile [@dirmeier2025reconcile], but it's not complete and mentions the reconciliation functions to "loosely follow...but is not the same method". 
+However, most existing tools are limited to Gaussian or continuous inputs, lack support for discrete or mixed-type forecasts, or are implemented only in R. Some, like ProbReco[@ProbReco2020] and DiscreteRecon[@discreterecon], are no longer actively maintained, whereas pyhts[@pyhts2022] does only point forecast reconciliation. A Python package covering both projection and a Bayesian method was prepared in reconcile [@dirmeier2025reconcile], but it's not complete and mentions the reconciliation functions to "loosely follow...but is not the same method". 
 
 `bayesReconPy` addresses these gaps. It provides a unified Python interface for probabilistic reconciliation using both conditioning and projection-based methods. It supports:
 

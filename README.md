@@ -4,7 +4,7 @@
 ![PyPI](https://img.shields.io/pypi/v/bayesreconpy)
 ![Python](https://img.shields.io/badge/python-3.10%2B-green)
 [![Downloads](https://static.pepy.tech/badge/bayesreconpy)](https://pepy.tech/project/bayesreconpy)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1234567.svg)](https://doi.org/10.5281/zenodo.1234567)
+[![DOI](https://joss.theoj.org/papers/10.21105/joss.08336/status.svg)](https://doi.org/10.21105/joss.08336)
 
 <img src="https://github.com/supsi-dacd-isaac/BayesReconPy/blob/main/pictures/BAyesreCONpy.png?raw=true" width="400"/>
 

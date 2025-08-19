@@ -24,6 +24,11 @@ pip install bayesreconpy
 ```
 The documentation of the reconciliation functions is available [here](https://bayesreconpy.readthedocs.io/en/latest/).
 
+Please cite the following JOSS paper when using this package in your research:
+
+**Biswas et al. (2025).** [BayesReconPy: A Python package for forecast reconciliation](https://doi.org/10.21105/joss.08336). *Journal of Open Source Software*, 10(111), 8336. https://doi.org/10.21105/joss.08336
+
+
 ## Introduction
 
 This page reproduces the results as presented in *Probabilistic reconciliation of mixed-type hierarchical time series* (Zambon et al. 2024), published at UAI 2024 (the 40th Conference on Uncertainty in Artificial Intelligence).

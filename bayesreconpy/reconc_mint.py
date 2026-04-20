@@ -22,7 +22,7 @@ def estimate_cov_matrix(res, upper=False, n_u=None):
         ss = schafer_strimmer_cov(res)['shrink_cov']
     return ss
 
-def reconc_mint(A: np.ndarray,base_forecasts: np.ndarray,res:np.ndarray,samples=False):
+def reconc_mint(A: np.ndarray, base_forecasts: np.ndarray, res: np.ndarray = None, W: np.ndarray = None, samples=False):
     """
         Reconciles base forecasts using the MinT (Minimum Trace) approach with a shrinkage-based covariance estimator.
 
@@ -44,6 +44,9 @@ def reconc_mint(A: np.ndarray,base_forecasts: np.ndarray,res:np.ndarray,samples=
         Residuals (forecast errors) from a previous model, used to estimate the covariance matrix.
         Should be of shape [n_total_series, n_time].
 
+    W : np.ndarray, optional
+        Pre-computed covariance/weight matrix (W_h). If provided, 'res' is ignored.
+
     samples : bool, optional (default=False)
         Indicates whether the base forecasts include multiple samples. If True, reconciliation is
         applied sample-by-sample along the third axis.
@@ -58,19 +61,31 @@ def reconc_mint(A: np.ndarray,base_forecasts: np.ndarray,res:np.ndarray,samples=
         - A single matrix of shape [n_total_series, n_total_series] if `samples=False`.
         - A list of such matrices, one per sample, if `samples=True`.
     """
+    # 1. Determine which Weight matrix to use
+    if W is not None:
+        W_h = W
+    elif res is not None:
+        W_h = estimate_cov_matrix(res)
+    else:
+        raise ValueError("Either 'res' (residuals) or 'W' (covariance matrix) must be provided.")
+
     S = get_S_from_A(A)
-    W_h = estimate_cov_matrix(res)
-    P = np.linalg.inv(S.T @ np.linalg.inv(W_h) @ S) @ S.T @ np.linalg.inv(W_h)
+    W_inv = np.linalg.inv(W_h)
+    P = np.linalg.inv(S.T @ W_inv @ S) @ S.T @ W_inv
 
     if samples:
         y_tilde_mean = np.zeros_like(base_forecasts)
         y_tilde_var = []
+        # Reconciled variance is constant across samples if W_h doesn't change
+        reconc_var = S @ P @ W_h @ P.T @ S.T
+
         for i in range(base_forecasts.shape[2]):
-            y_hat = base_forecasts[:,:,i]
-            y_tilde_mean[:,:,i] = S @ P @ y_hat
-            y_tilde_var.append(S @ P @ W_h @ P.T @ S.T)
+            y_hat = base_forecasts[:, :, i]
+            y_tilde_mean[:, :, i] = S @ P @ y_hat
+            y_tilde_var.append(reconc_var)
     else:
         y_hat = base_forecasts
         y_tilde_mean = S @ P @ y_hat
         y_tilde_var = S @ P @ W_h @ P.T @ S.T
+
     return y_tilde_mean, y_tilde_var

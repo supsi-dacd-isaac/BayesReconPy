@@ -1,6 +1,4 @@
 import numpy as np
-from scipy import stats
-from scipy.stats import norm
 from bayesreconpy.utils import DEFAULT_PARS, _check_input_BUIS, _check_weights, _resample, _distr_sample, _distr_pmf
 from bayesreconpy.hierarchy import _check_hierarchical, _get_HG
 from KDEpy import FFTKDE

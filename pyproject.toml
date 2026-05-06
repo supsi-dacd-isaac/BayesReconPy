@@ -7,7 +7,7 @@ name = "bayesreconpy"
 version = "0.4.1"
 description = "Bayesian reconciliation for hierarchical forecasting"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.12"
 license = { text = "MIT" }
 authors = [
     { name = "A.Biswas" },
@@ -26,6 +26,9 @@ dependencies = [
     "PuLP>=2.9.0",
     "scipy>=1.14.1",
     "KDEpy>=1.1.10",
+    "scikit-learn>=1.7.2",
+    "jax>=0.6.2",
+    "jnlr>=0.1.2",
 ]
 
 [project.urls]

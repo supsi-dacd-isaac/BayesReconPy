@@ -1,39 +1,39 @@
-bayesreconpy.reconc\_BUIS
+bayesreconpy.linear.conditioning
 --------------------------------
 
-.. automodule:: bayesreconpy.reconc_buis
+.. automodule:: bayesreconpy.linear.conditioning
    :members:
    :undoc-members:
    :show-inheritance:
 
-bayesreconpy.reconc\_gaussian
-------------------------------------
+bayesreconpy.linear.gaussian
+----------------------------
 
-.. automodule:: bayesreconpy.reconc_gaussian
+.. automodule:: bayesreconpy.linear.gaussian
    :members:
    :undoc-members:
    :show-inheritance:
 
-bayesreconpy.reconc\_MCMC
---------------------------------
+bayesreconpy.linear.projection
+------------------------------
 
-.. automodule:: bayesreconpy.reconc_mcmc
+.. automodule:: bayesreconpy.linear.projection
    :members:
    :undoc-members:
    :show-inheritance:
 
-bayesreconpy.reconc\_MixCond
------------------------------------
+bayesreconpy.core
+-----------------
 
-.. automodule:: bayesreconpy.reconc_mix_cond
+.. automodule:: bayesreconpy.core
    :members:
    :undoc-members:
    :show-inheritance:
 
-bayesreconpy.reconc\_TDcond
-----------------------------------
+bayesreconpy.utils
+------------------
 
-.. automodule:: bayesreconpy.reconc_td_cond
+.. automodule:: bayesreconpy.utils
    :members:
    :undoc-members:
    :show-inheritance:

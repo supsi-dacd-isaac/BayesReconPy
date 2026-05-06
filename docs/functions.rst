@@ -2,38 +2,26 @@ Functions for Reconciliation
 ===========================
 
 This page documents the available functions for reconciliation.
+Canonical modules are under ``bayesreconpy.linear``; legacy module paths
+remain available for backward compatibility.
 
-bayesreconpy.reconc_buis
--------------------------
-.. automodule:: bayesreconpy.reconc_buis
+bayesreconpy.linear.conditioning
+--------------------------------
+.. automodule:: bayesreconpy.linear.conditioning
    :members:
    :undoc-members:
    :show-inheritance:
 
-bayesreconpy.reconc_gaussian
+bayesreconpy.linear.gaussian
 ----------------------------
-.. automodule:: bayesreconpy.reconc_gaussian
+.. automodule:: bayesreconpy.linear.gaussian
    :members:
    :undoc-members:
    :show-inheritance:
 
-bayesreconpy.reconc_mcmc
-------------------------
-.. automodule:: bayesreconpy.reconc_mcmc
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-bayesreconpy.reconc_mix_cond
----------------------------
-.. automodule:: bayesreconpy.reconc_mix_cond
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-bayesreconpy.reconc_td_cond
---------------------------
-.. automodule:: bayesreconpy.reconc_td_cond
+bayesreconpy.linear.projection
+------------------------------
+.. automodule:: bayesreconpy.linear.projection
    :members:
    :undoc-members:
    :show-inheritance:

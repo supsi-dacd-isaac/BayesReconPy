@@ -30,6 +30,7 @@ def reconc_ols(A: np.ndarray,base_forecasts: np.ndarray, samples=False):
 
     Returns:
     -------
+
     y_tilde_mean : np.ndarray
         The reconciled forecasts:
         - of shape [n_total_series, n_time, n_samples] if `samples=True`, or

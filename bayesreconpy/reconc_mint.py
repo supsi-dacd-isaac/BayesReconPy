@@ -53,6 +53,7 @@ def reconc_mint(A: np.ndarray, base_forecasts: np.ndarray, res: np.ndarray = Non
 
     Returns:
     -------
+    
     y_tilde_mean : np.ndarray
         The reconciled forecast means, with the same shape as `base_forecasts`.
 

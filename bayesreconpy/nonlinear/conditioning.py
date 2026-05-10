@@ -1,7 +1,7 @@
 from typing import Callable
 import numpy as np
 from typing import List, Union, Dict, Callable, Optional, Tuple
-from utils.stats import _schafer_strimmer_cov
+from bayesreconpy.utils.stats import _schafer_strimmer_cov
 
 
 def _logpdf_mvn(X: np.ndarray, mean: np.ndarray, cov: np.ndarray, eps: float = 1e-9) -> np.ndarray:

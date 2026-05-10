@@ -70,6 +70,109 @@ def reconc_nl_is(
         joint_cov=None,          
         eps_cov: float = 1e-9,
 ):
+    """
+    Nonlinear Probabilistic Reconciliation using Importance Sampling (IS).
+
+    Uses importance sampling to reconcile forecasts by conditioning on a nonlinear manifold.
+    The method draws samples from the joint distribution of free and constrained variables,
+    computes importance weights based on the constraint function, and resamples to obtain
+    the reconciled distribution.
+
+    Parameters
+    ----------
+    f_u : Callable[[np.ndarray], np.ndarray]
+        The FTC function mapping free variables to constrained variables.
+
+        - Input: array of shape `(N, n_free)` - N samples of the n_free free variables.
+        - Output: array of shape `(n_constrained, N)` - constrained variables for each sample.
+
+        The function defines the relationship: `constrained = f_u(free)`.
+
+    num_samples : int, optional
+        Number of samples to draw from the reconciled distribution. Default is 10,000.
+
+    n_free : int
+        Number of free (bottom-level) variables. Required parameter.
+        The joint mean and covariance have dimension `n_constrained + n_free`.
+
+    seed : int or None, optional
+        Random seed for reproducibility. Default is `None`.
+
+    joint_mean : numpy.ndarray
+        Mean vector of the joint distribution over [constrained, free] variables.
+        Shape: `(n_constrained + n_free,)`.
+
+        The first `n_constrained` elements are the means of the constrained variables,
+        and the remaining `n_free` elements are the means of the free variables.
+
+    joint_cov : numpy.ndarray
+        Covariance matrix of the joint distribution over [constrained, free] variables.
+        Shape: `(n_constrained + n_free, n_constrained + n_free)`.
+        Must be symmetric and positive semi-definite.
+
+    eps_cov : float, optional
+        Small regularization value added to the diagonal of covariance matrices to ensure
+        numerical stability. Default is 1e-9.
+
+    Returns
+    -------
+    dict
+        A dictionary containing the reconciled forecasts:
+
+        - `'free_reconciled_samples'`: numpy.ndarray
+            Reconciled samples for the free variables.
+            Shape: `(n_free, num_samples)`.
+
+        - `'constrained_reconciled_samples'`: numpy.ndarray
+            Reconciled samples for the constrained variables.
+            Shape: `(n_constrained, num_samples)`.
+
+        - `'reconciled_samples'`: numpy.ndarray
+            Concatenated reconciled samples for all variables [constrained, free].
+            Shape: `(n_constrained + n_free, num_samples)`.
+
+    Raises
+    ------
+    ValueError
+        If `joint_mean` or `joint_cov` is `None`. Both parameters are required.
+
+    TypeError
+        If `joint_mean` is `None` and accessed before validation.
+
+    Notes
+    -----
+    - The function computes weights as: w_j ∝ p(U_pred_j, B_j) / p(B_j)
+      where U_pred_j = f_u(B_j) are the predicted constrained variables.
+    - Weights are normalized and used to resample particles via multinomial resampling.
+    - The joint distribution should reflect the prior beliefs about both free and constrained
+      variables. Ideally, it captures correlations between hierarchical levels.
+    - This method is particularly useful for complex nonlinear relationships where
+      the constraint function cannot be inverted analytically.
+
+    Examples
+    --------
+    Example: Multiple constraints
+        >>> n_free = 3
+        >>> n_constrained = 2
+        >>> n_total = n_free + n_constrained
+        >>>
+        >>> joint_mean = np.ones(n_total) * 2.0
+        >>> joint_cov = np.eye(n_total) * 0.3
+        >>>
+        >>> def f_u(B):
+        ...     # B shape: (N, n_free)
+        ...     # Two constraints: sum of first two frees, and third free
+        ...     return np.vstack([
+        ...         np.sum(B[:, :2], axis=1),    # (N,)
+        ...         B[:, 2]                       # (N,)
+        ...     ])  # Output: (n_constrained, N)
+        >>>
+        >>> result = reconc_nl_is(f_u, num_samples=5000, n_free=n_free,
+        ...                        joint_mean=joint_mean, joint_cov=joint_cov, seed=42)
+        >>> print("Reconciled shape:", result["reconciled_samples"].shape)
+        Reconciled shape: (5, 5000)
+    """
+
     if seed is not None:
         np.random.seed(seed)
 
@@ -192,49 +295,130 @@ def reconc_nl_ukf(
 ) -> Dict[str, np.ndarray]:
 
     """
-    Probabilistic reconciliation using Unscented Kalman conditioning on a user-defined nonlinear manifold.
+        Nonlinear Probabilistic Reconciliation using Unscented Kalman Filter (UKF) Conditioning.
 
-    # EXAMPLE 1: Using 'params'
-    free_base_forecasts = [
-        {"mean": 1.0, "sd": 0.1},
-        {"mean": 2.0, "sd": 0.1},
-        {"mean": 3.0, "sd": 0.1},
-    ]
-    in_type = ["params"] * 3
-    distr = ["gaussian"] * 3
+    Uses the Unscented Kalman Filter to condition the free  forecast distributions
+    on the constrained base forecasts via a user-defined nonlinear constraint function.
+    The method performs probabilistic reconciliation by projecting the joint distribution onto the
+    nonlinear manifold defined by f_u(free) = constrained_base_forecasts.
 
+    Parameters
+    ----------
+    free_base_forecasts : list of dict
+        A list of `n_free` dictionaries, one for each free-level forecast.
 
-    def f(free):
-        middle1 = free[0] + free[1]
-        middle2 = free[2]
-        top = middle1 * middle2
-        return np.array([top, middle1, middle2])
+        - If `in_type[i] == "samples"`, `free_base_forecasts[i]` must contain:
+          * `'samples'`: numpy.ndarray of shape (n_samples,) containing samples from the forecast.
+          * `'residuals'`: numpy.ndarray of shape (n_samples,) containing residuals (samples - mean).
 
+        - If `in_type[i] == "params"`, `free_base_forecasts[i]` must be a dictionary containing
+          parameters for the specified distribution in `distr[i]`:
+          * `'gaussian'`: {"mean": float, "sd": float}
 
-    constrained_base_forecasts = np.array([8.0, 3.0, 3.0])
-    R = 0.01 * np.eye(3)
+    in_type : list of str
+        Specifies the input type for each free forecast. Must have length `n_free`.
+        Each element is one of:
 
-    reconciled = reconc_nl_ukf(free_base_forecasts, in_type, distr, f, constrained_base_forecasts, R, num_samples=1000, seed=42)
-    print("Params input:", reconciled["free_reconciled_samples"].shape)
+        - `'samples'`: The forecast is provided as samples.
+        - `'params'`: The forecast is provided as parameters.
 
-    # EXAMPLE 2: Using 'samples'
-    rng = np.random.default_rng(42)
-    s0 = rng.normal(1.0, 0.1, 500)
-    s1 = rng.normal(2.0, 0.1, 500)
-    s2 = rng.normal(3.0, 0.1, 500)
-    r0 = s0 - s0.mean()
-    r1 = s1 - s1.mean()
-    r2 = s2 - s2.mean()
+        **Important**: All elements must be the same (either all 'samples' or all 'params').
+        Mixed input types are not supported and will raise `NotImplementedError`.
 
-    free_base_forecasts = [
-        {"samples": s0, "residuals": r0},
-        {"samples": s1, "residuals": r1},
-        {"samples": s2, "residuals": r2},
-    ]
-    in_type = ["samples"] * 3
+    distr : list of str
+        Specifies the distribution type for each free forecast. Must have length `n_free`.
 
-    reconciled = reconc_nl_ukf(free_base_forecasts, in_type, distr, f, constrained_base_forecasts, R, num_samples=1000, seed=42)
-    print("Samples input:", reconciled["reconciled_samples"].shape)
+        - If `in_type[i] == "samples"`: `distr[i]` should be descriptive (e.g., 'gaussian', 'continuous').
+        - If `in_type[i] == "params"`: `distr[i]` must be one of:
+          * `'gaussian'`: Gaussian distribution
+
+    f_u : Callable[[np.ndarray], np.ndarray]
+        The FTC function. Maps free variables to constrained
+        variables via the relationship: `constrained = f_u(free)`.
+
+        The function should:
+        - Accept an array of shape `(n_free,)` representing the free variables.
+        - Return an array of shape `(n_constrained,)` representing the constrained variables.
+        - Be differentiable (required by the unscented transform).
+
+    constrained_base_forecasts : numpy.ndarray
+        Base forecast for the constrained (upper-level) variables.
+        Shape: `(n_constrained,)`.
+        These are the target values that the reconciled free forecasts should aggregate to
+        (according to the constraint function f_u).
+
+    R : numpy.ndarray
+        Measurement noise covariance matrix representing uncertainty in the constrained forecasts.
+        Shape: `(n_constrained, n_constrained)`.
+        Must be symmetric and positive semi-definite.
+
+    num_samples : int, optional
+        Number of samples to draw from the reconciled distribution. Default is 10,000.
+
+    seed : int or None, optional
+        Random seed for reproducibility. Default is `None`.
+
+    Returns
+    -------
+    dict
+        A dictionary containing the reconciled forecasts:
+
+        - `'free_reconciled_samples'`: numpy.ndarray
+            Reconciled samples for the free (bottom-level) variables.
+            Shape: `(n_free, num_samples)`.
+            Each column is a sample from the reconciled distribution conditioned on the
+            constrained base forecasts.
+
+    Raises
+    ------
+    NotImplementedError
+        If `in_type` contains mixed 'params' and 'samples' entries.
+
+    ValueError
+        If required keys are missing from parameter dictionaries or if sample arrays have
+        incompatible shapes.
+
+    KeyError
+        If a required parameter key is missing (e.g., 'sd' for Gaussian distribution).
+
+    Notes
+    -----
+    - The unscented Kalman filter uses sigma points to approximate the mean and covariance
+      of the nonlinearly transformed distributions, avoiding the need for linearization.
+    - All free forecasts must use the same input type. For mixed input types, first convert
+      or reconstruct one type before calling this function.
+    - The constraint function `f_u` should be well-defined for the range of the free forecasts.
+    - The measurement noise covariance `R` should reflect the uncertainty in the constrained
+      base forecasts. Smaller values increase the weight of the constrained forecasts.
+
+    Examples
+    --------
+
+    Example : Multiplicative constraint with samples
+        >>> rng = np.random.default_rng(42)
+        >>> n_samples = 500
+        >>> s0 = rng.normal(2.0, 0.2, n_samples)
+        >>> s1 = rng.normal(3.0, 0.2, n_samples)
+        >>>
+        >>> free_base_forecasts = [
+        ...     {"samples": s0, "residuals": s0 - s0.mean()},
+        ...     {"samples": s1, "residuals": s1 - s1.mean()},
+        ... ]
+        >>> in_type = ["samples"] * 2
+        >>> distr = ["gaussian"] * 2
+        >>>
+        >>> def multiplicative_constraint(free):
+        ...     # free[0] * free[1] should equal constrained value
+        ...     return free[0] * free[1]
+        >>>
+        >>> constrained_base_forecasts = np.array([6.0])
+        >>> R = 0.1 * np.eye(1)
+        >>>
+        >>> result = reconc_nl_ukf(free_base_forecasts, in_type, distr,
+        ...                         multiplicative_constraint, constrained_base_forecasts, R,
+        ...                         num_samples=5000, seed=42)
+        >>> print("Reconciled shape:", result["free_reconciled_samples"].shape)
+        Reconciled shape: (2, 5000)
     """
     if all(t == "samples" for t in in_type):
         try:

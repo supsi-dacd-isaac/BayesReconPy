@@ -22,6 +22,20 @@ bayesreconpy.linear.projection
    :undoc-members:
    :show-inheritance:
 
+bayesreconpy.nonlinear.conditioning
+--------------------------------
+.. automodule:: bayesreconpy.nonlinear.conditioning
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+bayesreconpy.nonlinear.projection
+------------------------------
+.. automodule:: bayesreconpy.nonlinear.projection
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 bayesreconpy.core
 -----------------
 

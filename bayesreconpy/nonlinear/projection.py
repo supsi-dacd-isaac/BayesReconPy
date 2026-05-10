@@ -13,61 +13,120 @@ def reconc_nl_ols(
     seed: Optional[int] = None,
 ) -> Dict[str, np.ndarray]:
     """
-    Project joint samples Z ∈ ℝ^d onto the nonlinear constraint manifold f(Z) = 0.
+    Nonlinear Probabilistic Reconciliation via Constrained Projection (OLS).
+
+    Projects joint forecast samples onto a nonlinear constraint manifold using iterative
+    constrained optimization. The method minimizes the weighted Euclidean distance from
+    original samples to the constraint manifold f(Z) = 0, ensuring all reconciled samples
+    satisfy the nonlinear constraints exactly.
 
     Parameters
     ----------
     samples : np.ndarray
-        Joint forecast samples of shape (n_samples, d)
+        Joint forecast samples to be reconciled.
+        Shape: `(n_samples, d)` where `d` is the total number of variables
+        (constrained + free variables combined).
+        Each row represents one sample from the joint distribution.
 
     f : Callable[[jnp.ndarray], jnp.ndarray]
-        Constraint function defining the manifold
+        Constraint function defining the nonlinear reconciliation manifold.
 
-    n_constraints : int
-        Dimensionality of the constraint (k = dim(f(Z)))
+        - Input: JAX array of shape `(d,)` representing one sample point.
+        - Output: JAX array of shape `(k,)` where `k = n_constraints` is the number
+          of constraints. The function defines the constraints as f(Z) = 0.
 
-    W : np.ndarray or None
-        Weight matrix for the objective (default: identity)
+        The constraints express relationships between variables that reconciled samples
+        must satisfy exactly. For example, hierarchical aggregation constraints:
+        `top = middle * b2` becomes `top - middle * b2 = 0`.
 
-    n_iter : int
-        Number of Newton iterations
+    W : np.ndarray, optional
+        Weight matrix for the optimization objective.
+        Shape: `(d, d)`. Default is identity matrix `np.eye(d)`.
 
-    seed : int or None
-        Random seed (for reproducibility)
+        Controls the relative importance of different variables when projecting onto
+        the constraint manifold. Can be used to emphasize certain variables or account
+        for different units of measurement.
+
+        The optimization minimizes: ||W @ (Z_proj - Z_orig)||_2^2
+        subject to f(Z_proj) = 0.
+
+    n_iter : int, optional
+        Number of Newton iterations for solving the constrained optimization problem.
+        Default is 10. Increase for tighter constraint satisfaction or complex manifolds.
+
+    seed : int or None, optional
+        Random seed for reproducibility. Default is `None`.
 
     Returns
     -------
     dict
-        {
-            "reconciled_samples": np.ndarray of shape (d, n_samples),
-            "residuals": np.ndarray of shape (n_constraints, n_samples)
-        }
+        A dictionary containing the reconciled forecasts and constraint residuals:
 
-    EXAMPLE:
-    # Generate 3D Gaussian samples: [top, middle, b0, b1, b2]
-    rng = np.random.default_rng(42)
-    n_samples = 5000
-    b0 = rng.normal(1.0, 0.1, n_samples)
-    b1 = rng.normal(2.0, 0.1, n_samples)
-    b2 = rng.normal(3.0, 0.1, n_samples)
+        - `'reconciled_samples'`: np.ndarray
+            Projected samples satisfying the constraint manifold.
+            Shape: `(d, n_samples)`.
+            Each column is a reconciled sample with f(Z_proj) ≈ 0.
 
-    middle = b0 + b1
-    top = middle * b2
-    samples = np.stack([top, middle, b0, b1, b2], axis=1)  # shape (n_samples, 5)
+        - `'residuals'`: np.ndarray
+            Constraint residuals f(Z_proj) for each reconciled sample.
+            Shape: `(n_constraints, n_samples)`.
+            Close to zero for successful reconciliation. Larger residuals indicate
+            that the constraint manifold is difficult to satisfy or the optimization
+            did not converge well.
 
-    # Define constraint function f(Z) = [top - middle * b2, middle - (b0 + b1)]
-    def f(z):
-        return jnp.array([
-            z[0] - z[1] * z[4],     # top - middle * b2
-            z[1] - (z[2] + z[3])    # middle - (b0 + b1)
-        ])
+    Notes
+    -----
+    - **Constraint Satisfaction**: Unlike sampling-based methods, reconciled samples
+      exactly (or approximately) satisfy the nonlinear constraints f(Z) = 0. This
+      ensures perfect coherency.
 
-    result = reconc_nl_ols(samples, f, n_constraints=2, n_iter=15)
-    Z_proj = result["reconciled_samples"]
-    res = result["residuals"]
+    - **Optimization Method**: Uses constrained Newton iterations (via JNLR library's
+      `make_solver`) to project samples onto the manifold. The method solves a
+      constrained least-squares problem at each iteration.
 
-    print("Projected sample shape:", Z_proj.shape)
-    print("Constraint residuals (max abs):", np.max(np.abs(res), axis=1))
+    - **Nonlinearity Support**: Handles arbitrary smooth nonlinear constraints
+      (multiplicative, exponential, etc.) without linearization assumptions.
+
+    - **Weight Matrix**: Use `W` to handle different variable scales or to weight
+      constraints differently. For example, `W = np.diag([1.0, 0.1, 0.1, 0.1, 0.1])`
+      prioritizes getting the first variable correct.
+
+    - **Convergence**: The `n_iter` parameter controls the Newton iterations.
+      The method should converge for well-posed problems within 10-20 iterations.
+      Check the residuals to assess convergence.
+
+    Raises
+    ------
+    ValueError
+        If constraint function input/output shapes are incompatible with samples.
+
+    TypeError
+        If samples are not numpy arrays or constraint function is not callable.
+
+    Examples
+    --------
+    Example : Multiple constraints with identity weight matrix
+        >>> rng = np.random.default_rng(42)
+        >>> n_samples = 2000
+        >>>
+        >>> # Create samples
+        >>> samples = rng.normal(0, 1, (n_samples, 4))
+        >>>
+        >>> # Define two constraints
+        >>> def f(z):
+        ...     return jnp.array([
+        ...         z[0] + z[1] - z[2],         # constraint 1: z0 + z1 = z2
+        ...         z[1] * z[3] - z[0]          # constraint 2: z1 * z3 = z0
+        ...     ])
+        >>>
+        >>> result = reconc_nl_ols(samples, f, n_iter=20, seed=42)
+        >>> Z_proj = result["reconciled_samples"]
+        >>> residuals = result["residuals"]
+        >>>
+        >>> print("Residuals shape:", residuals.shape)
+        Residuals shape: (2, 2000)
+        >>> print("Mean abs residuals per constraint:", np.mean(np.abs(residuals), axis=1))
+        Mean abs residuals per constraint: [1.2e-04 5.8e-05]
     """
     if seed is not None:
         np.random.seed(seed)

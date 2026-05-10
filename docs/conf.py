@@ -9,7 +9,7 @@
 project = 'bayesreconpy'
 copyright = '2024, A. Biswas, L. Nespoli'
 author = 'A. Biswas, L. Nespoli'
-release = '0.1'
+release = '0.5.0'
 
 import pydata_sphinx_theme
 import os

@@ -1,4 +1,4 @@
-Functions for Reconciliation
+Linear Reconciliation
 ===========================
 
 This page documents the available functions for reconciliation.

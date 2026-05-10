@@ -26,7 +26,7 @@ Please cite the following JOSS paper when using this package in your research:
 **Biswas et al. (2025).** [BayesReconPy: A Python package for forecast reconciliation](https://doi.org/10.21105/joss.08336). *Journal of Open Source Software*, 10(111), 8336. https://doi.org/10.21105/joss.08336
 
 The code for linear forecast reconciliation is an implementation of the 
-[original R package](https://cran.r-project.org/web/packages/bayesRecon/index.html), and a comparison of results obtained from both the R and python versions can be found in the old README file of this package. 
+[original R package](https://cran.r-project.org/web/packages/bayesRecon/index.html), and a comparison of results obtained from both the R and python versions can be found in the [old README file](https://github.com/supsi-dacd-isaac/BayesReconPy/blob/main/old_Readme.md) of this package. 
 
 ## Extension to nonlinear reconciliation
 

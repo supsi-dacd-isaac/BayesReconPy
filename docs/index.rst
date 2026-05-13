@@ -29,7 +29,7 @@ Welcome to bayesreconpy's documentation!
 .. image:: https://img.shields.io/badge/python-3.12%2B-green
    :alt: Python 3.12+
 
-.. image:: https://static.pepy.tech/badge/bayesreconpy
+.. image:: https://static.pepy.tech/badge/bayesreconpy?refresh=1
    :target: https://pepy.tech/project/bayesreconpy
    :alt: Total downloads
 

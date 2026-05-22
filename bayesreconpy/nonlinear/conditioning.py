@@ -236,12 +236,12 @@ def _aggregate_mean_cov(means: List[np.ndarray], covs: List[np.ndarray]) -> Tupl
     return mu, cov
 
 
-def sample_multivariate_gaussian(mean: np.ndarray, cov: np.ndarray, n_samples: int, seed: Optional[int] = None) -> np.ndarray:
+def _sample_multivariate_gaussian(mean: np.ndarray, cov: np.ndarray, n_samples: int, seed: Optional[int] = None) -> np.ndarray:
     rng = np.random.default_rng(seed)
     return rng.multivariate_normal(mean, cov, size=n_samples)
 
 
-def unscented_transform(mu_x, Sigma_x, f, R, alpha=1e-3, beta=2, kappa=1):
+def _unscented_transform(mu_x, Sigma_x, f, R, alpha=1e-3, beta=2, kappa=1):
     n = mu_x.shape[0]
     lam = 1
     gamma = 3
@@ -442,10 +442,10 @@ def reconc_nl_ukf(
     else:
         raise NotImplementedError("Mixed 'params' and 'samples' input types are not supported.")
 
-    ukf = unscented_transform(mu_b, Sigma_b, f_u, R)
+    ukf = _unscented_transform(mu_b, Sigma_b, f_u, R)
     mu_post, Sigma_post = ukf(constrained_base_forecasts)
 
-    B = sample_multivariate_gaussian(mu_post, Sigma_post, n_samples=num_samples, seed=seed).T
+    B = _sample_multivariate_gaussian(mu_post, Sigma_post, n_samples=num_samples, seed=seed).T
     #U = np.stack([f(B[:, i]) for i in range(B.shape[1])], axis=1)
     #Y = np.vstack([U, B])
 

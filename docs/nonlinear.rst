@@ -3,26 +3,18 @@ Nonlinear Reconciliation
 
 This section documents the nonlinear probabilistic reconciliation methods implemented in ``bayesreconpy``.
 
-UKF-based nonlinear reconciliation
+bayesreconpy.nonlinear.conditioning
 ----------------------------------
 
-.. automodule:: bayesreconpy.nonlinear.conditioning.reconc_nl_ukf
+.. automodule:: bayesreconpy.nonlinear.conditioning
    :members:
    :undoc-members:
    :show-inheritance:
 
-IS-based nonlinear reconciliation
------------------------------------
+bayesreconpy.nonlinear.projection
+----------------------------------
 
-.. automodule:: bayesreconpy.nonlinear.buis.reconc_nl_is
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Projection-based nonlinear reconciliation
------------------------------------------
-
-.. automodule:: bayesreconpy.nonlinear.projection.reconc_nl_ols
+.. automodule:: bayesreconpy.nonlinear.projection
    :members:
    :undoc-members:
    :show-inheritance:

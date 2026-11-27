@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "bayesreconpy"
-version = "0.5.1"
+version = "0.5.2"
 description = "Bayesian reconciliation for hierarchical forecasting"
 readme = "README.md"
 requires-python = ">=3.12"
@@ -36,3 +36,6 @@ Homepage = "https://github.com/supsi-dacd-isaac/BayesReconPy"
 
 [tool.setuptools.packages.find]
 where = ["."]
+
+[tool.setuptools.package-data]
+bayesreconpy = ["data/*.csv"]

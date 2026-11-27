@@ -1,0 +1,7 @@
+bayesreconpy
+data
+docs
+notebooks
+paper
+pictures
+tests

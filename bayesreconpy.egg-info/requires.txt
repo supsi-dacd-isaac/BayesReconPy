@@ -1,0 +1,8 @@
+numpy>=2.0.2
+pandas>=2.2.2
+PuLP>=2.9.0
+scipy>=1.14.1
+KDEpy>=1.1.10
+scikit-learn>=1.7.2
+jax>=0.6.2
+jnlr>=0.1.2
